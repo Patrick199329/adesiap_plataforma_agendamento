@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FleetStream Pro - Maintenance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d8dadd",
+                    "secondary": "#525f73",
+                    "primary-fixed": "#d7e2ff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-secondary-fixed-variant": "#3b485a",
+                    "on-primary-fixed-variant": "#24467c",
+                    "on-surface-variant": "#43474f",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#abc7ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-background": "#191c1e",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb597",
+                    "on-surface": "#191c1e",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f4f7",
+                    "surface-bright": "#f7f9fc",
+                    "on-secondary-container": "#586579",
+                    "surface-container": "#eceef1",
+                    "secondary-fixed": "#d6e3fb",
+                    "outline-variant": "#c4c6d1",
+                    "on-primary-fixed": "#001b3f",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f7f9fc",
+                    "secondary-fixed-dim": "#bac7de",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#330e00",
+                    "on-tertiary-fixed-variant": "#743417",
+                    "background": "#f7f9fc",
+                    "surface-container-high": "#e6e8eb",
+                    "primary-fixed-dim": "#abc7ff",
+                    "outline": "#747781",
+                    "surface-tint": "#3e5e95",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e0e3e6",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "inverse-on-surface": "#eff1f4",
+                    "surface-variant": "#e0e3e6",
+                    "on-secondary-fixed": "#0f1c2d",
+                    "tertiary-container": "#541d02",
+                    "secondary-container": "#d6e3fb",
+                    "primary": "#00193c",
+                    "on-tertiary-container": "#d4815d",
+                    "on-error": "#ffffff",
+                    "primary-container": "#002d62",
+                    "on-primary-container": "#7796d1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f7f9fc] dark:bg-slate-900 w-full top-0 sticky z-40">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container flex items-center justify-center">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="close up professional headshot of a fleet manager wearing a navy blue shirt in a bright office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3yIlpRVC-0xze7y9ysCkP2jgwUVBjKVYGNzWbSezyucoOgEwjxX7GOMXOO0npztU8vmxNMXdur9v0DIPWea7foCIaJQpyDwrbIwdo48_RgPsXKbNCtoHRO2zJIRfb3gftVzH4rw1fGFjZQOAfQfRGiRSfNFAata8hDG9HSiZqnlfzAPjLJn3agnDUP_RYegivzHXpDHXuY43DwHCf_mjibV8KUFnT0eIXWqwouSNRO64eWrkYyeQ71c8Ee1MteqMs0TNWyoaZaH4"/>
+</div>
+<h1 class="font-['Manrope'] font-bold text-lg tracking-tight text-[#002D62] dark:text-blue-400">Fleet Control</h1>
+</div>
+<button class="text-[#002D62] dark:text-blue-400 hover:bg-[#f2f4f7] dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-xl">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</button>
+</div>
+</header>
+<main class="px-6 py-4 space-y-8">
+<!-- Operational Summary - Asymmetrical Bento Grid -->
+<section class="grid grid-cols-2 gap-4">
+<div class="col-span-2 bg-gradient-to-br from-[#00193c] to-[#002d62] p-6 rounded-xl text-white shadow-lg overflow-hidden relative">
+<div class="relative z-10">
+<p class="font-headline font-bold text-on-primary-container text-sm uppercase tracking-widest opacity-80">Estimated Monthly Cost</p>
+<h2 class="font-headline font-black text-4xl mt-2">$12,450.00</h2>
+<div class="mt-4 flex items-center gap-2 text-xs text-on-primary-container">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>8% increase from last month</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="payments">payments</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border-l-4 border-primary">
+<p class="text-on-surface-variant font-label text-xs font-semibold">In Maintenance</p>
+<p class="font-headline font-extrabold text-2xl text-on-surface mt-1">12</p>
+<p class="text-[10px] text-on-secondary-container mt-1">Active workshops</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border-l-4 border-error">
+<p class="text-on-surface-variant font-label text-xs font-semibold">Delayed</p>
+<p class="font-headline font-extrabold text-2xl text-on-surface mt-1">04</p>
+<p class="text-[10px] text-on-error-container mt-1">High priority alerts</p>
+</div>
+</section>
+<!-- Critical Alerts - KM Based Progress -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h3 class="font-headline font-bold text-xl text-on-surface">Critical Alerts</h3>
+<span class="text-primary font-label text-xs font-bold">View all</span>
+</div>
+<div class="space-y-3">
+<!-- Alert Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-[0_4px_20px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined" data-icon="oil_barrel">oil_barrel</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm text-on-surface">Oil Change</h4>
+<p class="text-on-surface-variant text-xs">Truck #4420 • Heavy Duty</p>
+</div>
+</div>
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded text-[10px] font-bold">OVERDUE</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-medium">
+<span class="text-on-surface-variant">10,500 / 10,000 km</span>
+<span class="text-error">500 km overdue</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-full"></div>
+</div>
+</div>
+</div>
+<!-- Alert Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-[0_4px_20px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="tire_repair">tire_repair</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm text-on-surface">Tire Rotation</h4>
+<p class="text-on-surface-variant text-xs">Van #9912 • Delivery</p>
+</div>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-2 py-1 rounded text-[10px] font-bold">92%</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-medium">
+<span class="text-on-surface-variant">23,000 / 25,000 km</span>
+<span class="text-on-surface">2,000 km left</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-on-tertiary-container w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent History - Editorial List -->
+<section class="space-y-4">
+<h3 class="font-headline font-bold text-xl text-on-surface">Maintenance History</h3>
+<div class="bg-surface-container-low rounded-2xl overflow-hidden">
+<div class="divide-y divide-outline-variant/10">
+<!-- History Item 1 -->
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-center min-w-[40px]">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Oct</p>
+<p class="text-lg font-headline font-black text-primary leading-none">24</p>
+</div>
+<div>
+<h5 class="text-sm font-bold text-on-surface">Brake System Flush</h5>
+<p class="text-[11px] text-on-surface-variant">Scania R450 • Internal Shop</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-on-secondary-container/10 text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold">COMPLETED</span>
+<span class="text-[10px] text-on-surface-variant mt-1">$450.00</span>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-center min-w-[40px]">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Oct</p>
+<p class="text-lg font-headline font-black text-primary leading-none">22</p>
+</div>
+<div>
+<h5 class="text-sm font-bold text-on-surface">Engine Diagnostic</h5>
+<p class="text-[11px] text-on-surface-variant">Ford F-150 • External Partner</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold uppercase">In Progress</span>
+<span class="text-[10px] text-on-surface-variant mt-1">Pending Quote</span>
+</div>
+</div>
+<!-- History Item 3 -->
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-center min-w-[40px]">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Oct</p>
+<p class="text-lg font-headline font-black text-primary leading-none">19</p>
+</div>
+<div>
+<h5 class="text-sm font-bold text-on-surface">Annual Inspection</h5>
+<p class="text-[11px] text-on-surface-variant">Volvo FH16 • Internal Shop</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-on-secondary-container/10 text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold">COMPLETED</span>
+<span class="text-[10px] text-on-surface-variant mt-1">$1,200.00</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_20px_rgba(25,28,30,0.06)] border-t border-[#c4c6d1]/20">
+<a class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="font-['Inter'] font-medium text-[11px]">Fleet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-['Inter'] font-medium text-[11px]">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#002D62] dark:bg-blue-600 text-white dark:text-slate-900 rounded-xl px-4 py-1.5 hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="build" style="font-variation-settings: 'FILL' 1;">build</span>
+<span class="font-['Inter'] font-medium text-[11px]">Maintenance</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] font-medium text-[11px]">History</span>
+</a>
+</nav>
+<!-- FAB (Only if relevant to maintenance screen primary intent: Adding a service record) -->
+<button class="fixed right-6 bottom-28 w-14 h-14 bg-primary text-white rounded-xl shadow-xl flex items-center justify-center transition-transform active:scale-95 z-40">
+<span class="material-symbols-outlined" data-icon="add" style="font-variation-settings: 'wght' 600;">add</span>
+</button>
+</body></html>

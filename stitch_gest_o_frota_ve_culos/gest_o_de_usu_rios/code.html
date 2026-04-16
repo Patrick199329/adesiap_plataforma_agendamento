@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Management - FleetStream Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "primary": "#00193c",
+                        "primary-container": "#002d62",
+                        "inverse-surface": "#2d3133",
+                        "primary-fixed": "#d7e2ff",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "background": "#f7f9fc",
+                        "inverse-primary": "#abc7ff",
+                        "on-surface-variant": "#43474f",
+                        "on-surface": "#191c1e",
+                        "on-background": "#191c1e",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "on-tertiary-fixed": "#360f00",
+                        "secondary": "#525f73",
+                        "outline": "#747781",
+                        "on-tertiary-container": "#d4815d",
+                        "surface-variant": "#e0e3e6",
+                        "on-primary-fixed": "#001b3f",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7f9fc",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "secondary-fixed": "#d6e3fb",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-tint": "#3e5e95",
+                        "surface-dim": "#d8dadd",
+                        "on-primary-container": "#7796d1",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c4c6d1",
+                        "surface-bright": "#f7f9fc",
+                        "on-primary-fixed-variant": "#24467c",
+                        "surface-container-high": "#e6e8eb",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#330e00",
+                        "on-secondary-container": "#586579",
+                        "surface-container": "#eceef1",
+                        "secondary-fixed-dim": "#bac7de",
+                        "surface-container-low": "#f2f4f7",
+                        "surface-container-highest": "#e0e3e6",
+                        "secondary-container": "#d6e3fb",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f4",
+                        "tertiary-container": "#541d02",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 bg-slate-50 dark:bg-slate-900 flex flex-col sticky top-0 border-r-0">
+<div class="px-8 py-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">local_shipping</span>
+</div>
+<div>
+<h1 class="text-xl font-black tracking-tight text-blue-950 dark:text-blue-200">FleetStream Pro</h1>
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Architectural Command</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<!-- Vehicles -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="text-sm font-medium">Vehicles</span>
+</a>
+<!-- Users (ACTIVE) -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-900 dark:text-blue-300 font-bold border-l-4 border-blue-900 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20 translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-sm">Users</span>
+</a>
+<!-- Schedules -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-medium">Schedules</span>
+</a>
+<!-- Checklist -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="text-sm font-medium">Checklist</span>
+</a>
+<!-- Reports -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+</nav>
+<div class="px-4 py-6 mt-auto border-t border-slate-200/50 dark:border-slate-800/50 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar Component -->
+<header class="flex justify-between items-center px-8 py-4 w-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-md shadow-sm dark:shadow-none sticky top-0 z-40">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-high border-none rounded-md text-sm focus:ring-2 focus:ring-primary-container" placeholder="Search user or fleet ID..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-all">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<span class="h-6 w-px bg-outline-variant/30"></span>
+<button class="text-xs font-semibold px-4 py-2 text-primary hover:bg-slate-100 rounded-md">Support</button>
+<button class="text-xs font-bold px-5 py-2 bg-primary text-white rounded-md shadow-sm hover:opacity-90 transition-opacity">Add User</button>
+<div class="ml-2 w-8 h-8 rounded-full overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a fleet administrator in a modern office environment, sharp suit, confident expression, neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASv_nR5bkJmtiQ6xYYogjDNuBLc2Y1IHzzA8YTSZiKTAiaCLiXQdha2epyzwrxwN5XAoFKdrMsWugUR6e1bdaMs1MJndMnt9TlZxagc4WSztv_eMBK8g3dxC94dgQaQeZRHVDygmZGkGk7ardyyDwY2tx5b2-D5fC7D8XYB34q2ghlNd0rPTocQlJddLZSi2wdmrsO9RRP9eo1muItZI4oM6G8M9vNwjA_vBlmkfo78V8pqlotD7siyBkAELXYvU1z_7Jy_N4L4Uw"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<div class="p-8 space-y-8 flex-1">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-3xl font-bold font-headline text-primary tracking-tight">Gestão de Usuários</h2>
+<p class="text-on-surface-variant mt-1 text-sm font-medium">Controle de acessos, permissões e departamentos da frota operacional.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary-container text-on-primary font-bold py-3 px-6 rounded-lg shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-transform">
+<span class="material-symbols-outlined">person_add</span>
+<span>+ Adicionar Usuário</span>
+</button>
+</div>
+<!-- Filter Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="md:col-span-2 bg-surface-container-low p-6 rounded-xl flex items-center gap-6">
+<div class="space-y-1 flex-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Departamento</label>
+<div class="flex gap-2 mt-2">
+<button class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white border border-outline-variant/20 shadow-sm text-primary">Todos</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-white/50 text-on-surface-variant transition-colors">Administrativo</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-white/50 text-on-surface-variant transition-colors">Logística</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-white/50 text-on-surface-variant transition-colors">Operacional</button>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex items-center gap-4">
+<div class="space-y-1 flex-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Status</label>
+<div class="flex gap-2 mt-2">
+<button class="flex-1 px-4 py-1.5 rounded-lg text-xs font-semibold bg-white shadow-sm text-primary">Ativo</button>
+<button class="flex-1 px-4 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant">Inativo</button>
+</div>
+</div>
+</div>
+<div class="bg-primary-container p-6 rounded-xl flex items-center justify-between text-white overflow-hidden relative group">
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-60">Total Active</p>
+<p class="text-3xl font-bold font-headline mt-1">1,284</p>
+</div>
+<span class="material-symbols-outlined text-6xl opacity-10 absolute -right-2 -bottom-2 transform rotate-12 group-hover:scale-110 transition-transform">group</span>
+</div>
+</div>
+<!-- The Fleet Ledger (Table) -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high">
+<th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Usuário</th>
+<th class="px-6 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Departamento</th>
+<th class="px-6 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Nível de Acesso</th>
+<th class="px-6 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="px-6 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Data de Criação</th>
+<th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover ring-2 ring-white" data-alt="Close-up portrait of a male logistics manager with glasses, neutral background, professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc5COO0IBMfpcN1yM48msYIhxnhGWFuYkdk3Qdpf9o0lo5vlJEPuuVSXxOrM1Zu7DQUqm97yKuGx-Uj_fF7a71OLneHn-aMGHpXz_LP1hSfxKBDWLEmkAyFlapzY06Nukjl8_1_jJU7qoGsm5cTwO8wYvHTRNvdAnioP-zrQRNtPT5S2OH0PdnCB72M0-CxueZtfcZ9owW4jhRLQGrJPHm0dNQVwU7wOe_LSZ4UGdC400CUmsVJNC9wVkimBMRR33FuWSgiVPwKyw"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Ricardo Almeida</p>
+<p class="text-xs text-on-surface-variant font-medium">ricardo.a@fleetstream.pro</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">Administrativo</td>
+<td class="px-6 py-5">
+<span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-primary-container/10 text-primary-container">Administrador</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-xs font-semibold text-on-surface">Ativo</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">12 Out, 2023</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-md transition-colors text-error">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover ring-2 ring-white" data-alt="Portrait of a female fleet dispatcher, concentrated expression, soft natural lighting in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtWoU4X_5_VL4VzjS_WAvWKZaOm2uB8OrocrPazGLZwcwI4HxNBqhqfJ9gLDAAAvq4ujVli-MWNYP-8EES4ZxP1Pf-IMtGKGpK0ZY2AcU3Yxg9P1UB8yAZ2IW8WtPxHp---J5-al1nz3DaqqJeq5lYtk0Q-39D16MLfsqpQ21iju_Xhl2Bm2awfQMNa0jJN-vxCle4-9VtJi2nvsTpFx984IRydLoaNFbm-xw7CR_8e2tu5i24hjRVFRLhBudsU3qj7bEIqg6YyCA"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Mariana Costa</p>
+<p class="text-xs text-on-surface-variant font-medium">mariana.c@fleetstream.pro</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">Logística</td>
+<td class="px-6 py-5">
+<span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-secondary-container/30 text-on-secondary-container">Logística</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-xs font-semibold text-on-surface">Ativo</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">05 Jan, 2024</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-md transition-colors text-error">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover ring-2 ring-white" data-alt="Portrait of a senior driver with a friendly smile, outdoor lighting, blurred truck in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaLbDCsKEhZydbL1jWYxKc33V__8FGk_kieeR8LBiGr3ox7kCT0fNmJQ1_q2jYMRKOGfavS6IHpIHD9NOlozi_7SJxjDPlnNH2KIfLVDBimW3Zm22nh3Jwh0CfuFZo3Xb7euYxheUHyqHqhWIsqNphGDsCNi0MEpaWdy33MYQ18EQPya2lS9iZ9vurKZWu9j5OXEcDiLfqmAU_N_mjTxW-pIdKSXjsnVPordrkjo4cBkYZyZf39--kX5jO-08eqvN40d1_TVFW3Nw"/>
+<div>
+<p class="text-sm font-bold text-on-surface">João Silveira</p>
+<p class="text-xs text-on-surface-variant font-medium">joao.s@fleetstream.pro</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">Operacional</td>
+<td class="px-6 py-5">
+<span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-surface-container-high text-on-surface-variant">Motorista</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span class="text-xs font-semibold text-on-surface-variant">Inativo</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">22 Nov, 2023</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-md transition-colors text-error">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover ring-2 ring-white" data-alt="Young professional woman in a tech environment, smiling softly, modern minimal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYYjOs-CwlWHIcjXRJ-25F7rpgY1fVE7KXTbKnmIia4effjWqsk-0Xy3Jaeu05I0IUPaDDMO7J91OhrUllcpZ8wXy-mTkPaFpnd3WgOkeHfE5WiI1wAu8tTqEa8hGcrhjUXuNIv6UvJD9FtoMH2gpQqDebZ3TFaXFdRdDc3dM6HptVDrDuRRqWyhVQnW0_cnpQrt9gJuREYPBd3RHqHZRdTMnkXcHpp6pkjw8gBDgJqSmMxlcWRK4Eyb3eot21Y9DIgs1CwZ3fA_U"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Beatriz Santos</p>
+<p class="text-xs text-on-surface-variant font-medium">beatriz.s@fleetstream.pro</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">Logística</td>
+<td class="px-6 py-5">
+<span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-secondary-container/30 text-on-secondary-container">Logística</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-xs font-semibold text-on-surface">Ativo</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium text-on-surface-variant">15 Mar, 2024</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-md transition-colors text-error">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-8 py-4 bg-surface-container-low flex items-center justify-between border-t border-surface-container">
+<p class="text-xs font-medium text-on-surface-variant">Mostrando <span class="font-bold text-on-surface">1-4</span> de <span class="font-bold text-on-surface">42</span> usuários</p>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-white shadow-sm border border-outline-variant/10 text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-white shadow-sm border border-outline-variant/10 text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-white shadow-sm border border-outline-variant/10 text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors text-xs font-bold">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-white shadow-sm border border-outline-variant/10 text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

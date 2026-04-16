@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FleetStream Pro - Gestão de Projetos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary-container": "#d6e3fb",
+                "surface-bright": "#f7f9fc",
+                "error-container": "#ffdad6",
+                "on-tertiary-container": "#d4815d",
+                "primary-fixed": "#d7e2ff",
+                "outline-variant": "#c4c6d1",
+                "surface-container-highest": "#e0e3e6",
+                "outline": "#747781",
+                "primary": "#00193c",
+                "on-secondary-container": "#586579",
+                "inverse-on-surface": "#eff1f4",
+                "surface": "#f7f9fc",
+                "on-primary-fixed": "#001b3f",
+                "surface-dim": "#d8dadd",
+                "secondary-fixed": "#d6e3fb",
+                "primary-container": "#002d62",
+                "on-primary-container": "#7796d1",
+                "surface-container": "#eceef1",
+                "tertiary-container": "#541d02",
+                "on-error-container": "#93000a",
+                "on-surface-variant": "#43474f",
+                "inverse-surface": "#2d3133",
+                "tertiary-fixed-dim": "#ffb597",
+                "primary-fixed-dim": "#abc7ff",
+                "on-surface": "#191c1e",
+                "on-secondary-fixed-variant": "#3b485a",
+                "on-secondary": "#ffffff",
+                "secondary": "#525f73",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-fixed-variant": "#743417",
+                "on-primary-fixed-variant": "#24467c",
+                "surface-container-low": "#f2f4f7",
+                "surface-variant": "#e0e3e6",
+                "error": "#ba1a1a",
+                "tertiary": "#330e00",
+                "on-background": "#191c1e",
+                "tertiary-fixed": "#ffdbcd",
+                "inverse-primary": "#abc7ff",
+                "secondary-fixed-dim": "#bac7de",
+                "on-tertiary-fixed": "#360f00",
+                "on-secondary-fixed": "#0f1c2d",
+                "on-primary": "#ffffff",
+                "surface-container-high": "#e6e8eb",
+                "background": "#f7f9fc",
+                "surface-tint": "#3e5e95",
+                "on-tertiary": "#ffffff",
+                "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "fontFamily": {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .glass-header { backdrop-filter: blur(12px); }
+        .tonal-depth-shift { background: linear-gradient(180deg, rgba(247, 249, 252, 0) 0%, rgba(242, 244, 247, 1) 100%); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-100 dark:bg-slate-950 flex flex-col p-4 gap-2 z-50">
+<div class="flex items-center gap-3 px-2 mb-8 mt-2">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Logo" class="w-8 h-8" data-alt="Abstract geometric tech logo with sharp angles and maritime blue colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDclMwTFP96gwABg5rHkYtBKlsSlDxrI3lcIcun-A7l7RGvPViEVO5Db0427y4DaBqTz-YaRrrUJIxaXSfukxR5RaMR5L79AX_qy7JhUj0HvWAyPnUiFVyeJdYuma3Ydu7ytatJfJr1gZyO8WAh0hb7DXebAZXvO1U6-iC8YpbJ8w03HbKb4EgdGcq0EGBf4kWAN4Es3jl-MgAWYeTtYM6MJSuRBnp7noq_h5cNQ_oo60YGc3lzUDy9V7MAKr-tjgtEDlYHvPXqhMk"/>
+</div>
+<div>
+<h2 class="text-lg font-black text-blue-950 dark:text-white uppercase tracking-widest leading-none">FleetStream Pro</h2>
+<p class="text-[10px] font-medium text-slate-500 uppercase tracking-tighter">Command Center</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+                Veículos
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">group</span>
+                Usuários
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-blue-900/20 text-blue-900 dark:text-blue-300 font-bold shadow-sm rounded-md font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">assignment</span>
+                Projetos
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">event_note</span>
+                Agendamentos
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+                Checklist
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Relatórios
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 border-t border-slate-200 pt-4">
+<button class="w-full bg-primary text-white py-3 px-4 rounded-xl font-bold text-sm mb-4 flex items-center justify-center gap-2 hover:bg-primary-container transition-colors shadow-lg">
+<span class="material-symbols-outlined text-sm">add</span>
+                Novo Projeto
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">help</span>
+                Suporte
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sair
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-slate-50/70 backdrop-blur-md sticky top-0 z-40 shadow-sm flex justify-between items-center w-full px-8 py-4">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="w-full bg-slate-100 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Buscar projetos ou centros de custo..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-200/50 rounded-lg transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-200/50 rounded-lg transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-xs font-bold text-primary leading-tight">Admin Master</p>
+<p class="text-[10px] text-slate-500">Logistics Manager</p>
+</div>
+<img alt="User profile" class="w-10 h-10 rounded-xl bg-slate-200" data-alt="Stylized avatar of a professional man in a business suit with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU5OgG-2igEVCK0li3egiw1t_dlldv1Ca5gF6DYC_E1dfOzoalzsU0LGNcVsuwGOZhIrjFLWzZ-lj3tFPVRYR64TaDXvt3ZMBFH26i766Q0G-8ov4sVcwlMyxojAsG6rmPWr3TZaBZgZlB7HGiimRf018mtEj7sl9RKJxq57zf6OYKf_w9raKHra_c8xyrHorQdGRQm97zJY_NtkQXEKa_tBy0o2I34uZ_s7Ubkfw83G28ZooXI6hPtmXZGSxxN2eAlmmY0OEH-EE"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-extrabold text-primary tracking-tight font-headline">Gestão de Projetos</h1>
+<p class="text-on-surface-variant mt-2 max-w-2xl font-body leading-relaxed">
+                        Controle centralizado de centros de custo e rubricas de abastecimento. Gerencie orçamentos, monitore o consumo em tempo real e otimize a distribuição de recursos da frota.
+                    </p>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 transition-all shadow-md active:scale-95">
+<span class="material-symbols-outlined">add_circle</span>
+                    Novo Projeto
+                </button>
+</div>
+<!-- Bento Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-transparent hover:border-primary-container/20 transition-all flex flex-col justify-between min-h-[160px] relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-container/5 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+<div>
+<span class="text-slate-500 font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">fact_check</span>
+                            Total de Projetos Ativos
+                        </span>
+<h3 class="text-4xl font-black text-primary mt-4 font-headline">124</h3>
+</div>
+<div class="flex items-center gap-2 text-xs font-bold text-emerald-600 mt-2">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                        +12% este mês
+                    </div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-primary p-6 rounded-2xl shadow-lg flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+<div class="absolute right-0 bottom-0 opacity-10">
+<span class="material-symbols-outlined text-9xl">payments</span>
+</div>
+<div class="z-10">
+<span class="text-blue-200/70 font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                            Orçamento Total Consolidado
+                        </span>
+<h3 class="text-3xl font-black text-white mt-4 font-headline">R$ 4.820.000</h3>
+</div>
+<div class="z-10 text-xs font-medium text-blue-300 mt-2 uppercase tracking-widest">
+                        Consumo Médio: 68%
+                    </div>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between min-h-[160px]">
+<div>
+<span class="text-slate-500 font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">analytics</span>
+                            Saldo Médio por Projeto
+                        </span>
+<h3 class="text-4xl font-black text-primary mt-4 font-headline">R$ 38.870</h3>
+</div>
+<div class="w-full bg-slate-200 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary-container h-full w-[45%]"></div>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm">
+<div class="px-8 py-6 flex items-center justify-between border-b border-slate-100">
+<h2 class="text-xl font-bold text-primary font-headline">Lista de Projetos Ativos</h2>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                            Filtrar
+                        </button>
+<button class="px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                            Exportar
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest">Nome do Projeto</th>
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">Orçamento Total</th>
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">Valor Consumido</th>
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">Saldo Restante</th>
+<th class="px-8 py-4 text-xs font-black text-on-surface-variant uppercase tracking-widest">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-900 flex items-center justify-center">
+<span class="material-symbols-outlined">construction</span>
+</div>
+<div>
+<p class="font-bold text-primary">Expansão Logística Sul</p>
+<p class="text-[10px] text-slate-500">ID: PRJ-2024-001</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                                        Ativo
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right font-medium text-primary">R$ 1.250.000,00</td>
+<td class="px-8 py-6 text-right">
+<div class="flex flex-col items-end">
+<span class="text-on-surface font-bold">R$ 840.000,00</span>
+<div class="w-24 bg-slate-200 h-1 rounded-full mt-1">
+<div class="bg-blue-600 h-full w-[67%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<span class="text-emerald-600 font-black">R$ 410.000,00</span>
+</td>
+<td class="px-8 py-6">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div>
+<p class="font-bold text-primary">Renovação de Frota Pesada</p>
+<p class="text-[10px] text-slate-500">ID: PRJ-2023-089</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                        Inativo
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right font-medium text-primary">R$ 2.400.000,00</td>
+<td class="px-8 py-6 text-right font-bold text-on-surface">R$ 2.400.000,00</td>
+<td class="px-8 py-6 text-right">
+<span class="text-slate-400 font-bold">R$ 0,00</span>
+</td>
+<td class="px-8 py-6">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-900 flex items-center justify-center">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<p class="font-bold text-primary">Projeto Eletromobilidade</p>
+<p class="text-[10px] text-slate-500">ID: PRJ-2024-005</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                                        Ativo
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right font-medium text-primary">R$ 650.000,00</td>
+<td class="px-8 py-6 text-right">
+<div class="flex flex-col items-end">
+<span class="text-on-surface font-bold text-tertiary">R$ 585.000,00</span>
+<div class="w-24 bg-slate-200 h-1 rounded-full mt-1">
+<div class="bg-error h-full w-[90%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<span class="text-tertiary font-black">R$ 65.000,00</span>
+</td>
+<td class="px-8 py-6">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-900 flex items-center justify-center">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div>
+<p class="font-bold text-primary">Integração ERP Logístico</p>
+<p class="text-[10px] text-slate-500">ID: PRJ-2024-012</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                                        Ativo
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right font-medium text-primary">R$ 320.000,00</td>
+<td class="px-8 py-6 text-right">
+<div class="flex flex-col items-end">
+<span class="text-on-surface font-bold">R$ 45.000,00</span>
+<div class="w-24 bg-slate-200 h-1 rounded-full mt-1">
+<div class="bg-blue-600 h-full w-[14%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<span class="text-emerald-600 font-black">R$ 275.000,00</span>
+</td>
+<td class="px-8 py-6">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Footer -->
+<div class="px-8 py-6 border-t border-slate-100 flex items-center justify-between">
+<p class="text-sm text-slate-500">Exibindo <span class="font-bold text-primary">4</span> de <span class="font-bold text-primary">124</span> projetos</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-400 transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="px-3 py-1 rounded-lg bg-primary text-white font-bold text-sm">1</button>
+<button class="px-3 py-1 rounded-lg hover:bg-slate-100 text-slate-600 font-bold text-sm transition-colors">2</button>
+<button class="px-3 py-1 rounded-lg hover:bg-slate-100 text-slate-600 font-bold text-sm transition-colors">3</button>
+<button class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-400 transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Additional Contextual Card -->
+<div class="bg-primary-container p-8 rounded-3xl text-white relative overflow-hidden">
+<div class="absolute right-0 top-0 w-1/3 h-full opacity-10 pointer-events-none">
+<svg class="h-full w-auto" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<path d="M47.5,-59.2C61.4,-52.1,72.4,-38.3,76.5,-23.1C80.6,-7.9,77.7,8.7,71.1,23.8C64.4,38.9,54,52.5,40.4,61.1C26.8,69.7,10,73.4,-5.4,70.9C-20.8,68.4,-34.8,59.7,-46.8,48.8C-58.7,37.9,-68.5,24.8,-72,10.2C-75.6,-4.4,-72.9,-20.5,-64.5,-34C-56.1,-47.5,-41.9,-58.3,-27.3,-64.8C-12.8,-71.3,2.2,-73.5,17.7,-70.3C33.2,-67,47.5,-59.2Z" fill="#FFFFFF" transform="translate(100 100)"></path>
+</svg>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+<div class="space-y-4 max-w-xl">
+<h3 class="text-2xl font-black font-headline">Otimização de Centros de Custo</h3>
+<p class="text-blue-100/80 font-body leading-relaxed">
+                            O FleetStream Pro utiliza algoritmos de predição para alertar quando um projeto está prestes a exceder o teto orçamentário com base no histórico de abastecimento.
+                        </p>
+</div>
+<button class="bg-white text-primary px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors shadow-xl">
+<span class="material-symbols-outlined">bolt</span>
+                        Ver Insights de Consumo
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto px-8 py-6 border-t border-slate-200 flex justify-between items-center text-slate-400 text-xs">
+<p>© 2024 FleetStream Pro. Todos os direitos reservados.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Termos de Uso</a>
+<a class="hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="hover:text-primary transition-colors" href="#">Documentação da API</a>
+</div>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Occurrence Center - FleetStream Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#43474f",
+                        "secondary": "#525f73",
+                        "outline-variant": "#c4c6d1",
+                        "surface-variant": "#e0e3e6",
+                        "surface-container": "#eceef1",
+                        "surface-container-high": "#e6e8eb",
+                        "tertiary-container": "#541d02",
+                        "surface-container-highest": "#e0e3e6",
+                        "surface-bright": "#f7f9fc",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "surface-container-low": "#f2f4f7",
+                        "surface": "#f7f9fc",
+                        "on-primary-fixed-variant": "#24467c",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#586579",
+                        "on-primary-fixed": "#001b3f",
+                        "on-tertiary-container": "#d4815d",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#7796d1",
+                        "on-background": "#191c1e",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "secondary-fixed": "#d6e3fb",
+                        "primary-container": "#002d62",
+                        "inverse-surface": "#2d3133",
+                        "secondary-container": "#d6e3fb",
+                        "inverse-primary": "#abc7ff",
+                        "surface-tint": "#3e5e95",
+                        "primary-fixed-dim": "#abc7ff",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "outline": "#747781",
+                        "inverse-on-surface": "#eff1f4",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#bac7de",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "tertiary": "#330e00",
+                        "primary-fixed": "#d7e2ff",
+                        "background": "#f7f9fc",
+                        "on-surface": "#191c1e",
+                        "surface-dim": "#d8dadd",
+                        "primary": "#00193c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tonal-shift { background-color: #f2f4f7; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="flex flex-col h-full py-6 bg-slate-50 dark:bg-slate-900 h-screen w-64 border-r-0 tonal-shift hidden md:flex">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-blue-950 dark:text-white">Precision Fleet</h1>
+<p class="text-xs text-slate-500 font-medium uppercase tracking-widest">Command Center</p>
+</div>
+<button class="mx-6 mb-8 py-3 px-4 bg-primary text-on-primary rounded-xl font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">add</span>
+<span class="text-sm">New Dispatch</span>
+</button>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-medium hover:text-blue-900 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-medium hover:text-blue-900 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="text-sm">Fleet Assets</span>
+</a>
+<!-- Active Tab: Occurrences -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 font-bold border-l-4 border-blue-900 dark:border-blue-400 bg-white dark:bg-slate-800 translate-x-1 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="text-sm">Occurrences</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-medium hover:text-blue-900 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="text-sm">Maintenance</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-medium hover:text-blue-900 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-sm">Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-medium hover:text-blue-900 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 font-medium hover:bg-slate-200/50 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 font-medium hover:bg-slate-200/50 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-8 w-full bg-white/70 dark:bg-slate-950/70 backdrop-blur-md shadow-sm dark:shadow-none z-10">
+<div class="flex items-center gap-8 flex-1">
+<span class="text-lg font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">Occurrence Center</span>
+<div class="max-w-md w-full relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-blue-500/20 placeholder:text-slate-400" placeholder="Search by plate, vehicle, or driver..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden ml-2 border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a fleet operations manager with a confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZpRJ0YXJKklPxqdTRXLFwhf7vZFTTj64b-Oew-IZVVJDK1CFcaC1BaJM7Oo0pWW71fVvKztcBhTUb18Y_dbvVw3bPf8FKnQVOqZEjCii4n6DA3n-XFKQUJXUOXVx7lGKNLijX24YFHWt-4afpKgIuBe-_-qCpyf8qkjJY-YU4zAnkvnXKQ2xEEwRwYaXD7GVBEiVbVRYNWEXhrFh3yNIyWAaEjOB8gtmsX4VvLNCJV0PMF3VshLeh2GVYz-WupUDwT-Nn4eMaF_Y"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content Section -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Page Header -->
+<div class="space-y-1">
+<h2 class="text-3xl font-extrabold text-primary tracking-tight font-headline">Central de Ocorrências</h2>
+<p class="text-on-surface-variant font-medium">Monitoramento de conformidade e incidentes em tempo real</p>
+</div>
+<!-- Bento Grid Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Total Checklists -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-primary flex flex-col justify-between h-32 relative overflow-hidden">
+<div>
+<span class="text-label-sm text-on-surface-variant font-semibold uppercase tracking-wider">Total Checklists</span>
+<div class="text-4xl font-bold text-primary mt-1">1,284</div>
+</div>
+<p class="text-xs text-secondary mt-2">Últimos 30 dias</p>
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-6xl opacity-5 text-primary">fact_check</span>
+</div>
+<!-- Open Occurrences -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-error flex flex-col justify-between h-32 relative overflow-hidden">
+<div>
+<span class="text-label-sm text-on-surface-variant font-semibold uppercase tracking-wider">Ocorrências Abertas</span>
+<div class="text-4xl font-bold text-error mt-1">42</div>
+</div>
+<div class="flex items-center gap-1 text-on-error-container text-xs bg-error-container px-2 py-0.5 rounded-full w-fit">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+12% vs ontem</span>
+</div>
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-6xl opacity-5 text-error">warning</span>
+</div>
+<!-- Maintenance -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-on-tertiary-container flex flex-col justify-between h-32 relative overflow-hidden">
+<div>
+<span class="text-label-sm text-on-surface-variant font-semibold uppercase tracking-wider">Em Manutenção</span>
+<div class="text-4xl font-bold text-on-tertiary-container mt-1">18</div>
+</div>
+<p class="text-xs text-secondary mt-2">Frota indisponível</p>
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-6xl opacity-5 text-on-tertiary-container">build</span>
+</div>
+<!-- Critical Alerts -->
+<div class="bg-primary text-white p-6 rounded-xl shadow-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<span class="text-label-sm text-blue-200 font-semibold uppercase tracking-wider">Alertas Críticos</span>
+<div class="text-4xl font-bold mt-1">05</div>
+</div>
+<div class="z-10 flex items-center gap-1 text-white text-xs bg-white/20 px-2 py-0.5 rounded-full w-fit backdrop-blur-sm">
+<span>Ação Imediata</span>
+</div>
+<div class="absolute inset-0 bg-gradient-to-br from-primary to-primary-container opacity-50"></div>
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-6xl opacity-10 text-white">priority_high</span>
+</div>
+</div>
+<!-- Filters & Controls -->
+<div class="bg-surface-container-low p-5 rounded-2xl flex flex-wrap items-center gap-4">
+<div class="flex-1 min-w-[200px]">
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Período</label>
+<div class="flex items-center bg-surface-container-lowest rounded-lg px-3 py-2 border border-outline-variant/20 focus-within:ring-1 focus-within:ring-blue-500/20">
+<span class="material-symbols-outlined text-slate-400 text-sm mr-2">calendar_today</span>
+<input class="bg-transparent border-none p-0 text-sm w-full focus:ring-0" type="text" value="01 Out 2023 - 31 Out 2023"/>
+</div>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1 ml-1">Motorista</label>
+<select class="w-full bg-surface-container-lowest border-outline-variant/20 rounded-lg text-sm focus:ring-1 focus:ring-blue-500/20">
+<option>Todos os Motoristas</option>
+<option>Ricardo Silva</option>
+<option>Ana Paula Martins</option>
+</select>
+</div>
+<div class="flex items-center gap-2 pt-5">
+<button class="px-4 py-2 bg-surface-container-highest text-primary font-bold text-sm rounded-lg flex items-center gap-2 hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Somente Ocorrências
+                        </button>
+<button class="px-4 py-2 bg-tertiary-fixed text-on-tertiary-fixed font-bold text-sm rounded-lg flex items-center gap-2 hover:opacity-80 transition-colors">
+<span class="material-symbols-outlined text-sm">star</span>
+                            Alta Prioridade
+                        </button>
+<button class="p-2 text-secondary hover:bg-slate-200 rounded-lg">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+</div>
+<!-- Data Table (The Fleet Ledger) -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-slate-100">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant/10">
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Veículo</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Motorista</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Data / Hora</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Resumo do Problema</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Prioridade</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Sleek white heavy-duty logistics truck parked in a clean warehouse terminal with bright industrial lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByajWuOXlZZ5CRfQYLpPu5fiI7uwaYLOXsKvWLoV5Ywp2uMBh5rBr8n6i_GeNXCBX3plMyJpoODGEOg_Sdx_D1WDIQvJPhPw9WxRGWVVaUngrg2ZZbA59bT35FLKRauvtfJ9bK-fMa5bCFx1Nn-BTs2FDOsTmBYA1E0W9cl9FjX1J_BITiJx1kmVbyFUKAbpBKDKB5pIAVHqCCI5XkVUJfMDaWD2Edbo2fZj8yfGcVo7eHTjVhiqmgN7E-aVsbEdj89sNIpi4l_ZI"/>
+</div>
+<div>
+<div class="font-bold text-primary text-sm">Volvo FH 540</div>
+<div class="text-[11px] text-secondary font-mono">BRA-4X92</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-on-surface">Ricardo Silva</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">
+                                    24 Out, 08:45
+                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-error-container text-on-error-container">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Não Conforme
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm text-on-surface font-medium">Nível de óleo baixo</div>
+<div class="text-xs text-secondary">Checklist pré-viagem</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-extrabold px-2 py-0.5 rounded border border-error text-error bg-error/5 uppercase">Alta</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-slate-100 rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</button>
+<button class="p-1.5 text-secondary hover:text-error hover:bg-error/5 rounded transition-colors" title="Open Maintenance Ticket">
+<span class="material-symbols-outlined text-lg">engineering</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Modern silver cargo van on a city street with soft morning light and urban architectural background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3LUkYGRCz_f8fdc9sLIZbzKhwkvWvyVe6_0xf_ECU2CrtGEhlOWRKr3GzUR8SXpzoBjiJdxByYR8aHzBE8E4O4xYF6OIqulb0TaC111NdH04SKXan47t2Hm9eAcgSZ3HKaGk47awNxvSyFDETrZqOSMXc2DIT3NOPRrvOj-vpU5USQJBZlAIzRkMfvMPhILGImGgiURVHbzMKpuyoXQfu6C_6h4MepBHixwgUahk8EfGGU-ci0fkYuLCeO8G55FUy8vAz8rzQYXM"/>
+</div>
+<div>
+<div class="font-bold text-primary text-sm">Mercedes Sprinter</div>
+<div class="text-[11px] text-secondary font-mono">GTR-1104</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-on-surface">Ana Paula Martins</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">
+                                    24 Out, 07:12
+                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-secondary-container text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                        Conforme
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm text-secondary italic">Nenhum problema</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-extrabold px-2 py-0.5 rounded border border-slate-300 text-slate-400 bg-slate-50 uppercase">N/A</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-slate-100 rounded transition-colors">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</button>
+<button class="p-1.5 text-slate-300 cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">engineering</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Blue delivery box truck driving on an asphalt highway through a scenic landscape with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQbGpMn4CppheWmv0TEMCOMAEPiOtAaMe9seWtZbHAZSEtiXWRqDYamVlZxa-jOsRxxTt2q9ri1RUwvNWrnKQlhjkThZHSCIojOYSHMDkNVvsT7Bg50xSm1Go8XXJqBMwbW1TKfR7U_WfEmZ3mwb81H-IhUaeRn8-eoIGOyd4Gd2NYwGmk01Oz-Huw7_MO6C8VNOxUsx8eHmOunDIaR_0HzgO_lXYD1Coy3kUn4ehBwhW9tNigO1YcA7vqN7tmHFu5pUj-fsibNqk"/>
+</div>
+<div>
+<div class="font-bold text-primary text-sm">Scania R 450</div>
+<div class="text-[11px] text-secondary font-mono">LKP-5582</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-on-surface">Carlos Eduardo</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">
+                                    23 Out, 16:30
+                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-tertiary-fixed text-on-tertiary-fixed-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                                        Não Conforme
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="text-sm text-on-surface font-medium">Desgaste pneu dianteiro</div>
+<div class="text-xs text-secondary">Relatado no retorno</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-extrabold px-2 py-0.5 rounded border border-on-tertiary-container text-on-tertiary-container bg-tertiary-fixed-dim/20 uppercase">Média</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-secondary hover:text-primary hover:bg-slate-100 rounded transition-colors">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</button>
+<button class="p-1.5 text-secondary hover:text-on-tertiary-container hover:bg-tertiary-fixed/30 rounded transition-colors">
+<span class="material-symbols-outlined text-lg">engineering</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Table Footer / Pagination -->
+<div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-secondary bg-surface-container-low/30">
+<div>Mostrando 1 a 10 de 1,284 checklists</div>
+<div class="flex items-center gap-1">
+<button class="p-1 hover:bg-slate-200 rounded">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-6 h-6 flex items-center justify-center bg-primary text-white rounded">1</button>
+<button class="w-6 h-6 flex items-center justify-center hover:bg-slate-200 rounded">2</button>
+<button class="w-6 h-6 flex items-center justify-center hover:bg-slate-200 rounded">3</button>
+<button class="p-1 hover:bg-slate-200 rounded">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button - Only for Primary Action context -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 group z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+<div class="absolute right-16 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">
+            Novo Checklist Manual
+        </div>
+</button>
+</body></html>

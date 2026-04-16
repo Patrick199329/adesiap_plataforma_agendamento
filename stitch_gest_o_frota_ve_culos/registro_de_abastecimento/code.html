@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Fuel Registration | FleetStream Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#586579",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "surface": "#f7f9fc",
+                        "secondary-container": "#d6e3fb",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-variant": "#e0e3e6",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "on-error": "#ffffff",
+                        "outline": "#747781",
+                        "on-tertiary-container": "#d4815d",
+                        "inverse-primary": "#abc7ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#541d02",
+                        "primary-fixed": "#d7e2ff",
+                        "surface-dim": "#d8dadd",
+                        "primary": "#00193c",
+                        "primary-container": "#002d62",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001b3f",
+                        "outline-variant": "#c4c6d1",
+                        "secondary": "#525f73",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-fixed": "#d6e3fb",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-surface-variant": "#43474f",
+                        "on-primary-fixed-variant": "#24467c",
+                        "tertiary": "#330e00",
+                        "inverse-on-surface": "#eff1f4",
+                        "background": "#f7f9fc",
+                        "surface-container": "#eceef1",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f2f4f7",
+                        "surface-tint": "#3e5e95",
+                        "on-primary-container": "#7796d1",
+                        "secondary-fixed-dim": "#bac7de",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "on-background": "#191c1e",
+                        "surface-container-high": "#e6e8eb",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "surface-bright": "#f7f9fc",
+                        "on-surface": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<nav class="w-full top-0 sticky z-50 bg-slate-50 dark:bg-slate-900 transition-colors">
+<div class="flex items-center px-4 h-16 w-full max-w-7xl mx-auto">
+<button class="mr-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 text-blue-900 dark:text-blue-400">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Manrope'] font-semibold text-lg text-blue-900 dark:text-blue-400">Fuel Registration</h1>
+</div>
+<div class="bg-slate-200 dark:bg-slate-800 h-[1px] w-full"></div>
+</nav>
+<main class="px-4 py-6 max-w-lg mx-auto space-y-6">
+<!-- Section 1: Vehicle Info (Read-only card) -->
+<section>
+<h2 class="font-headline text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3 px-1">Vehicle Info</h2>
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center space-x-4">
+<div class="h-12 w-12 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-base">Volvo FH 540</p>
+<p class="text-on-surface-variant text-sm font-medium tracking-tight">ABC-1234 • Heavy Fleet</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-outline-variant" data-icon="lock">lock</span>
+</div>
+</div>
+</section>
+<!-- Section 2: Input Data -->
+<section class="space-y-4">
+<h2 class="font-headline text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3 px-1">Input Data</h2>
+<div class="grid grid-cols-1 gap-4">
+<!-- KM Input -->
+<div class="group">
+<label class="block text-xs font-semibold text-on-secondary-container mb-1.5 ml-1">Current KM</label>
+<div class="relative bg-surface-container-high rounded-lg overflow-hidden flex items-center px-4 h-14 focus-within:bg-surface-container-highest transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-tint opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="speed">speed</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-headline font-bold text-on-surface placeholder:text-outline-variant" placeholder="124.500" type="number"/>
+</div>
+</div>
+<!-- Fuel Value Input -->
+<div class="group">
+<label class="block text-xs font-semibold text-on-secondary-container mb-1.5 ml-1">Fuel Value (BRL)</label>
+<div class="relative bg-surface-container-high rounded-lg overflow-hidden flex items-center px-4 h-14 focus-within:bg-surface-container-highest transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-tint opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="payments">payments</span>
+<div class="flex items-center w-full">
+<span class="font-bold text-on-surface mr-1">R$</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-headline font-bold text-on-surface placeholder:text-outline-variant" placeholder="0,00" type="text"/>
+</div>
+</div>
+</div>
+<!-- Fuel Type Select -->
+<div class="group">
+<label class="block text-xs font-semibold text-on-secondary-container mb-1.5 ml-1">Fuel Type</label>
+<div class="relative bg-surface-container-high rounded-lg overflow-hidden flex items-center px-4 h-14 focus-within:bg-surface-container-highest transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-tint opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="gas_meter">gas_meter</span>
+<select class="bg-transparent border-none focus:ring-0 w-full font-headline font-bold text-on-surface appearance-none">
+<option>Diesel</option>
+<option>S10</option>
+<option>Arla 32</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Project Selection -->
+<section>
+<h2 class="font-headline text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3 px-1">Project Selection</h2>
+<div class="relative bg-surface-container-high rounded-lg overflow-hidden flex items-center px-4 h-14 focus-within:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="folder_managed">folder_managed</span>
+<select class="bg-transparent border-none focus:ring-0 w-full font-headline font-bold text-on-surface appearance-none">
+<option>Expansão Logística Sul</option>
+<option>Distribuição Urbana Norte</option>
+<option>Transporte Intermodal Oeste</option>
+</select>
+<span class="material-symbols-outlined text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</section>
+<!-- Section 4: Receipt Attachment -->
+<section>
+<h2 class="font-headline text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3 px-1">Receipt Attachment</h2>
+<button class="w-full h-48 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center space-y-3 active:scale-[0.98] transition-transform group">
+<div class="h-14 w-14 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="photo_camera">photo_camera</span>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface">Capture Receipt Photo</p>
+<p class="text-on-secondary-container text-sm">or tap to upload image</p>
+</div>
+</button>
+</section>
+</main>
+<!-- Bottom Action Button Wrapper (Sticky/Fixed) -->
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border-t border-slate-200/50 dark:border-slate-800/50">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary h-14 rounded-xl font-headline font-bold text-base shadow-lg shadow-primary/20 flex items-center justify-center space-x-3 active:scale-[0.97] transition-transform">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span>Submit Fuel Entry</span>
+</button>
+</div>
+<!-- Background Decoration (Asymmetric Command) -->
+<div class="fixed top-0 right-0 -z-10 opacity-20 pointer-events-none">
+<div class="w-64 h-64 bg-primary-container rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+</div>
+<!-- BottomNavBar (Filtered Visibility: suppressed for this task-focused screen as per mandate) -->
+<!-- The mandate says: "exclude the navigation shell if the page intent is: Task-Focused... or "Success/Confirmation" splash screens." -->
+<!-- Since this is a specialized registration form with a primary action button at the bottom, navigation is suppressed to focus the user. -->
+</body></html>

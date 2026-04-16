@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FleetStream Pro - Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#3e5e95",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#3b485a",
+                    "on-tertiary-fixed-variant": "#743417",
+                    "on-primary-fixed-variant": "#24467c",
+                    "inverse-surface": "#2d3133",
+                    "on-surface-variant": "#43474f",
+                    "surface": "#f7f9fc",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#002d62",
+                    "surface-dim": "#d8dadd",
+                    "tertiary": "#330e00",
+                    "on-tertiary-container": "#d4815d",
+                    "outline-variant": "#c4c6d1",
+                    "secondary-container": "#d6e3fb",
+                    "surface-variant": "#e0e3e6",
+                    "primary-fixed": "#d7e2ff",
+                    "on-secondary-fixed": "#0f1c2d",
+                    "on-primary-fixed": "#001b3f",
+                    "on-background": "#191c1e",
+                    "surface-bright": "#f7f9fc",
+                    "inverse-on-surface": "#eff1f4",
+                    "secondary-fixed": "#d6e3fb",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f2f4f7",
+                    "on-surface": "#191c1e",
+                    "primary-fixed-dim": "#abc7ff",
+                    "tertiary-fixed-dim": "#ffb597",
+                    "background": "#f7f9fc",
+                    "inverse-primary": "#abc7ff",
+                    "on-primary-container": "#7796d1",
+                    "surface-container": "#eceef1",
+                    "outline": "#747781",
+                    "surface-container-highest": "#e0e3e6",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#541d02",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#586579",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#bac7de",
+                    "surface-container-high": "#e6e8eb",
+                    "secondary": "#525f73",
+                    "primary": "#00193c",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-slate-50 dark:bg-slate-900 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container flex items-center justify-center">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="professional headshot of a fleet manager in a clean corporate office setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6TFuvNiAiAMSpuNPmmXz50FwfO5L0Sgi4D5YDIvnroHSLuozYyKxnlXV8O8CHP1S1nFEUPAWhYOBcrQ-3QH8SaDm4VX_OhnEq0gpI7wCcK1qMC9MR1h4btIvyCVbV5ac7dmpmGzMmWvkxsH4fLn5JPdiKqM6ZrFhPXytX22jsmM0SmzHbJFndeWa8noE9zz2mj1GMAYRbb1lJ1cbP-mjltmm2ABx9orVnO69c7FgdnyxCXT1kg-YDNvXqIn_3Rxh7gRezxB9KHKQ"/>
+</div>
+<h1 class="font-manrope font-extrabold text-xl text-blue-900 dark:text-blue-100">Command Center</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-200/50 transition-colors text-blue-900 dark:text-blue-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<div class="bg-slate-100 dark:bg-slate-800 h-px w-full"></div>
+<main class="pb-32 pt-6">
+<!-- Summary Cards - Asymmetrical Bento-style Layout -->
+<section class="px-6 mb-8">
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2 bg-gradient-to-br from-primary to-primary-container p-6 rounded-xl relative overflow-hidden shadow-lg">
+<div class="relative z-10">
+<p class="font-label text-on-primary-container text-xs uppercase tracking-widest mb-1">Total Vehicles</p>
+<h2 class="font-headline text-white text-4xl font-extrabold">248</h2>
+<div class="mt-4 flex items-center gap-2">
+<span class="bg-white/20 px-2 py-1 rounded text-[10px] text-white font-bold">+12% vs LY</span>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-9xl rotate-12" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-l-4 border-primary">
+<p class="font-label text-on-surface-variant text-[10px] uppercase tracking-wider mb-2">In Transit</p>
+<p class="font-headline text-on-surface text-2xl font-bold">184</p>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-l-4 border-secondary">
+<p class="font-label text-on-surface-variant text-[10px] uppercase tracking-wider mb-2">Available</p>
+<p class="font-headline text-on-surface text-2xl font-bold">42</p>
+</div>
+<div class="col-span-2 bg-error-container/30 p-5 rounded-xl shadow-sm flex justify-between items-center">
+<div>
+<p class="font-label text-on-error-container text-[10px] uppercase tracking-wider mb-1">In Maintenance</p>
+<p class="font-headline text-on-error-container text-2xl font-bold">22</p>
+</div>
+<span class="material-symbols-outlined text-on-error-container text-3xl" data-icon="build">build</span>
+</div>
+</div>
+</section>
+<!-- Quick Action Grid -->
+<section class="px-6 mb-10">
+<h3 class="font-headline text-on-surface-variant text-sm font-bold mb-4 uppercase tracking-widest">Quick Actions</h3>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-900">
+<span class="material-symbols-outlined" data-icon="local_gas_station">local_gas_station</span>
+</div>
+<span class="font-label text-sm font-semibold text-blue-900">Abastecer</span>
+</button>
+<button class="flex flex-col items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-900">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+</div>
+<span class="font-label text-sm font-semibold text-blue-900">Novo Condutor</span>
+</button>
+<button class="flex flex-col items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-900">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+</div>
+<span class="font-label text-sm font-semibold text-blue-900">Relatórios</span>
+</button>
+<button class="flex flex-col items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+</div>
+<span class="font-label text-sm font-semibold text-error">Reportar Sinistro</span>
+</button>
+</div>
+</section>
+<!-- Ongoing Trips -->
+<section class="mb-10">
+<div class="px-6 flex justify-between items-end mb-4">
+<h3 class="font-headline text-on-surface-variant text-sm font-bold uppercase tracking-widest">Ongoing Trips</h3>
+<span class="font-label text-primary font-bold text-xs">View All</span>
+</div>
+<div class="flex overflow-x-auto gap-4 px-6 hide-scrollbar">
+<!-- Trip Card 1 -->
+<div class="min-w-[280px] bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label text-on-surface-variant text-[10px] uppercase font-bold tracking-tighter">TRIP-A294</p>
+<h4 class="font-headline font-bold text-blue-900">Scania G450</h4>
+</div>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-1 rounded font-bold">IN TRANSIT</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-px h-6 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full border-2 border-primary"></div>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between">
+<span class="text-xs font-semibold">São Paulo, SP</span>
+<span class="text-[10px] text-slate-400">08:00 AM</span>
+</div>
+<div class="flex justify-between">
+<span class="text-xs font-semibold">Curitiba, PR</span>
+<span class="text-[10px] text-slate-400">ETA 04:30 PM</span>
+</div>
+</div>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Trip Card 2 -->
+<div class="min-w-[280px] bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label text-on-surface-variant text-[10px] uppercase font-bold tracking-tighter">TRIP-B112</p>
+<h4 class="font-headline font-bold text-blue-900">Mercedes Actros</h4>
+</div>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-1 rounded font-bold">IN TRANSIT</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-px h-6 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full border-2 border-primary"></div>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between">
+<span class="text-xs font-semibold">Rio de Janeiro, RJ</span>
+<span class="text-[10px] text-slate-400">10:15 AM</span>
+</div>
+<div class="flex justify-between">
+<span class="text-xs font-semibold">Belo Horizonte, MG</span>
+<span class="text-[10px] text-slate-400">ETA 07:45 PM</span>
+</div>
+</div>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[25%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Maintenance Alerts -->
+<section class="px-6 mb-10">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-headline text-on-surface-variant text-sm font-bold uppercase tracking-widest">Maintenance Alerts</h3>
+<div class="w-6 h-6 bg-error rounded-full flex items-center justify-center text-[10px] text-white font-bold">4</div>
+</div>
+<div class="space-y-3">
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
+<div class="w-12 h-12 bg-error-container rounded-lg flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="tire_repair">tire_repair</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline text-sm font-bold text-on-surface">Volvo FH540</h4>
+<p class="font-body text-xs text-on-surface-variant">Tire pressure critical: Rear Right</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
+<div class="w-12 h-12 bg-tertiary-fixed rounded-lg flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="oil_barrel">oil_barrel</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline text-sm font-bold text-on-surface">Iveco Stralis</h4>
+<p class="font-body text-xs text-on-surface-variant">Oil change due in 450 km</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
+<div class="w-12 h-12 bg-error-container rounded-lg flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="engine">earth_engine</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline text-sm font-bold text-on-surface">Scania R450</h4>
+<p class="font-body text-xs text-on-surface-variant">Check engine light active</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl shadow-[0_-4px_20px_rgba(25,28,30,0.06)] border-t border-slate-200/20">
+<a class="flex flex-col items-center justify-center bg-blue-900 dark:bg-blue-800 text-white dark:text-blue-50 rounded-lg px-4 py-1.5 transition-all opacity-80" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-700 dark:hover:text-blue-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="local_shipping">local_shipping</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Vehicles</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-700 dark:hover:text-blue-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="event_note">event_note</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Schedules</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-700 dark:hover:text-blue-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="analytics">analytics</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Reports</span>
+</a>
+</nav>
+</body></html>

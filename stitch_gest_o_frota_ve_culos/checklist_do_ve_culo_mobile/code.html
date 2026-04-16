@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#743417",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#330e00",
+                    "tertiary-fixed-dim": "#ffb597",
+                    "primary-fixed-dim": "#abc7ff",
+                    "on-background": "#191c1e",
+                    "surface-variant": "#e0e3e6",
+                    "primary-fixed": "#d7e2ff",
+                    "on-secondary-fixed-variant": "#3b485a",
+                    "on-primary-fixed": "#001b3f",
+                    "surface-container-high": "#e6e8eb",
+                    "inverse-surface": "#2d3133",
+                    "surface-bright": "#f7f9fc",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#002d62",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#541d02",
+                    "surface": "#f7f9fc",
+                    "on-secondary-fixed": "#0f1c2d",
+                    "outline": "#747781",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-tertiary-container": "#d4815d",
+                    "inverse-on-surface": "#eff1f4",
+                    "background": "#f7f9fc",
+                    "secondary-fixed-dim": "#bac7de",
+                    "surface-container-low": "#f2f4f7",
+                    "primary": "#00193c",
+                    "on-primary-fixed-variant": "#24467c",
+                    "secondary": "#525f73",
+                    "on-surface": "#191c1e",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#3e5e95",
+                    "on-primary-container": "#7796d1",
+                    "secondary-fixed": "#d6e3fb",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eceef1",
+                    "surface-container-highest": "#e0e3e6",
+                    "secondary-container": "#d6e3fb",
+                    "inverse-primary": "#abc7ff",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d8dadd",
+                    "outline-variant": "#c4c6d1",
+                    "on-surface-variant": "#43474f",
+                    "on-secondary-container": "#586579"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#f7f9fc] dark:bg-slate-950 flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-3">
+<button class="active:scale-95 duration-150 p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="material-symbols-outlined text-[#002D62] dark:text-blue-400" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-['Manrope'] font-bold text-[#002D62] dark:text-blue-400 text-lg leading-tight">Volvo FH 540</h1>
+<span class="font-label text-xs font-semibold text-on-surface-variant tracking-wider">ABC-1234</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<main class="px-4 py-6 space-y-6 max-w-md mx-auto">
+<!-- Progress Section: Bento Style -->
+<section class="grid grid-cols-1 gap-4">
+<div class="bg-surface-container-low p-5 rounded-xl space-y-3">
+<div class="flex justify-between items-end">
+<div>
+<p class="font-label text-sm text-on-surface-variant font-medium">Current Progress</p>
+<h2 class="font-headline font-extrabold text-3xl text-primary tracking-tight">3 <span class="text-on-surface-variant font-semibold text-lg">/ 10 items</span></h2>
+</div>
+<div class="text-right">
+<span class="font-label text-xs text-primary bg-primary-fixed px-2 py-1 rounded-md font-bold">30% COMPLETE</span>
+</div>
+</div>
+<div class="w-full bg-surface-variant h-2.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[30%] transition-all duration-500"></div>
+</div>
+</div>
+</section>
+<!-- Checklist Grid -->
+<section class="space-y-4">
+<h3 class="font-headline font-bold text-on-surface-variant text-sm uppercase tracking-widest px-1">Safety Inspections</h3>
+<!-- Item 1: Compliant -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary transition-all duration-300">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="tire_repair">tire_repair</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Tires &amp; Rims</p>
+<p class="font-label text-xs text-on-surface-variant">Check pressure and tread depth</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="bg-primary text-white p-2 rounded-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Non-Compliant (Expanded State) -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-error transition-all duration-300 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Lights &amp; Signals</p>
+<p class="font-label text-xs text-on-surface-variant">High beams and indicators</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="bg-error-container text-on-error-container p-2 rounded-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="cancel" data-weight="fill" style="font-variation-settings: 'FILL' 1;">cancel</span>
+</button>
+</div>
+</div>
+<!-- Expansion Area -->
+<div class="pt-4 border-t border-surface-variant space-y-4">
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Observation</label>
+<textarea class="w-full bg-surface-container-high border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary h-24 placeholder:text-on-surface-variant/50" placeholder="Describe the defect here...">Left front headlight housing is cracked. Water ingress detected inside the lens.</textarea>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Photo Evidence</label>
+<div class="grid grid-cols-2 gap-3">
+<div class="relative aspect-video rounded-lg overflow-hidden group">
+<img class="w-full h-full object-cover" data-alt="close up of a modern truck headlight with visible crack on the glass housing and condensation inside" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBpzF2nECvp18WNN2DFGMlVZ8f8zqxDh7xCFh2S13t3mnstzc3z6hTOswaksQCoN9Z4DkcmImFoAvt-tSQB535bBUI-aNcuzoENiFbNyXS-eJ47fewzXX2BUFSdG5QaqxFkHqA-d5sRyGrgb24p-ZYg6NaPD9YXHNiUPDN8bYr1-eoMC4rVFe4kmeuOzkc7OvCVc14eZ8Jjv4529GrKIzfxldIgcgjIL0NGvvK1ivi7CQpCgo3bltVJ6dB64PNz7EWrP1Z6SLERIo"/>
+<button class="absolute top-1 right-1 bg-on-background/50 text-white rounded-full p-1">
+<span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</button>
+</div>
+<div class="aspect-video rounded-lg border-2 border-dashed border-outline-variant bg-surface-container flex flex-col items-center justify-center gap-1 active:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="add_a_photo">add_a_photo</span>
+<span class="font-label text-[10px] text-on-surface-variant font-bold">ADD PHOTO</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Pending -->
+<div class="bg-surface-container-low/50 p-4 rounded-xl border-l-4 border-outline-variant transition-all duration-300">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center opacity-60">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Brake System</p>
+<p class="font-label text-xs text-on-surface-variant">Air pressure and pedal response</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 p-2 rounded-lg hover:bg-primary-container hover:text-white transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 p-2 rounded-lg hover:bg-error-container hover:text-on-error-container transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 4: Pending -->
+<div class="bg-surface-container-low/50 p-4 rounded-xl border-l-4 border-outline-variant transition-all duration-300">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center opacity-60">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="oil_barrel">oil_barrel</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Fluids &amp; Levels</p>
+<p class="font-label text-xs text-on-surface-variant">Oil, coolant and fuel levels</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 p-2 rounded-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 p-2 rounded-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Signature Card -->
+<section class="bg-[#002D62] p-5 rounded-2xl relative overflow-hidden text-white shadow-lg">
+<div class="relative z-10 flex items-center justify-between">
+<div class="space-y-1">
+<h4 class="font-headline font-bold text-lg">Final Review</h4>
+<p class="text-blue-200 text-xs font-body">Double check all items before submission.</p>
+</div>
+<div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined text-blue-200" data-icon="verified">verified</span>
+</div>
+</div>
+<!-- Decorative Bleeding Element -->
+<div class="absolute -right-6 -bottom-6 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+</section>
+</main>
+<!-- Bottom Action Bar (Transactional Suppression of Nav) -->
+<div class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl px-4 py-5 border-t border-slate-200/40 flex flex-col items-center gap-3 z-50">
+<button class="w-full bg-[#00193c] text-white py-4 rounded-xl font-headline font-bold text-base flex items-center justify-center gap-2 shadow-xl shadow-primary-container/20 active:scale-[0.98] transition-all">
+<span>Finalize Checklist</span>
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+</button>
+<div class="flex items-center gap-2 text-on-surface-variant/60 font-label text-[10px] uppercase tracking-widest">
+<span class="material-symbols-outlined text-[12px]" data-icon="lock">lock</span>
+            Secure submission via FleetStream Pro
+        </div>
+</div>
+<!-- Hidden Navigation Shell (Suppressed due to transactional focus) -->
+<nav class="hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-t border-slate-200/20 z-50">
+<div class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="font-['Inter'] font-medium text-[11px]">Fleet</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#002D62] text-white rounded-xl px-4 py-1.5 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-['Inter'] font-medium text-[11px]">Tasks</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-['Inter'] font-medium text-[11px]">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#43474f] dark:text-slate-400 px-4 py-1.5 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] font-medium text-[11px]">Profile</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d6e3fb",
+                        "surface-container-highest": "#e0e3e6",
+                        "surface-bright": "#f7f9fc",
+                        "secondary": "#525f73",
+                        "on-primary-fixed-variant": "#24467c",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#330e00",
+                        "surface-dim": "#d8dadd",
+                        "surface-container-low": "#f2f4f7",
+                        "tertiary-container": "#541d02",
+                        "surface-tint": "#3e5e95",
+                        "secondary-fixed-dim": "#bac7de",
+                        "on-primary-fixed": "#001b3f",
+                        "secondary-container": "#d6e3fb",
+                        "surface": "#f7f9fc",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e3e6",
+                        "surface-container": "#eceef1",
+                        "inverse-primary": "#abc7ff",
+                        "outline-variant": "#c4c6d1",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-high": "#e6e8eb",
+                        "primary-container": "#002d62",
+                        "background": "#f7f9fc",
+                        "on-secondary-container": "#586579",
+                        "primary-fixed": "#d7e2ff",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#7796d1",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#d4815d",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-background": "#191c1e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#43474f",
+                        "primary": "#00193c",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "outline": "#747781",
+                        "inverse-on-surface": "#eff1f4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50 dark:bg-slate-900 flex items-center justify-between px-4 h-16 w-full shadow-none">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-200" data-icon="menu">menu</span>
+</button>
+<h1 class="font-manrope text-lg font-bold tracking-tight text-blue-900 dark:text-blue-200">Central de Ocorrências</h1>
+</div>
+<button class="p-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-200" data-icon="search">search</span>
+</button>
+</header>
+<main class="pt-20 pb-24 px-4 max-w-md mx-auto">
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-2 gap-3 mb-6">
+<div class="col-span-2 bg-surface-container-lowest p-5 rounded-xl flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="z-10">
+<p class="font-label text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant opacity-70">Total Checklists</p>
+<h2 class="font-manrope text-4xl font-extrabold text-primary mt-1">1,284</h2>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl" data-icon="fact_check">fact_check</span>
+</div>
+<div class="z-10 flex items-center gap-1 text-green-600 font-semibold text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+12% vs last week</span>
+</div>
+</div>
+<div class="bg-tertiary-fixed p-4 rounded-xl flex flex-col justify-between h-28 border-l-4 border-tertiary">
+<div>
+<p class="font-label text-[10px] font-bold uppercase tracking-tight text-on-tertiary-fixed">Open Occurrences</p>
+<h2 class="font-manrope text-2xl font-bold text-on-tertiary-fixed mt-1">24</h2>
+</div>
+<span class="material-symbols-outlined text-tertiary text-xl" data-icon="report_problem">report_problem</span>
+</div>
+<div class="bg-error-container p-4 rounded-xl flex flex-col justify-between h-28 border-l-4 border-error">
+<div>
+<p class="font-label text-[10px] font-bold uppercase tracking-tight text-on-error-container">Critical Alerts</p>
+<h2 class="font-manrope text-2xl font-bold text-on-error-container mt-1">08</h2>
+</div>
+<span class="material-symbols-outlined text-error text-xl" data-icon="notifications" data-weight="fill" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="mb-6">
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="whitespace-nowrap px-4 py-2 bg-primary text-on-primary text-xs font-semibold rounded-full shadow-sm active:scale-95 transition-all">High Priority</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high text-on-surface-variant text-xs font-semibold rounded-full active:scale-95 transition-all">Recent</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high text-on-surface-variant text-xs font-semibold rounded-full active:scale-95 transition-all">By Driver</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high text-on-surface-variant text-xs font-semibold rounded-full active:scale-95 transition-all">Status</button>
+</div>
+</section>
+<!-- Recent Occurrences List -->
+<section class="space-y-3">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-manrope text-sm font-bold text-on-surface-variant tracking-wide uppercase">Recent Activity</h3>
+<span class="text-xs font-semibold text-primary">View All</span>
+</div>
+<!-- Card 1: Non-Compliant High Priority -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<h4 class="font-manrope text-sm font-bold text-primary">Volvo FH 540</h4>
+<p class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-tighter">BRA-4X92</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase tracking-wide">Non-Compliant</span>
+</div>
+<div class="grid grid-cols-2 gap-y-2 py-3 border-t border-surface-container/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="person">person</span>
+<span class="text-xs font-medium text-on-surface">Ricardo Alves</span>
+</div>
+<div class="flex items-center gap-2 justify-end">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="schedule">schedule</span>
+<span class="text-xs font-medium text-on-surface">14:20 • Today</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-1.5">
+<span class="px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed text-[9px] font-bold rounded uppercase">High Priority</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[9px] font-bold rounded uppercase">Engine</span>
+</div>
+<button class="p-1 hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined text-lg text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Compliant -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<h4 class="font-manrope text-sm font-bold text-primary">Scania R 450</h4>
+<p class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-tighter">KLT-9J21</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-wide">Compliant</span>
+</div>
+<div class="grid grid-cols-2 gap-y-2 py-3 border-t border-surface-container/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="person">person</span>
+<span class="text-xs font-medium text-on-surface">Marcos Silva</span>
+</div>
+<div class="flex items-center gap-2 justify-end">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="schedule">schedule</span>
+<span class="text-xs font-medium text-on-surface">11:05 • Today</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-1.5">
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[9px] font-bold rounded uppercase">Low Priority</span>
+</div>
+<button class="p-1 hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined text-lg text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Non-Compliant Medium Priority -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<h4 class="font-manrope text-sm font-bold text-primary">Mercedes Axor</h4>
+<p class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-tighter">GHW-3F11</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase tracking-wide">Non-Compliant</span>
+</div>
+<div class="grid grid-cols-2 gap-y-2 py-3 border-t border-surface-container/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="person">person</span>
+<span class="text-xs font-medium text-on-surface">Joana Santos</span>
+</div>
+<div class="flex items-center gap-2 justify-end">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="schedule">schedule</span>
+<span class="text-xs font-medium text-on-surface">09:45 • Yesterday</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-1.5">
+<span class="px-2 py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant text-[9px] font-bold rounded uppercase">Medium Priority</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[9px] font-bold rounded uppercase">Tires</span>
+</div>
+<button class="p-1 hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined text-lg text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 border-t border-slate-200/20 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md flex justify-around items-center px-2 py-3 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 tap-highlight-transparent transition-all active:scale-90 hover:text-blue-800 dark:hover:text-blue-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="fact_check">fact_check</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase">Checklists</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-900 dark:bg-blue-200 text-white dark:text-blue-900 rounded-xl px-4 py-1.5 tap-highlight-transparent transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="report_problem" data-weight="fill" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase">Incidents</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 tap-highlight-transparent transition-all active:scale-90 hover:text-blue-800 dark:hover:text-blue-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="local_shipping">local_shipping</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase">Vehicles</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 tap-highlight-transparent transition-all active:scale-90 hover:text-blue-800 dark:hover:text-blue-200" href="#">
+<div class="relative">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border border-white"></span>
+</div>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase">Alerts</span>
+</a>
+</nav>
+<!-- FAB (Focused on High Priority Incident Creation/Review) -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl flex items-center justify-center z-40 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</body></html>

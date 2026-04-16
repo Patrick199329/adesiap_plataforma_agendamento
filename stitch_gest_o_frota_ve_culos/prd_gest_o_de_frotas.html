@@ -1,0 +1,27 @@
+# Plano de Design: Plataforma de Gestão de Frotas
+
+Este documento detalha as telas propostas para a plataforma de agendamentos, checklist, manutenção e relatórios de veículos, conforme os requisitos fornecidos.
+
+## 1. Módulo de Dashboard & Administrativo (Foco em Gestão)
+*   **Dashboard Principal:** Visão geral da frota, status dos veículos (em viagem, disponível, manutenção), alertas de manutenção preventiva e resumo de custos de abastecimento por projeto.
+*   **Gestão de Cadastros (Tabela/Lista):**
+    *   **Veículos:** Lista com foto, status (Ativo/Inativo) e KM atual.
+    *   **Usuários:** Gestão de níveis de acesso (Admin, Logística, Motorista) e departamentos.
+    *   **Projetos:** Controle de orçamentos (rubricas) para abastecimento.
+    *   **Itens de Checklist e Manutenção:** Configuração dos itens que serão verificados.
+
+## 2. Módulo de Agendamento e Operação (Foco no Motorista - Mobile First)
+*   **Controle de Agendamentos (Visão Tabela/Calendário):** Lista de todas as solicitações. Botão de inclusão de nova viagem com busca de endereço via Google Maps e cálculo automático de KM previsto.
+*   **Fluxo de Início de Viagem (Checklist):** Tela dinâmica onde o motorista marca os itens de conformidade. Itens não conformes abrem campo para observação e upload de foto.
+*   **Registro de Abastecimento:** Interface rápida para inserir valor, KM e foto do comprovante, vinculando a um projeto específico.
+
+## 3. Módulo de Manutenção e Auditoria
+*   **Central de Ocorrências:** Visualização de todos os checklists realizados, com destaque visual (tags ou cores) para itens com problemas relatados.
+*   **Controle de Manutenção Preventiva:** Alertas automáticos baseados em KM ou Tempo (meses). Histórico completo de intervenções por veículo.
+
+## 4. Relatórios e Configurações
+*   **Central de Relatórios:** Filtros avançados para geração de PDFs de Manutenção, Checklist e Prestação de Contas (com visualização de fotos de comprovantes).
+*   **Configurações do Sistema:** Personalização de marca (logo, cores, favicon) e ajustes gerais.
+
+## Próximos Passos
+Após sua aprovação, iniciarei a criação do **Design System** (cores, tipografia e componentes) e em seguida a geração das telas principais, começando pelo **Dashboard** e pelo **Fluxo de Agendamento/Checklist**.

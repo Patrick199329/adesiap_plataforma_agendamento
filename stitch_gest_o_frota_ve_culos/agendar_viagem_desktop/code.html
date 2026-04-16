@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agendar Viagem | Precision Logistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e0e3e6",
+                        "background": "#f7f9fc",
+                        "on-surface-variant": "#43474f",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#586579",
+                        "surface-container": "#eceef1",
+                        "primary-container": "#002d62",
+                        "primary": "#00193c",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d7e2ff",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "secondary-fixed": "#d6e3fb",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "tertiary-container": "#541d02",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "outline-variant": "#c4c6d1",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#d4815d",
+                        "surface-tint": "#3e5e95",
+                        "secondary": "#525f73",
+                        "outline": "#747781",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#abc7ff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "surface-dim": "#d8dadd",
+                        "surface-bright": "#f7f9fc",
+                        "secondary-container": "#d6e3fb",
+                        "tertiary": "#330e00",
+                        "surface-container-low": "#f2f4f7",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-background": "#191c1e",
+                        "surface-variant": "#e0e3e6",
+                        "surface": "#f7f9fc",
+                        "inverse-on-surface": "#eff1f4",
+                        "surface-container-high": "#e6e8eb",
+                        "secondary-fixed-dim": "#bac7de",
+                        "on-primary-fixed-variant": "#24467c",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#7796d1",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#001b3f",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; color: #191c1e; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed-dim">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-950 flex flex-col p-4 space-y-2 border-r border-slate-200/20 z-40">
+<div class="mb-8 px-2">
+<h1 class="text-lg font-black text-blue-900 dark:text-blue-100 font-manrope">Command Center</h1>
+<p class="text-xs font-medium text-slate-500 font-manrope">Precision Fleet v2.4</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span class="font-medium text-sm">Fleet</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 bg-white dark:bg-slate-800 text-blue-900 dark:text-blue-200 font-bold rounded-lg shadow-sm group" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-medium text-sm">Scheduling</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-medium text-sm">Routes</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-medium text-sm">Analytics</span>
+</a>
+</nav>
+<button class="w-full bg-primary-container text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2 shadow-lg shadow-primary-container/20 mt-4 mb-8">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span>New Dispatch</span>
+</button>
+<div class="mt-auto pt-4 border-t border-slate-200/20">
+<a class="flex items-center space-x-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-medium text-sm">Support</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-medium text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<div class="ml-64 flex flex-col min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center px-8 h-16 w-full bg-slate-50 dark:bg-slate-900 sticky top-0 z-50">
+<div class="flex items-center space-x-4">
+<span class="text-xl font-bold tracking-tight text-blue-900 dark:text-blue-100 font-manrope">Precision Logistics</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center space-x-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder:text-slate-400" placeholder="Search Fleet..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex space-x-4">
+<button class="p-2 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="flex items-center space-x-3">
+<div class="text-right">
+<p class="text-xs font-bold text-blue-900 dark:text-blue-100">Marcus Fleet</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider">Fleet Manager</p>
+</div>
+<img alt="Fleet Manager Profile" class="w-8 h-8 rounded-full border-2 border-primary-container" data-alt="Professional corporate headshot of a middle-aged male fleet manager with short hair and a confident smile in a studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChn2V0R7B12A4jVVQ6s1zjqCpH1LT1KMvXgCUe5R79fMRFzyv3bEYCpeeLsv2tvp3-NvdcL4E2HAN-jlS_De0-yM5UkscX_zXsRJK_RKSCVuwMrz1aSL-KBWU3XL-nAHTPwFmoC_dAvD1zO0rlMfxG7T2CnFsaAUdONc4LMnI2jK6No4qFPguKNc9jfY5YDizvGg4ExkjvHX0L81mXXLja3YpsRq8W4aZHdxFni7iTHtQrpyKweNO_zJTCQqUqIKhqqvC0Unamk44"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-8 max-w-7xl mx-auto w-full">
+<div class="flex items-center justify-between mb-10">
+<div>
+<h2 class="text-3xl font-extrabold font-manrope text-blue-900 tracking-tight">Agendar Viagem</h2>
+<p class="text-on-surface-variant font-medium mt-1">Configure precise details for the upcoming fleet dispatch.</p>
+</div>
+<div class="flex items-center space-x-3">
+<button class="px-6 py-2.5 bg-surface-container-high text-on-surface-variant rounded-xl font-bold text-sm hover:bg-surface-container-highest transition-colors">
+                        Draft Schedule
+                    </button>
+<button class="px-8 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        Confirmar Agendamento
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Timing & Route Section (Left Side) -->
+<div class="col-span-12 lg:col-span-7 space-y-6">
+<!-- Trip Timing Card -->
+<section class="bg-surface-container-low rounded-3xl p-6 relative overflow-hidden">
+<div class="flex items-center space-x-3 mb-6">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="schedule">schedule</span>
+<h3 class="font-manrope font-bold text-lg text-primary">Trip Timing</h3>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-secondary-container uppercase tracking-widest pl-1">Saída (Departure)</label>
+<div class="flex items-center bg-surface-container-lowest p-3 rounded-xl border-l-4 border-primary">
+<input class="bg-transparent border-none focus:ring-0 w-full text-sm font-semibold text-primary" type="datetime-local"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-on-secondary-container uppercase tracking-widest pl-1">Chegada (Arrival)</label>
+<div class="flex items-center bg-surface-container-lowest p-3 rounded-xl border-l-4 border-outline-variant/30">
+<input class="bg-transparent border-none focus:ring-0 w-full text-sm font-semibold text-primary" type="datetime-local"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Route Details Card -->
+<section class="bg-surface-container-low rounded-3xl p-6 relative">
+<div class="flex items-center space-x-3 mb-6">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="route">route</span>
+<h3 class="font-manrope font-bold text-lg text-primary">Route Details</h3>
+</div>
+<div class="flex gap-6">
+<!-- Visual Indicator -->
+<div class="flex flex-col items-center py-4">
+<div class="w-4 h-4 rounded-full border-4 border-primary bg-on-primary"></div>
+<div class="w-0.5 flex-1 border-l-2 border-dashed border-outline-variant my-2"></div>
+<div class="w-4 h-4 rounded-full bg-primary"></div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Origin Point</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high border-none rounded-xl py-3 pl-4 pr-10 font-medium text-sm text-primary focus:ring-2 focus:ring-primary/20" type="text" value="Logistics Hub ALPHA - São Paulo, SP"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="my_location">my_location</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Destination Point</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high border-none rounded-xl py-3 pl-4 pr-10 font-medium text-sm text-primary focus:ring-2 focus:ring-primary/20" placeholder="Search destination address..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="location_on">location_on</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Estimates Section (Metric Cards) -->
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+<p class="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1">KM Inicial</p>
+<div class="flex items-end space-x-1">
+<span class="text-3xl font-manrope font-bold text-primary tracking-tight">12.450</span>
+<span class="text-xs font-bold text-slate-400 mb-1">km</span>
+</div>
+<div class="mt-4 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed-dim w-1/3"></div>
+</div>
+</div>
+<div class="bg-primary text-white rounded-3xl p-6 shadow-xl shadow-primary/10">
+<p class="text-[10px] font-black text-on-primary-container uppercase tracking-tighter mb-1">KM Final Previsto</p>
+<div class="flex items-end space-x-1">
+<span class="text-3xl font-manrope font-bold text-white tracking-tight">13.120</span>
+<span class="text-xs font-bold text-on-primary-container mb-1">km</span>
+</div>
+<div class="mt-4 flex items-center text-[10px] text-on-primary-container font-bold italic">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="info">info</span>
+                                Based on shortest AI route
+                            </div>
+</div>
+</div>
+</div>
+<!-- Vehicle Selection & Map (Right Side) -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- Vehicle Selection Card -->
+<section class="bg-surface-container-low rounded-3xl p-6">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="airport_shuttle">airport_shuttle</span>
+<h3 class="font-manrope font-bold text-lg text-primary">Vehicle Selection</h3>
+</div>
+<button class="text-xs font-bold text-primary-container hover:underline">Change</button>
+</div>
+<div class="bg-white rounded-2xl p-4 border border-slate-100 flex items-center space-x-4">
+<div class="w-20 h-20 bg-surface rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Mercedes-Benz Actros Truck" class="w-full h-full object-cover" data-alt="Modern white Mercedes-Benz Actros heavy duty truck parked on an asphalt lot under clear bright sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGFqppuzpK2fwcmz9k4DOQUBjX572m_eAYjJas02dA2NYjDOLpzRiKEl3mA2EdLB2MR5zPso3lB1sE4yGfkILjpT080kA3wXxL3UFW0COlywtGvoTwMQPGjLmPQnr0pC9vF-0265bCqAs6i9oFpUyksSLaqA5R4PbX9Ao87x7je5jRxvzBokAOtYHKgILYqQJvuHRQ7W87ajCR1qB0SElOF_H7vKSTzfnzlsMUc5QmeSWN5bKA0zxjtJc6SVNpqeuJOEcEUCnm96s"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-primary text-sm">Mercedes-Benz Actros</h4>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-fixed text-[10px] font-black rounded uppercase">Active</span>
+</div>
+<div class="flex items-center space-x-4 text-xs text-on-surface-variant font-medium">
+<span class="flex items-center">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="badge">badge</span>
+                                        PRC-8241
+                                    </span>
+<span class="flex items-center">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="oil_barrel">oil_barrel</span>
+                                        85% Fuel
+                                    </span>
+</div>
+</div>
+</div>
+<div class="mt-4 p-4 rounded-2xl bg-secondary-container/30 border border-secondary-container/50">
+<p class="text-xs font-bold text-primary mb-2">Driver Assignment</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<img alt="Driver Portrait" class="w-6 h-6 rounded-full" data-alt="Close up of a professional male driver wearing a polo shirt with a friendly and reliable expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCJjyXoFzzMazSwYZUb4Hxu8iuq_PQubAq5dvDGitljc-xiIVg3rGLeN_5pXwfdNZ-_jc-CJn0fTNOv5UrTHBidXcTgp2vsA7dH6qkbFliQ-NH6lM-FYj1EaYgiCW5n4X_DcEq-7aQjdlJ_UhgFaaXPg07pg9gHffzHVKwYRz7nZFSxe1lwuDPjFbLzO6x8DdgkIvlmcqtw0a9ePvhMG5eoCgjAv0AXMSh9mq46IizW0sh9Yw8KwKwxxhkC3TtKOorN35kMxBp9oQ"/>
+<span class="text-xs font-medium text-primary">Ricardo Santos</span>
+</div>
+<span class="text-[10px] font-bold text-on-secondary-fixed-variant">8.2 Rating</span>
+</div>
+</div>
+</section>
+<!-- Route Visualization Card (Map Context) -->
+<section class="bg-surface-container-low rounded-3xl p-6 h-[400px] flex flex-col relative overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Map View" class="w-full h-full object-cover opacity-60" data-alt="Stylized top-down view of a modern city road network map with blue and white color scheme and clean vector lines" data-location="São Paulo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCQIgFqGZaqSf0huCyU2UFcPDGcCcJLHZema_f2AqXafTEO8igOzWKLrrYOG3pLDD26Ct5s3AsA22kRLiaEesV4ge-2LAAOo4iRKHt7lGqKsG7QVpguG26QKrAiGUzi0DGRd619u_AhcOJcJB8nYmkWC8qVEbAAdPYLGxXdZclogd5iu3q62cPbw73_UYilSruTUzQvZYZCEWFsap-44AsrOcypS4SqK1LiYdqR_EdtPYrlbDaGmAHjKgeNfA8qq_w2208Wq5aRc0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 flex flex-col h-full">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-manrope font-bold text-lg text-primary">Live Context</h3>
+<div class="bg-white/80 backdrop-blur-md p-2 rounded-lg text-[10px] font-bold text-primary shadow-sm">
+                                    4h 32m Estimated Time
+                                </div>
+</div>
+<div class="mt-auto bg-white/90 backdrop-blur-xl p-4 rounded-2xl shadow-xl shadow-slate-900/5">
+<div class="flex items-center justify-between mb-3">
+<p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Traffic Conditions</p>
+<span class="text-[10px] font-bold text-on-secondary-container bg-secondary-container px-2 py-0.5 rounded">Optimal</span>
+</div>
+<div class="flex space-x-2">
+<div class="flex-1 h-1.5 rounded-full bg-primary"></div>
+<div class="flex-1 h-1.5 rounded-full bg-primary-fixed-dim"></div>
+<div class="flex-1 h-1.5 rounded-full bg-surface-container"></div>
+<div class="flex-1 h-1.5 rounded-full bg-surface-container"></div>
+</div>
+<p class="mt-3 text-[11px] text-slate-600 leading-relaxed font-medium">
+                                    Regional highway SP-348 reports minimal congestion. Weather forecast: Clear skies.
+                                </p>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Bottom Primary Action Bar (Mobile Responsive Context but Fixed Design) -->
+<div class="mt-12 flex justify-end">
+<button class="group flex items-center space-x-4 bg-primary px-10 py-5 rounded-3xl transition-all hover:pr-14 relative shadow-2xl shadow-primary/40 active:scale-[0.98]">
+<div class="text-left">
+<span class="block text-xs font-bold text-primary-fixed-dim uppercase tracking-[0.2em]">Ready to dispatch</span>
+<span class="block text-xl font-manrope font-extrabold text-white">Confirmar Agendamento</span>
+</div>
+<span class="material-symbols-outlined text-white text-3xl group-hover:translate-x-4 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</main>
+</div>
+</body></html>

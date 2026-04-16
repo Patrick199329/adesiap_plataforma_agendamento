@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e6e8eb",
+                        "primary-fixed": "#d7e2ff",
+                        "secondary-fixed-dim": "#bac7de",
+                        "outline": "#747781",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#3e5e95",
+                        "on-primary-container": "#7796d1",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e0e3e6",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f7f9fc",
+                        "primary": "#00193c",
+                        "tertiary-container": "#541d02",
+                        "primary-container": "#002d62",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#743417",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed-variant": "#3b485a",
+                        "inverse-primary": "#abc7ff",
+                        "surface": "#f7f9fc",
+                        "on-primary-fixed": "#001b3f",
+                        "on-surface-variant": "#43474f",
+                        "outline-variant": "#c4c6d1",
+                        "inverse-on-surface": "#eff1f4",
+                        "surface-container-low": "#f2f4f7",
+                        "surface-container": "#eceef1",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#330e00",
+                        "secondary": "#525f73",
+                        "surface-dim": "#d8dadd",
+                        "on-tertiary-container": "#d4815d",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed": "#0f1c2d",
+                        "inverse-surface": "#2d3133",
+                        "background": "#f7f9fc",
+                        "on-background": "#191c1e",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d6e3fb",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb597",
+                        "primary-fixed-dim": "#abc7ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#586579",
+                        "secondary-container": "#d6e3fb",
+                        "on-primary-fixed-variant": "#24467c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-slate-50 dark:bg-slate-900 flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-200">menu</span>
+<h1 class="font-manrope font-bold text-lg tracking-tight text-blue-900 dark:text-blue-200">Gestão de Projetos</h1>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high border-2 border-outline-variant/20">
+<img alt="User profile" data-alt="Professional headshot of a corporate executive in a crisp white shirt and suit, studio lighting, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY2w57PMQlYrEsYUjKz1LxL77NJ0c0LeuEXEJ8ceu9IaGZm0eE0AHng4vuI-U0_IgFIP5XJ3x6sqgm89BOxzt3gykkOMuPK02kG6kNEVQx881mFEvE8UzKbq3WvlXuO47FtkFnTZVtNwZq2JRb1WYDup349rdv-S3j6_-AyWLg6m_nwVaBIsrFSBWsbWE_TxAh_1jwMxIIPgJCYQiQrUyAO4lomYxWpCySnBvB_e7H158L1s2LnLjZ6NEuGGZoUcgum-FN_ytbTu0"/>
+</div>
+</header>
+<main class="px-6 pt-4 space-y-6">
+<!-- Summary Horizontal Scroll -->
+<section class="flex overflow-x-auto gap-4 pb-2 no-scrollbar -mx-6 px-6">
+<div class="min-w-[200px] flex-1 p-5 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary shadow-sm">
+<p class="text-[10px] font-label uppercase tracking-widest opacity-80 mb-1">Total de Projetos Ativos</p>
+<h2 class="text-2xl font-headline font-extrabold tracking-tight">124</h2>
+<div class="mt-2 text-[10px] bg-white/20 inline-flex items-center px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[12px] mr-1">trending_up</span> +3 novos
+                </div>
+</div>
+<div class="min-w-[200px] flex-1 p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm">
+<p class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest mb-1">Orçamento Total</p>
+<h2 class="text-2xl font-headline font-extrabold tracking-tight text-primary">R$ 4.82M</h2>
+<p class="text-[10px] text-on-surface-variant mt-2 font-medium">Consolidado Q4</p>
+</div>
+<div class="min-w-[200px] flex-1 p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm">
+<p class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest mb-1">Saldo Médio</p>
+<h2 class="text-2xl font-headline font-extrabold tracking-tight text-secondary">R$ 38.8k</h2>
+<p class="text-[10px] text-on-surface-variant mt-2 font-medium">Por unidade operacional</p>
+</div>
+</section>
+<!-- Search and Filter -->
+<section class="flex items-center gap-3">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/60" placeholder="Buscar projeto..." type="text"/>
+</div>
+<button class="w-12 h-12 flex items-center justify-center bg-surface-container-high rounded-xl text-on-surface">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</section>
+<!-- Project List -->
+<section class="space-y-4">
+<div class="flex justify-between items-center px-1">
+<h3 class="text-sm font-headline font-bold text-on-surface-variant uppercase tracking-wider">Lista de Projetos</h3>
+<span class="text-xs text-primary font-semibold">Ver todos</span>
+</div>
+<!-- Project Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl space-y-4 shadow-sm border border-outline-variant/5">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<h4 class="font-headline font-bold text-primary text-base">Expansão Logística Sul</h4>
+<p class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Prazo: 12 Dez 2024
+                        </p>
+</div>
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight bg-secondary-container text-on-secondary-container">Ativo</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-semibold">
+<span class="text-on-surface-variant">Execução Orçamentária</span>
+<span class="text-primary">68%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[68%]"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Consumido</p>
+<p class="text-sm font-bold text-on-surface">R$ 1.2M</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Saldo Restante</p>
+<p class="text-sm font-bold text-on-surface">R$ 480k</p>
+</div>
+</div>
+</div>
+<!-- Project Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl space-y-4 shadow-sm border border-outline-variant/5">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<h4 class="font-headline font-bold text-primary text-base">Renovação de Frota Pesada</h4>
+<p class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Prazo: 28 Nov 2024
+                        </p>
+</div>
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight bg-tertiary-fixed text-on-tertiary-fixed-variant">Alerta</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-semibold">
+<span class="text-on-surface-variant">Execução Orçamentária</span>
+<span class="text-primary">92%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error-container rounded-full w-[92%]"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Consumido</p>
+<p class="text-sm font-bold text-on-surface">R$ 850k</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Saldo Restante</p>
+<p class="text-sm font-bold text-error">R$ 22k</p>
+</div>
+</div>
+</div>
+<!-- Project Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl space-y-4 shadow-sm border border-outline-variant/5 opacity-80">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<h4 class="font-headline font-bold text-primary text-base">Infraestrutura Filial Norte</h4>
+<p class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Prazo: Encerrado
+                        </p>
+</div>
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tight bg-surface-container-high text-on-surface-variant">Inativo</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[11px] font-semibold">
+<span class="text-on-surface-variant">Execução Orçamentária</span>
+<span class="text-primary">100%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Consumido</p>
+<p class="text-sm font-bold text-on-surface">R$ 450k</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg">
+<p class="text-[9px] uppercase tracking-wider text-on-surface-variant mb-1">Saldo Restante</p>
+<p class="text-sm font-bold text-on-surface">R$ 0</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed right-6 bottom-28 w-14 h-14 bg-primary text-white rounded-xl shadow-lg flex items-center justify-center z-50 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-6 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md shadow-[0_-4px_20px_rgba(25,28,30,0.06)] border-t border-slate-200/20">
+<!-- Fleet -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-200 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">local_shipping</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Fleet</span>
+</a>
+<!-- Budget (Active) -->
+<a class="flex flex-col items-center justify-center bg-blue-900 text-white rounded-lg px-3 py-1.5 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Budget</span>
+</a>
+<!-- Tracking -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-200 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">location_on</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Tracking</span>
+</a>
+<!-- Alerts -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-200 transition-transform scale-95 active:scale-90" href="#">
+<div class="relative">
+<span class="material-symbols-outlined mb-1">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider">Alerts</span>
+</a>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</body></html>
