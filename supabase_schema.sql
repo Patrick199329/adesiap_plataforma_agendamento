@@ -1,5 +1,4 @@
--- ============================================================
--- FrotaFlow — Supabase Schema
+-- Plataforma de Gestão de Frotas - Supabase Schema
 -- Execute este script no SQL Editor do Supabase Dashboard
 -- ============================================================
 
@@ -118,7 +117,7 @@ CREATE TABLE IF NOT EXISTS settings (
     id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
     preco_combustivel NUMERIC(6,2) DEFAULT 5.85,
     google_maps_key TEXT DEFAULT '',
-    nome_sistema TEXT DEFAULT 'FrotaFlow',
+    nome_sistema TEXT DEFAULT 'Gestão de Frotas',
     subtitulo_sistema TEXT DEFAULT '',
     logo_url TEXT DEFAULT '',
     favicon_url TEXT DEFAULT ''
@@ -241,7 +240,6 @@ INSERT INTO maintenance_rules (nome, intervalo_km, icone) VALUES
     ('Velas / Cabo de Vela', 30000, 'electric_bolt')
 ON CONFLICT DO NOTHING;
 
--- Settings (singleton)
 INSERT INTO settings (id, preco_combustivel, google_maps_key, nome_sistema, subtitulo_sistema, logo_url, favicon_url)
-VALUES (1, 5.85, '', 'FrotaFlow', '', '', '')
+VALUES (1, 5.85, '', 'Gestão de Frotas', '', '', '')
 ON CONFLICT (id) DO NOTHING;

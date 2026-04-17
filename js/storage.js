@@ -149,7 +149,7 @@ const Storage = {
         return {
             precoCombustivel: 5.85,
             googleMapsKey: '',
-            nomeSistema: 'FrotaFlow',
+            nomeSistema: 'Gestão de Frotas',
             subtituloSistema: '',
             logoUrl: '',
             faviconUrl: ''

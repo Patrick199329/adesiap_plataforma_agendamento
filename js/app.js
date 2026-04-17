@@ -22,7 +22,7 @@ const App = {
             script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
             script.async = true;
             document.head.appendChild(script);
-            console.log('FrotaFlow: Google Maps SDK Injetado.');
+            console.log('Sistema: Google Maps SDK Injetado.');
         }
     },
 
@@ -302,8 +302,8 @@ const App = {
                     <!-- Esquerda: Brand Area (Desktop Only) -->
                     <div class="hidden md:flex w-1/2 signature-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
                         <div class="relative z-10">
-                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${settings.nomeSistema}</h1>`}
-                            <h2 class="text-4xl font-extrabold leading-tight tracking-tighter text-white">Portal de Gestão de Frotas</h2>
+                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${systemName}</h1>`}
+                            <h2 class="text-4xl font-extrabold leading-tight tracking-tighter text-white opacity-80">${settings.subtituloSistema || 'Portal de Gestão'}</h2>
                         </div>
 
                         <!-- Abstract Background Decoration -->
@@ -318,7 +318,7 @@ const App = {
 
                         <div class="space-y-2 mb-10">
                             <h3 class="text-2xl font-black text-primary tracking-tight">Login de Usuário</h3>
-                            <p class="text-xs font-semibold text-on-surface-variant opacity-60 uppercase tracking-widest leading-relaxed">Acesse o sistema com suas credenciais ADESIAP</p>
+                            <p class="text-xs font-semibold text-on-surface-variant opacity-60 uppercase tracking-widest leading-relaxed">Acesse o sistema com suas credenciais de acesso</p>
                         </div>
 
                         <form id="login-form" class="space-y-6">
@@ -344,7 +344,10 @@ const App = {
                         </form>
 
                         <div class="mt-12 text-center">
-                            <p class="text-[9px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">&copy; ${new Date().getFullYear()} ${settings.nomeSistema} • Frota Interna</p>
+                            <p class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest leading-loose">
+                                Desenvolvido por<br>
+                                <span class="text-primary/60">Innovation Consultoria</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -3890,11 +3893,11 @@ const App = {
             const settings = Storage.getSettings();
             
             // 1. Nome do Sistema e Título da Aba
-            const systemName = settings.nomeSistema || 'FrotaFlow';
-            document.title = `${systemName} - Gestão de Frotas Pro`;
+            const systemName = settings.nomeSistema || 'Sistema';
+            document.title = `${systemName}`;
             
             const titleEl = document.getElementById('app-title');
-            if (titleEl) titleEl.textContent = `${systemName} - Gestão de Frotas Pro`;
+            if (titleEl) titleEl.textContent = `${systemName}`;
             
             const sidebarNameEl = document.getElementById('sidebar-system-name');
             if (sidebarNameEl) sidebarNameEl.textContent = systemName;
