@@ -1,6 +1,6 @@
 # Design System Document: Precision Logistics & Fleet Management
 
-## 1. Overview & Creative North Star: "The Architectural Command"
+## 1. Overview & Creative North Star: "The Architectural Command" 
 
 This design system moves away from the "industrial-utilitarian" look typical of logistics software and instead adopts the **"Architectural Command"** North Star. This vision treats fleet management as a high-end editorial experience: authoritative, expansive, and meticulously organized.
 
