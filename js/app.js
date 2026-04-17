@@ -9,8 +9,8 @@ const App = {
     
     async init() {
         await Storage.init();
+        this.utils.applyBranding(); // Aplicar branding o mais rápido possível
         this.loadGoogleMaps();
-        this.utils.applyBranding();
         window.addEventListener('hashchange', () => this.handleRouting());
         this.handleRouting();
     },

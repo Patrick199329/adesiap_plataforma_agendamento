@@ -92,16 +92,26 @@ const Storage = {
     // ----------------------------------------------------------
     async init() {
         try {
-            // Check existing auth session
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                await this._loadCurrentUser();
+            await this.loadSettings(); // First thing: load branding
+            await this._loadCurrentUser();
+            if (this._cache.currentUser) {
                 await this._loadAllData();
                 this.autoCloseLateBookings();
             }
             console.log('FrotaFlow: Storage inicializado via Supabase.');
         } catch (error) {
-            console.error('FrotaFlow: Erro na inicialização:', error);
+            console.error('FrotaFlow: Erro na inicializaçao:', error);
+        }
+    },
+
+    async loadSettings() {
+        try {
+            const { data, error } = await supabaseClient.from('settings').select('*').eq('id', 1).single();
+            if (error) throw error;
+            this._cache.settings = data ? _toCamel(data) : this._defaultSettings();
+        } catch (error) {
+            console.warn('Storage: Usando configurações padrão.', error.message);
+            this._cache.settings = this._defaultSettings();
         }
     },
 
@@ -120,7 +130,7 @@ const Storage = {
     },
 
     async _loadAllData() {
-        const [vehicles, users, projects, bookings, checklistItems, maintenanceRules, maintenanceLogs, fuelLogs, corrections, settings] = await Promise.all([
+        const [vehicles, users, projects, bookings, checklistItems, maintenanceRules, maintenanceLogs, fuelLogs, corrections] = await Promise.all([
             supabaseClient.from('vehicles').select('*').order('nome'),
             supabaseClient.from('profiles').select('*').order('nome'),
             supabaseClient.from('projects').select('*').order('nome'),
@@ -129,8 +139,7 @@ const Storage = {
             supabaseClient.from('maintenance_rules').select('*').order('nome'),
             supabaseClient.from('maintenance_logs').select('*').order('data', { ascending: false }),
             supabaseClient.from('fuel_logs').select('*').order('data', { ascending: false }),
-            supabaseClient.from('corrections').select('*').order('data_registro', { ascending: false }),
-            supabaseClient.from('settings').select('*').eq('id', 1).single()
+            supabaseClient.from('corrections').select('*').order('data_registro', { ascending: false })
         ]);
 
         this._cache.vehicles = _toCamel(vehicles.data || []);
@@ -142,7 +151,6 @@ const Storage = {
         this._cache.maintenanceLogs = _toCamel(maintenanceLogs.data || []);
         this._cache.fuelLogs = _toCamel(fuelLogs.data || []);
         this._cache.corrections = _toCamel(corrections.data || []);
-        this._cache.settings = settings.data ? _toCamel(settings.data) : this._defaultSettings();
     },
 
     _defaultSettings() {
