@@ -68,16 +68,16 @@ const App = {
     },
 
     canAccess(role, path) {
-        if (!path || path === 'agendamentos' || path === 'login' || path === 'trocar-senha') return true;
+        if (!path || path === 'login' || path === 'trocar-senha') return true;
         if (role === 'administrador') return true;
-        
-        const restrictions = {
-            motorista: ['veiculos', 'usuarios', 'projetos', 'manutencao', 'relatorios', 'custos'],
-            logistica: ['usuarios', 'projetos', 'custos']
+
+        const whitelist = {
+            motorista: ['agendamentos', 'relatorios', 'projetos', 'novo-agendamento', 'checklist'],
+            logistica: ['agendamentos', 'relatorios', 'projetos', 'manutencao', 'inspecoes', 'novo-agendamento', 'checklist', 'lancamento-correcao']
         };
 
-        if (restrictions[role] && restrictions[role].includes(path)) return false;
-        return true;
+        const allowed = whitelist[role] || [];
+        return allowed.includes(path);
     },
 
     updateShellVisibility(user) {
@@ -115,8 +115,42 @@ const App = {
             // Filter Sidebar Items
             document.querySelectorAll('.nav-item').forEach(item => {
                 const page = item.getAttribute('data-page');
-                item.style.display = this.canAccess(user.tipo, page) ? 'flex' : 'none';
+                if (page) {
+                    item.style.display = this.canAccess(user.tipo, page) ? 'flex' : 'none';
+                }
             });
+
+            // Hide/Show section headers based on visible children
+            const sections = document.querySelectorAll('aside nav > div');
+            sections.forEach(section => {
+                const header = section.querySelector('p');
+                if (header) {
+                    // This is a section header (like "Cadastros")
+                    // Check next siblings until next div or end
+                    let hasVisibleChild = false;
+                    let next = section.nextElementSibling;
+                    while (next && next.classList.contains('nav-item')) {
+                        if (next.style.display !== 'none') {
+                            hasVisibleChild = true;
+                            break;
+                        }
+                        next = next.nextElementSibling;
+                    }
+                    section.style.display = hasVisibleChild ? 'block' : 'none';
+                }
+            });
+
+            // Hide/Show "Novo Agendamento" button in sidebar (always visible for these roles)
+            const newBookingBtn = document.querySelector('aside button[onclick*="novo-agendamento"]');
+            if (newBookingBtn) {
+                newBookingBtn.parentElement.style.display = this.canAccess(user.tipo, 'novo-agendamento') ? 'block' : 'none';
+            }
+
+            // Hide/Show Settings link
+            const settingsLink = document.querySelector('aside a[href="#configuracoes"]');
+            if (settingsLink) {
+                settingsLink.style.display = this.canAccess(user.tipo, 'configuracoes') ? 'flex' : 'none';
+            }
         }
     },
 
@@ -124,13 +158,13 @@ const App = {
         const contentArea = document.getElementById('view-content');
         if (!contentArea) return;
 
-        try {
-            // Preservar foco e posição do cursor de forma segura
-            const activeElement = document.activeElement;
-            const activeId = activeElement ? activeElement.id : null;
-            let selectionStart = null;
-            let selectionEnd = null;
+        // Preservar foco e posição do cursor de forma segura
+        const activeElement = document.activeElement;
+        const activeId = activeElement ? activeElement.id : null;
+        let selectionStart = null;
+        let selectionEnd = null;
 
+        try {
             try {
                 if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
                     selectionStart = activeElement.selectionStart;
