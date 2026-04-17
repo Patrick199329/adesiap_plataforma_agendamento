@@ -73,7 +73,7 @@ const App = {
 
         const whitelist = {
             motorista: ['agendamentos', 'relatorios', 'projetos', 'novo-agendamento', 'checklist'],
-            logistica: ['agendamentos', 'relatorios', 'projetos', 'manutencao', 'inspecoes', 'novo-agendamento', 'checklist', 'lancamento-correcao']
+            logistica: ['agendamentos', 'relatorios', 'projetos', 'manutencao', 'inspecoes', 'veiculos', 'novo-agendamento', 'checklist', 'lancamento-correcao']
         };
 
         const allowed = whitelist[role] || [];
