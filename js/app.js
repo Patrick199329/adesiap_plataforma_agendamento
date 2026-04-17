@@ -302,7 +302,7 @@ const App = {
                     <!-- Esquerda: Brand Area (Desktop Only) -->
                     <div class="hidden md:flex w-1/2 signature-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
                         <div class="relative z-10">
-                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${settings.nomeSistema || 'Sistema'}</h1>`}
+                            ${settings.loginLogoUrl || settings.logoUrl ? `<img src="${settings.loginLogoUrl || settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${settings.nomeSistema || 'Sistema'}</h1>`}
                             <h2 class="text-4xl font-extrabold leading-tight tracking-tighter text-white opacity-80">${settings.subtituloSistema || 'Portal de Gestão'}</h2>
                         </div>
 
@@ -313,7 +313,7 @@ const App = {
                     <!-- Direita: Form Area (Full on mobile) -->
                     <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
                         <div class="mb-10 md:hidden text-center">
-                             ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-12 w-auto mx-auto mb-4">` : `<h1 class="text-3xl font-black text-primary">${settings.nomeSistema}</h1>`}
+                             ${settings.loginLogoUrl || settings.logoUrl ? `<img src="${settings.loginLogoUrl || settings.logoUrl}" class="h-12 w-auto mx-auto mb-4">` : `<h1 class="text-3xl font-black text-primary">${settings.nomeSistema}</h1>`}
                         </div>
 
                         <div class="space-y-2 mb-10">
@@ -2338,6 +2338,20 @@ const App = {
                                         ${settings.faviconUrl ? `<button type="button" onclick="App.actions.clearBranding('favicon')" class="w-8 h-8 rounded-lg bg-error/10 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all z-10"><span class="material-symbols-outlined text-sm">close</span></button>` : ''}
                                     </div>
                                 </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Logotipo (Tela de Login)</label>
+                                    <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 hover:border-primary/30 transition-all group relative">
+                                        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-outline-variant/10">
+                                            ${settings.loginLogoUrl ? `<img src="${settings.loginLogoUrl}" class="w-full h-full object-contain">` : `<span class="material-symbols-outlined text-outline-variant opacity-40">login</span>`}
+                                        </div>
+                                        <div class="flex-1">
+                                            <input name="loginLogoFile" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                            <p class="text-[10px] font-black text-primary uppercase">Escolher Arquivo</p>
+                                            <p class="text-[9px] text-on-surface-variant opacity-60 font-medium">Logo para fundo escuro</p>
+                                        </div>
+                                        ${settings.loginLogoUrl ? `<button type="button" onclick="App.actions.clearBranding('loginLogo')" class="w-8 h-8 rounded-lg bg-error/10 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all z-10"><span class="material-symbols-outlined text-sm">close</span></button>` : ''}
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-container transition-all shadow-lg shadow-primary/20 mt-4">Atualizar Identidade</button>
                         </form>
@@ -2494,6 +2508,11 @@ const App = {
                         s.faviconUrl = await this.utils.readFileAsDataURL(faviconFile);
                     }
 
+                    const loginLogoFile = data.get('loginLogoFile');
+                    if (loginLogoFile && loginLogoFile.size > 0) {
+                        s.loginLogoUrl = await this.utils.readFileAsDataURL(loginLogoFile);
+                    }
+
                     await Storage.setSettings(s);
                     this.utils.applyBranding();
                     this.actions.showToast('Identidade Visual personalizada com sucesso!');
@@ -2523,6 +2542,7 @@ const App = {
             const s = Storage.getSettings();
             if (type === 'logo') s.logoUrl = '';
             if (type === 'favicon') s.faviconUrl = '';
+            if (type === 'loginLogo') s.loginLogoUrl = '';
             await Storage.setSettings(s);
             this.utils.applyBranding();
             this.actions.showToast('Branding removido com sucesso!');

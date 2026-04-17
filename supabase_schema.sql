@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS settings (
     nome_sistema TEXT DEFAULT 'Gestão de Frotas',
     subtitulo_sistema TEXT DEFAULT '',
     logo_url TEXT DEFAULT '',
+    login_logo_url TEXT DEFAULT '',
     favicon_url TEXT DEFAULT ''
 );
 
