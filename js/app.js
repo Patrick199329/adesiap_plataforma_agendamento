@@ -902,11 +902,31 @@ const App = {
 
         // Logic for availability
         const form = document.getElementById('booking-form');
-        const dateInputs = form.querySelectorAll('input[type="datetime-local"]');
-        
-        dateInputs.forEach(input => {
-            input.addEventListener('change', () => this.utils.updateVehicleAvailability(bookingId));
-        });
+        const inputSaida = form.querySelector('input[name="dataSaida"]');
+        const inputChegada = form.querySelector('input[name="dataChegada"]');
+
+        if (inputSaida && inputChegada) {
+            inputSaida.addEventListener('change', () => {
+                // Sincronizar 'min' da chegada com a saída
+                inputChegada.min = inputSaida.value;
+                
+                // Se a chegada for menor que a nova saída, ajustar automaticamente
+                if (inputChegada.value && inputChegada.value < inputSaida.value) {
+                    inputChegada.value = inputSaida.value;
+                }
+                
+                this.utils.updateVehicleAvailability(bookingId);
+            });
+
+            inputChegada.addEventListener('change', () => {
+                this.utils.updateVehicleAvailability(bookingId);
+            });
+            
+            // Configurar 'min' inicial se já houver valor na saída
+            if (inputSaida.value) {
+                inputChegada.min = inputSaida.value;
+            }
+        }
 
         // Chamada inicial para preencher disponibilidade se estiver editando
         if (booking) {
