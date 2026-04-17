@@ -768,6 +768,7 @@ const App = {
         const vehicles = Storage.getVehicles().filter(v => v.status === 'ativo');
         const users = Storage.getUsers().filter(u => u.ativo);
         const projects = Storage.getProjects();
+        const currentUser = Storage.getLoggedInUser();
 
         // Se estiver editando e a viagem não estiver pendente, restringir campos
         const isRestricted = booking && booking.status !== 'checklist_pendente';
@@ -815,7 +816,10 @@ const App = {
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Motorista</label>
                                 <select name="motoristaId" class="w-full bg-white border border-outline-variant/30 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none appearance-none" ${isRestricted ? 'disabled' : ''}>
-                                    ${users.map(u => `<option value="${u.id}" ${booking?.motoristaId === u.id ? 'selected' : ''}>${u.nome} (${u.departamento})</option>`).join('')}
+                                    ${users.map(u => {
+                                        const isSelected = booking ? (booking.motoristaId === u.id) : (currentUser?.id === u.id);
+                                        return `<option value="${u.id}" ${isSelected ? 'selected' : ''}>${u.nome} (${u.departamento})</option>`;
+                                    }).join('')}
                                 </select>
                             </div>
                             <div class="space-y-2">
