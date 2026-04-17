@@ -211,24 +211,13 @@
         
         <!-- Header -->
         <header class="flex justify-between items-center px-8 h-20 w-full bg-white/70 backdrop-blur-md sticky top-0 z-40">
-            <div class="flex items-center gap-4 flex-1 max-w-xl">
+            <div class="flex items-center gap-4">
                 <button class="lg:hidden text-primary p-2" onclick="toggleSidebar()">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div class="relative w-full group">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-xl">search</span>
-                    <input class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border-none rounded-xl text-sm focus:ring-4 focus:ring-primary/5 placeholder:text-slate-400 transition-all" placeholder="Buscar veículo, motorista ou viagem..." type="text"/>
-                </div>
             </div>
 
             <div class="flex items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <button class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant relative transition-colors">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
-                    </button>
-                </div>
-                <div class="h-8 w-[1px] bg-outline-variant/30"></div>
                 <div class="flex items-center gap-3 cursor-pointer group">
                     <div class="text-right hidden sm:block">
                         <p id="user-name" class="text-sm font-extrabold text-primary tracking-tight">C. Logística</p>
