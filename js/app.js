@@ -313,7 +313,7 @@ const App = {
                     <!-- Direita: Form Area (Full on mobile) -->
                     <div class="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
                         <div class="mb-10 md:hidden text-center">
-                             ${settings.loginLogoUrl || settings.logoUrl ? `<img src="${settings.loginLogoUrl || settings.logoUrl}" class="h-12 w-auto mx-auto mb-4">` : `<h1 class="text-3xl font-black text-primary">${settings.nomeSistema}</h1>`}
+                             ${settings.logoUrl || settings.loginLogoUrl ? `<img src="${settings.logoUrl || settings.loginLogoUrl}" class="h-12 w-auto mx-auto mb-4">` : `<h1 class="text-3xl font-black text-primary">${settings.nomeSistema}</h1>`}
                         </div>
 
                         <div class="space-y-2 mb-10">
