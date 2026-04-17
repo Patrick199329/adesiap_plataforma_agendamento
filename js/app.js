@@ -259,9 +259,30 @@ const App = {
         `;
 
         modal.style.display = 'flex';
-        document.getElementById('modal-confirm-btn').onclick = async () => {
-            const result = await onConfirm();
-            if (result) App.closeModal();
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        confirmBtn.onclick = async () => {
+            const originalText = confirmBtn.innerText;
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = 'Processando...';
+            confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const result = await onConfirm();
+                if (result === true) {
+                    App.closeModal();
+                } else {
+                    // Re-enable if failed validation or intentionally kept open
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerText = originalText;
+                    confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            } catch (error) {
+                console.error('Modal Action Error:', error);
+                alert('Erro ao processar ação: ' + error.message);
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = originalText;
+                confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
         };
     },
 
@@ -2657,6 +2678,10 @@ const App = {
 
             App.showModal('Cadastrar Novo Veículo', content, async () => {
                 const form = document.getElementById('vehicle-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 const vehicle = {
                     nome: formData.get('nome'),
@@ -2668,9 +2693,15 @@ const App = {
                     disponivel: true
                 };
 
-                await Storage.saveVehicle(vehicle);
-                App.renderView('veiculos');
-                return true;
+                try {
+                    await Storage.saveVehicle(vehicle);
+                    App.renderView('veiculos');
+                    this.showToast('Veículo cadastrado com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao cadastrar veículo: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -2708,6 +2739,10 @@ const App = {
 
             App.showModal('Editar Veículo', content, async () => {
                 const form = document.getElementById('edit-vehicle-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 const updatedVehicle = {
                     id: formData.get('id'),
@@ -2719,9 +2754,15 @@ const App = {
                     status: formData.get('ativo') ? 'ativo' : 'inativo'
                 };
 
-                await Storage.saveVehicle(updatedVehicle);
-                App.renderView('veiculos');
-                return true;
+                try {
+                    await Storage.saveVehicle(updatedVehicle);
+                    App.renderView('veiculos');
+                    this.showToast('Veículo atualizado com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao atualizar veículo: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -2764,6 +2805,10 @@ const App = {
             `;
             App.showModal('Novo Usuário', content, async () => {
                 const form = document.getElementById('user-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 try {
                     await Storage.createUser({
@@ -2774,10 +2819,12 @@ const App = {
                         tipo: formData.get('tipo')
                     });
                     App.renderView('usuarios');
+                    this.showToast('Usuário cadastrado com sucesso!');
+                    return true;
                 } catch (err) {
                     alert('Erro ao criar usuário: ' + err.message);
+                    return false;
                 }
-                return true;
             });
         },
 
@@ -2820,6 +2867,10 @@ const App = {
             `;
             App.showModal('Editar Usuário', content, async () => {
                 const form = document.getElementById('edit-user-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 const profileUpdate = {
                     id: formData.get('id'),
@@ -2829,9 +2880,15 @@ const App = {
                     tipo: formData.get('tipo'),
                     ativo: formData.get('ativo') === 'on'
                 };
-                await Storage.saveProfile(profileUpdate);
-                App.renderView('usuarios');
-                return true;
+                try {
+                    await Storage.saveProfile(profileUpdate);
+                    App.renderView('usuarios');
+                    this.showToast('Usuário atualizado com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao atualizar usuário: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -2870,6 +2927,10 @@ const App = {
             `;
             App.showModal('Novo Projeto', content, async () => {
                 const form = document.getElementById('project-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 const rubrica = parseFloat(formData.get('rubrica'));
                 const project = {
@@ -2878,9 +2939,16 @@ const App = {
                     saldo: rubrica,
                     ativo: formData.get('ativo') === 'on'
                 };
-                await Storage.saveProject(project);
-                App.renderView('projetos');
-                return true;
+                
+                try {
+                    await Storage.saveProject(project);
+                    App.renderView('projetos');
+                    this.showToast('Projeto criado com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao criar projeto: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -2914,6 +2982,10 @@ const App = {
 
             App.showModal('Editar Projeto', content, async () => {
                 const form = document.getElementById('edit-project-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return false;
+                }
                 const formData = new FormData(form);
                 const projectUpdate = {
                     id: formData.get('id'),
@@ -2922,9 +2994,16 @@ const App = {
                     saldo: parseFloat(formData.get('saldo')),
                     ativo: formData.get('ativo') === 'on'
                 };
-                await Storage.saveProject(projectUpdate);
-                App.renderView('projetos');
-                return true;
+                
+                try {
+                    await Storage.saveProject(projectUpdate);
+                    App.renderView('projetos');
+                    this.showToast('Projeto atualizado com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao atualizar projeto: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -2995,10 +3074,16 @@ const App = {
                     intervaloKM: parseInt(formData.get('intervaloKM')),
                     icone: formData.get('icone') || 'handyman'
                 };
-                await Storage.saveMaintenanceRule(data);
-                App.renderView('configuracoes');
-                this.showToast(rule ? 'Regra atualizada.' : 'Regra criada.');
-                return true;
+                
+                try {
+                    await Storage.saveMaintenanceRule(data);
+                    App.renderView('configuracoes');
+                    this.showToast(rule ? 'Regra atualizada com sucesso.' : 'Regra criada com sucesso.');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao salvar regra: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -3071,10 +3156,16 @@ const App = {
                     usuarioNome: user ? user.nome : 'Sistema',
                     data: formData.get('data') ? new Date(formData.get('data') + 'T12:00:00Z').toISOString() : new Date().toISOString()
                 };
-                await Storage.saveMaintenanceLog(log);
-                App.renderView('manutencao');
-                this.showToast('Manutenção Corretiva registrada.');
-                return true;
+                
+                try {
+                    await Storage.saveMaintenanceLog(log);
+                    App.renderView('manutencao');
+                    this.showToast('Manutenção Corretiva registrada com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao registrar manutenção: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -3149,23 +3240,28 @@ const App = {
                 const valorRateado = parseFloat(formData.get('valor')) / checked.length;
                 const user = Storage.getLoggedInUser();
                 
-                for (const cb of checked) {
-                    const log = {
-                        tipo: 'preventiva',
-                        veiculoId: formData.get('veiculoId'),
-                        projetoId: formData.get('projetoId'),
-                        regraId: cb.value,
-                        valor: valorRateado,
-                        kmRealizada: parseInt(formData.get('kmRealizada')),
-                        usuarioNome: user ? user.nome : 'Sistema',
-                        data: formData.get('data') ? new Date(formData.get('data') + 'T12:00:00Z').toISOString() : new Date().toISOString()
-                    };
-                    await Storage.saveMaintenanceLog(log);
-                }
+                try {
+                    for (const cb of checked) {
+                        const log = {
+                            tipo: 'preventiva',
+                            veiculoId: formData.get('veiculoId'),
+                            projetoId: formData.get('projetoId'),
+                            regraId: cb.value,
+                            valor: valorRateado,
+                            kmRealizada: parseInt(formData.get('kmRealizada')),
+                            usuarioNome: user ? user.nome : 'Sistema',
+                            data: formData.get('data') ? new Date(formData.get('data') + 'T12:00:00Z').toISOString() : new Date().toISOString()
+                        };
+                        await Storage.saveMaintenanceLog(log);
+                    }
 
-                App.renderView('manutencao');
-                this.showToast('Manutenção Preventiva registrada na saúde do veículo!');
-                return true;
+                    App.renderView('manutencao');
+                    this.showToast('Manutenção Preventiva registrada com sucesso!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao registrar manutenção: ' + err.message);
+                    return false;
+                }
             });
 
             // Listener para atualizar KM ao trocar veículo
@@ -3294,9 +3390,17 @@ const App = {
 
             App.showModal('Registrar Abastecimento', content, async () => {
                 const form = document.getElementById('fuel-form');
+                if (!form.checkValidity()) { form.reportValidity(); return false; }
                 const formData = new FormData(form);
-                await this.saveFuelEntry(formData);
-                return true;
+                
+                try {
+                    await this.saveFuelEntry(formData);
+                    // O toast já é mostrado em saveFuelEntry, mas podemos reforçar aqui se necessário
+                    return true;
+                } catch (err) {
+                    alert('Erro ao registrar abastecimento: ' + err.message);
+                    return false;
+                }
             });
         },
 
@@ -3347,21 +3451,27 @@ const App = {
             App.showModal('Finalizar Viagem', content, async () => {
                 const kmFinal = parseInt(document.getElementById('final-km').value);
                 
-                await Storage.updateBooking(bookingId, {
-                    status: 'concluido',
-                    kmFinal: kmFinal,
-                    dataConclusao: new Date().toISOString()
-                });
+                try {
+                    await Storage.updateBooking(bookingId, {
+                        status: 'concluido',
+                        kmFinal: kmFinal,
+                        dataConclusao: new Date().toISOString()
+                    });
 
-                // Atualizar Veículo
-                await supabaseClient.from('vehicles').update({
-                    km: kmFinal,
-                    disponivel: true
-                }).eq('id', booking.veiculoId);
-                await Storage._refreshTable('vehicles');
+                    // Atualizar Veículo
+                    await supabaseClient.from('vehicles').update({
+                        km: kmFinal,
+                        disponivel: true
+                    }).eq('id', booking.veiculoId);
+                    await Storage._refreshTable('vehicles');
 
-                App.renderView('agendamentos');
-                return true;
+                    App.renderView('agendamentos');
+                    this.showToast('Viagem finalizada com sucesso. Veículo disponível!');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao finalizar viagem: ' + err.message);
+                    return false;
+                }
             });
         },
 

@@ -1,0 +1,272 @@
+﻿
+> js\app.js:2658:            App.showModal('Cadastrar Novo Veículo', content, async () => {
+  js\app.js:2659:                const form = document.getElementById('vehicle-form');
+  js\app.js:2660:                const formData = new FormData(form);
+  js\app.js:2661:                const vehicle = {
+  js\app.js:2662:                    nome: formData.get('nome'),
+  js\app.js:2663:                    placa: formData.get('placa'),
+  js\app.js:2664:                    km: parseInt(formData.get('km')) || 0,
+  js\app.js:2665:                    consumption: parseFloat(formData.get('consumption')) || 8.5,
+  js\app.js:2666:                    foto: formData.get('foto') || 
+'https://images.unsplash.com/photo-1542441526-78c92ba3052c?q=80&w=400',
+  js\app.js:2667:                    status: formData.get('ativo') === 'on' ? 'ativo' : 'inativo',
+  js\app.js:2668:                    disponivel: true
+  js\app.js:2669:                };
+  js\app.js:2670:
+  js\app.js:2671:                await Storage.saveVehicle(vehicle);
+  js\app.js:2672:                App.renderView('veiculos');
+  js\app.js:2673:                return true;
+  js\app.js:2674:            });
+  js\app.js:2675:        },
+  js\app.js:2676:
+  js\app.js:2677:        openEditVehicle(id) {
+  js\app.js:2678:            const vehicle = Storage.getVehicles().find(v => v.id === id);
+> js\app.js:2709:            App.showModal('Editar Veículo', content, async () => {
+  js\app.js:2710:                const form = document.getElementById('edit-vehicle-form');
+  js\app.js:2711:                const formData = new FormData(form);
+  js\app.js:2712:                const updatedVehicle = {
+  js\app.js:2713:                    id: formData.get('id'),
+  js\app.js:2714:                    nome: formData.get('nome'),
+  js\app.js:2715:                    placa: formData.get('placa'),
+  js\app.js:2716:                    km: parseInt(formData.get('km')),
+  js\app.js:2717:                    consumption: parseFloat(formData.get('consumption')),
+  js\app.js:2718:                    foto: formData.get('foto'),
+  js\app.js:2719:                    status: formData.get('ativo') ? 'ativo' : 'inativo'
+  js\app.js:2720:                };
+  js\app.js:2721:
+  js\app.js:2722:                await Storage.saveVehicle(updatedVehicle);
+  js\app.js:2723:                App.renderView('veiculos');
+  js\app.js:2724:                return true;
+  js\app.js:2725:            });
+  js\app.js:2726:        },
+  js\app.js:2727:
+  js\app.js:2728:        async deleteVehicle(id) {
+  js\app.js:2729:            if (confirm('Tem certeza que deseja excluir este veículo? Esta ação não pode ser 
+desfeita.')) {
+> js\app.js:2765:            App.showModal('Novo Usuário', content, async () => {
+  js\app.js:2766:                const form = document.getElementById('user-form');
+  js\app.js:2767:                const formData = new FormData(form);
+  js\app.js:2768:                try {
+  js\app.js:2769:                    await Storage.createUser({
+  js\app.js:2770:                        nome: formData.get('nome'),
+  js\app.js:2771:                        email: formData.get('email'),
+  js\app.js:2772:                        senha: 'FF@123',
+  js\app.js:2773:                        departamento: formData.get('departamento'),
+  js\app.js:2774:                        tipo: formData.get('tipo')
+  js\app.js:2775:                    });
+  js\app.js:2776:                    App.renderView('usuarios');
+  js\app.js:2777:                } catch (err) {
+  js\app.js:2778:                    alert('Erro ao criar usuário: ' + err.message);
+  js\app.js:2779:                }
+  js\app.js:2780:                return true;
+  js\app.js:2781:            });
+  js\app.js:2782:        },
+  js\app.js:2783:
+  js\app.js:2784:        openEditUser(id) {
+  js\app.js:2785:            const user = Storage.getUsers().find(u => u.id === id);
+> js\app.js:2821:            App.showModal('Editar Usuário', content, async () => {
+  js\app.js:2822:                const form = document.getElementById('edit-user-form');
+  js\app.js:2823:                const formData = new FormData(form);
+  js\app.js:2824:                const profileUpdate = {
+  js\app.js:2825:                    id: formData.get('id'),
+  js\app.js:2826:                    nome: formData.get('nome'),
+  js\app.js:2827:                    email: formData.get('email'),
+  js\app.js:2828:                    departamento: formData.get('departamento'),
+  js\app.js:2829:                    tipo: formData.get('tipo'),
+  js\app.js:2830:                    ativo: formData.get('ativo') === 'on'
+  js\app.js:2831:                };
+  js\app.js:2832:                await Storage.saveProfile(profileUpdate);
+  js\app.js:2833:                App.renderView('usuarios');
+  js\app.js:2834:                return true;
+  js\app.js:2835:            });
+  js\app.js:2836:        },
+  js\app.js:2837:
+  js\app.js:2838:        async resetPassword(id) {
+  js\app.js:2839:            if (confirm('Será enviado um e-mail de redefinição de senha para o usuário. Continuar?')) 
+{
+  js\app.js:2840:                const user = Storage.getUsers().find(u => u.id === id);
+  js\app.js:2841:                if (user && user.email) {
+> js\app.js:2871:            App.showModal('Novo Projeto', content, async () => {
+  js\app.js:2872:                const form = document.getElementById('project-form');
+  js\app.js:2873:                const formData = new FormData(form);
+  js\app.js:2874:                const rubrica = parseFloat(formData.get('rubrica'));
+  js\app.js:2875:                const project = {
+  js\app.js:2876:                    nome: formData.get('nome'),
+  js\app.js:2877:                    rubricaAbastecimento: rubrica,
+  js\app.js:2878:                    saldo: rubrica,
+  js\app.js:2879:                    ativo: formData.get('ativo') === 'on'
+  js\app.js:2880:                };
+  js\app.js:2881:                await Storage.saveProject(project);
+  js\app.js:2882:                App.renderView('projetos');
+  js\app.js:2883:                return true;
+  js\app.js:2884:            });
+  js\app.js:2885:        },
+  js\app.js:2886:
+  js\app.js:2887:        openEditProject(id) {
+  js\app.js:2888:            const project = Storage.getProjects().find(p => p.id === id);
+  js\app.js:2889:            if (!project) return;
+  js\app.js:2890:
+  js\app.js:2891:            const content = `
+> js\app.js:2915:            App.showModal('Editar Projeto', content, async () => {
+  js\app.js:2916:                const form = document.getElementById('edit-project-form');
+  js\app.js:2917:                const formData = new FormData(form);
+  js\app.js:2918:                const projectUpdate = {
+  js\app.js:2919:                    id: formData.get('id'),
+  js\app.js:2920:                    nome: formData.get('nome'),
+  js\app.js:2921:                    rubricaAbastecimento: parseFloat(formData.get('rubrica')),
+  js\app.js:2922:                    saldo: parseFloat(formData.get('saldo')),
+  js\app.js:2923:                    ativo: formData.get('ativo') === 'on'
+  js\app.js:2924:                };
+  js\app.js:2925:                await Storage.saveProject(projectUpdate);
+  js\app.js:2926:                App.renderView('projetos');
+  js\app.js:2927:                return true;
+  js\app.js:2928:            });
+  js\app.js:2929:        },
+  js\app.js:2930:
+  js\app.js:2931:        async deleteProject(id) {
+  js\app.js:2932:            if (confirm('Tem certeza que deseja excluir este projeto? Esta ação não pode ser 
+desfeita.')) {
+  js\app.js:2933:                await Storage.deleteProject(id);
+  js\app.js:2934:                App.renderView('projetos');
+  js\app.js:2935:            }
+> js\app.js:2985:            App.showModal(rule ? 'Editar Regra de Manutenção' : 'Nova Regra de Manutenção', content, 
+async () => {
+  js\app.js:2986:                const form = document.getElementById('maintenance-rule-form');
+  js\app.js:2987:                if (!form.checkValidity()) {
+  js\app.js:2988:                    form.reportValidity();
+  js\app.js:2989:                    return false;
+  js\app.js:2990:                }
+  js\app.js:2991:                const formData = new FormData(form);
+  js\app.js:2992:                const data = {
+  js\app.js:2993:                    id: formData.get('id') || undefined,
+  js\app.js:2994:                    nome: formData.get('nome'),
+  js\app.js:2995:                    intervaloKM: parseInt(formData.get('intervaloKM')),
+  js\app.js:2996:                    icone: formData.get('icone') || 'handyman'
+  js\app.js:2997:                };
+  js\app.js:2998:                await Storage.saveMaintenanceRule(data);
+  js\app.js:2999:                App.renderView('configuracoes');
+  js\app.js:3000:                this.showToast(rule ? 'Regra atualizada.' : 'Regra criada.');
+  js\app.js:3001:                return true;
+  js\app.js:3002:            });
+  js\app.js:3003:        },
+  js\app.js:3004:
+  js\app.js:3005:        async deleteMaintenanceRule(id) {
+> js\app.js:3059:            App.showModal('Registrar Manutenção Corretiva', content, async () => {
+  js\app.js:3060:                const form = document.getElementById('corrective-form');
+  js\app.js:3061:                if (!form.checkValidity()) { form.reportValidity(); return false; }
+  js\app.js:3062:                const formData = new FormData(form);
+  js\app.js:3063:                const user = Storage.getLoggedInUser();
+  js\app.js:3064:                const log = {
+  js\app.js:3065:                    tipo: 'corretiva',
+  js\app.js:3066:                    veiculoId: formData.get('veiculoId'),
+  js\app.js:3067:                    projetoId: formData.get('projetoId'),
+  js\app.js:3068:                    valor: formData.get('valor'),
+  js\app.js:3069:                    observacao: formData.get('observacao'),
+  js\app.js:3070:                    kmRealizada: parseInt(formData.get('kmRealizada')),
+  js\app.js:3071:                    usuarioNome: user ? user.nome : 'Sistema',
+  js\app.js:3072:                    data: formData.get('data') ? new Date(formData.get('data') + 
+'T12:00:00Z').toISOString() : new Date().toISOString()
+  js\app.js:3073:                };
+  js\app.js:3074:                await Storage.saveMaintenanceLog(log);
+  js\app.js:3075:                App.renderView('manutencao');
+  js\app.js:3076:                this.showToast('Manutenção Corretiva registrada.');
+  js\app.js:3077:                return true;
+  js\app.js:3078:            });
+  js\app.js:3079:        },
+> js\app.js:3139:            App.showModal('Realizar Manutenção Preventiva', content, async () => {
+  js\app.js:3140:                const form = document.getElementById('preventive-form');
+  js\app.js:3141:                const checked = form.querySelectorAll('input[name="regraIds"]:checked');
+  js\app.js:3142:                if (checked.length === 0) {
+  js\app.js:3143:                    alert('Selecione pelo menos um item realizado.');
+  js\app.js:3144:                    return false;
+  js\app.js:3145:                }
+  js\app.js:3146:                if (!form.checkValidity()) { form.reportValidity(); return false; }
+  js\app.js:3147:                
+  js\app.js:3148:                const formData = new FormData(form);
+  js\app.js:3149:                const valorRateado = parseFloat(formData.get('valor')) / checked.length;
+  js\app.js:3150:                const user = Storage.getLoggedInUser();
+  js\app.js:3151:                
+  js\app.js:3152:                for (const cb of checked) {
+  js\app.js:3153:                    const log = {
+  js\app.js:3154:                        tipo: 'preventiva',
+  js\app.js:3155:                        veiculoId: formData.get('veiculoId'),
+  js\app.js:3156:                        projetoId: formData.get('projetoId'),
+  js\app.js:3157:                        regraId: cb.value,
+  js\app.js:3158:                        valor: valorRateado,
+  js\app.js:3159:                        kmRealizada: parseInt(formData.get('kmRealizada')),
+> js\app.js:3295:            App.showModal('Registrar Abastecimento', content, async () => {
+  js\app.js:3296:                const form = document.getElementById('fuel-form');
+  js\app.js:3297:                const formData = new FormData(form);
+  js\app.js:3298:                await this.saveFuelEntry(formData);
+  js\app.js:3299:                return true;
+  js\app.js:3300:            });
+  js\app.js:3301:        },
+  js\app.js:3302:
+  js\app.js:3303:        async saveFuelEntry(formData) {
+  js\app.js:3304:            const entry = {
+  js\app.js:3305:                bookingId: formData.get('bookingId'),
+  js\app.js:3306:                projetoId: formData.get('projetoId'),
+  js\app.js:3307:                veiculoId: formData.get('veiculoId'),
+  js\app.js:3308:                km: parseInt(formData.get('km')),
+  js\app.js:3309:                valor: parseFloat(formData.get('valor'))
+  js\app.js:3310:            };
+  js\app.js:3311:            
+  js\app.js:3312:            await Storage.saveFuelEntry(entry);
+  js\app.js:3313:            App.renderView('agendamentos');
+  js\app.js:3314:            // Notificação Premium
+  js\app.js:3315:            const toast = document.createElement('div');
+> js\app.js:3347:            App.showModal('Finalizar Viagem', content, async () => {
+  js\app.js:3348:                const kmFinal = parseInt(document.getElementById('final-km').value);
+  js\app.js:3349:                
+  js\app.js:3350:                await Storage.updateBooking(bookingId, {
+  js\app.js:3351:                    status: 'concluido',
+  js\app.js:3352:                    kmFinal: kmFinal,
+  js\app.js:3353:                    dataConclusao: new Date().toISOString()
+  js\app.js:3354:                });
+  js\app.js:3355:
+  js\app.js:3356:                // Atualizar Veículo
+  js\app.js:3357:                await supabaseClient.from('vehicles').update({
+  js\app.js:3358:                    km: kmFinal,
+  js\app.js:3359:                    disponivel: true
+  js\app.js:3360:                }).eq('id', booking.veiculoId);
+  js\app.js:3361:                await Storage._refreshTable('vehicles');
+  js\app.js:3362:
+  js\app.js:3363:                App.renderView('agendamentos');
+  js\app.js:3364:                return true;
+  js\app.js:3365:            });
+  js\app.js:3366:        },
+  js\app.js:3367:
+> js\app.js:3471:            App.showModal('Histórico de Atividades', content, () => true);
+  js\app.js:3472:        },
+  js\app.js:3473:
+  js\app.js:3474:
+  js\app.js:3475:        generateReport(type, formData) {
+  js\app.js:3476:            const contentArea = document.getElementById('view-content');
+  js\app.js:3477:            let reportHtml = '';
+  js\app.js:3478:            let isLandscape = false;
+  js\app.js:3479:
+  js\app.js:3480:            // Header Corporativo para o Impresso
+  js\app.js:3481:            const headerHtml = `
+  js\app.js:3482:                <div class="hidden print:block mb-10 border-b-4 border-primary pb-6">
+  js\app.js:3483:                    <div class="flex justify-between items-end">
+  js\app.js:3484:                        <div>
+  js\app.js:3485:                            <h1 class="text-3xl font-black 
+text-primary">${Storage.getSettings().nomeSistema}</h1>
+  js\app.js:3486:                            <p class="text-[10px] font-bold text-on-surface-variant uppercase 
+tracking-widest leading-none">Relatórios de Gestão e Logística</p>
+  js\app.js:3487:                        </div>
+  js\app.js:3488:                        <div class="text-right">
+  js\app.js:3489:                            <p class="text-xs font-bold text-primary">Emitido em: ${new 
+Date().toLocaleString('pt-BR')}</p>
+  js\app.js:3490:                            <p class="text-[9px] font-medium text-on-surface-variant opacity-60">ID 
+Auditoria: ${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+  js\app.js:3491:                        </div>
+> js\app.js:3996:            App.showModal('Visualização da Evidência', content, () => true);
+  js\app.js:3997:        }
+  js\app.js:3998:    }
+  js\app.js:3999:};
+  js\app.js:4000:
+  js\app.js:4001:// Start the App
+  js\app.js:4002:App.init();
+
+
