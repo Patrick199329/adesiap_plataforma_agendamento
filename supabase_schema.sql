@@ -167,6 +167,7 @@ CREATE POLICY "Authenticated full access maintenance_logs" ON maintenance_logs F
 CREATE POLICY "Authenticated full access fuel_logs" ON fuel_logs FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Authenticated full access corrections" ON corrections FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Authenticated full access settings" ON settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Public read settings" ON settings FOR SELECT TO anon USING (true);
 
 
 -- ============================================================

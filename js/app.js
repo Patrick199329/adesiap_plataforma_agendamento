@@ -3889,17 +3889,20 @@ const App = {
         applyBranding() {
             const settings = Storage.getSettings();
             
-            // 1. Nome do Sistema
+            // 1. Nome do Sistema e Título da Aba
+            const systemName = settings.nomeSistema || 'FrotaFlow';
+            document.title = `${systemName} - Gestão de Frotas Pro`;
+            
             const titleEl = document.getElementById('app-title');
-            if (titleEl) titleEl.textContent = `${settings.nomeSistema} - Gestão de Frotas Pro`;
+            if (titleEl) titleEl.textContent = `${systemName} - Gestão de Frotas Pro`;
             
             const sidebarNameEl = document.getElementById('sidebar-system-name');
-            if (sidebarNameEl) sidebarNameEl.textContent = settings.nomeSistema;
+            if (sidebarNameEl) sidebarNameEl.textContent = systemName;
 
             const sidebarSubtitleEl = document.getElementById('sidebar-system-subtitle');
-            if (sidebarSubtitleEl) sidebarSubtitleEl.textContent = settings.subtituloSistema;
+            if (sidebarSubtitleEl) sidebarSubtitleEl.textContent = settings.subtituloSistema || '';
 
-            // 2. Logo
+            // 2. Logo na Sidebar
             const logoImg = document.getElementById('sidebar-logo');
             if (logoImg) {
                 if (settings.logoUrl) {
@@ -3912,15 +3915,12 @@ const App = {
                 }
             }
 
-            // 3. Favicon
+            // 3. Favicon Dinâmico
             if (settings.faviconUrl) {
-                let link = document.querySelector("link[rel~='icon']");
-                if (!link) {
-                    link = document.createElement('link');
-                    link.rel = 'icon';
-                    document.head.appendChild(link);
+                let link = document.getElementById('app-favicon') || document.querySelector("link[rel~='icon']");
+                if (link) {
+                    link.href = settings.faviconUrl;
                 }
-                link.href = settings.faviconUrl;
             }
         },
         updateVehicleAvailability(excludeBookingId = null, selectedVehicleId = null) {
