@@ -2309,13 +2309,35 @@ const App = {
                                     <input name="subtituloSistema" type="text" value="${settings.subtituloSistema}" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-primary focus:ring-4 focus:ring-primary/5 transition-all outline-none shadow-inner" required>
                                 </div>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">URL Logotipo (Sidebar)</label>
-                                <input name="logoUrl" type="url" value="${settings.logoUrl || ''}" placeholder="Deixe vazio para usar apenas texto" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-medium text-primary focus:ring-4 focus:ring-primary/5 transition-all outline-none shadow-inner">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">URL Favicon (.ico / .png)</label>
-                                <input name="faviconUrl" type="url" value="${settings.faviconUrl || ''}" placeholder="URL da imagem para a aba" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-medium text-primary focus:ring-4 focus:ring-primary/5 transition-all outline-none shadow-inner">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Logotipo (Sidebar)</label>
+                                    <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 hover:border-primary/30 transition-all group relative">
+                                        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-outline-variant/10">
+                                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="w-full h-full object-contain">` : `<span class="material-symbols-outlined text-outline-variant opacity-40">image</span>`}
+                                        </div>
+                                        <div class="flex-1">
+                                            <input name="logoFile" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                            <p class="text-[10px] font-black text-primary uppercase">Escolher Arquivo</p>
+                                            <p class="text-[9px] text-on-surface-variant opacity-60 font-medium">PNG ou JPG (Sugerido 200x80px)</p>
+                                        </div>
+                                        ${settings.logoUrl ? `<button type="button" onclick="App.actions.clearBranding('logo')" class="w-8 h-8 rounded-lg bg-error/10 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all z-10"><span class="material-symbols-outlined text-sm">close</span></button>` : ''}
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Favicon (Aba)</label>
+                                    <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 hover:border-primary/30 transition-all group relative">
+                                        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-outline-variant/10">
+                                            ${settings.faviconUrl ? `<img src="${settings.faviconUrl}" class="w-8 h-8 object-contain">` : `<span class="material-symbols-outlined text-outline-variant opacity-40">shortcut</span>`}
+                                        </div>
+                                        <div class="flex-1">
+                                            <input name="faviconFile" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                            <p class="text-[10px] font-black text-primary uppercase">Escolher Arquivo</p>
+                                            <p class="text-[9px] text-on-surface-variant opacity-60 font-medium">PNG ou ICO (32x32px)</p>
+                                        </div>
+                                        ${settings.faviconUrl ? `<button type="button" onclick="App.actions.clearBranding('favicon')" class="w-8 h-8 rounded-lg bg-error/10 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all z-10"><span class="material-symbols-outlined text-sm">close</span></button>` : ''}
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-container transition-all shadow-lg shadow-primary/20 mt-4">Atualizar Identidade</button>
                         </form>
@@ -2450,15 +2472,39 @@ const App = {
         if (brandingForm) {
             brandingForm.onsubmit = async (e) => {
                 e.preventDefault();
-                const data = new FormData(brandingForm);
-                const s = Storage.getSettings();
-                s.nomeSistema = data.get('nomeSistema');
-                s.subtituloSistema = data.get('subtituloSistema');
-                s.logoUrl = data.get('logoUrl');
-                s.faviconUrl = data.get('faviconUrl');
-                await Storage.setSettings(s);
-                this.utils.applyBranding();
-                this.actions.showToast('Identidade Visual personalizada com sucesso!');
+                const btn = brandingForm.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = 'Processando Imagens...';
+
+                try {
+                    const data = new FormData(brandingForm);
+                    const s = Storage.getSettings();
+                    
+                    s.nomeSistema = data.get('nomeSistema');
+                    s.subtituloSistema = data.get('subtituloSistema');
+
+                    const logoFile = data.get('logoFile');
+                    if (logoFile && logoFile.size > 0) {
+                        s.logoUrl = await this.utils.readFileAsDataURL(logoFile);
+                    }
+
+                    const faviconFile = data.get('faviconFile');
+                    if (faviconFile && faviconFile.size > 0) {
+                        s.faviconUrl = await this.utils.readFileAsDataURL(faviconFile);
+                    }
+
+                    await Storage.setSettings(s);
+                    this.utils.applyBranding();
+                    this.actions.showToast('Identidade Visual personalizada com sucesso!');
+                    this.renderView('configuracoes'); // Refresh view to show new previews
+                } catch (error) {
+                    console.error('Branding Save Error:', error);
+                    this.actions.showToast('Erro ao processar imagens. Tente arquivos menores.');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
             };
         }
     },
@@ -2471,6 +2517,16 @@ const App = {
                 await Storage.logout();
                 window.location.reload();
             }
+        },
+
+        async clearBranding(type) {
+            const s = Storage.getSettings();
+            if (type === 'logo') s.logoUrl = '';
+            if (type === 'favicon') s.faviconUrl = '';
+            await Storage.setSettings(s);
+            this.utils.applyBranding();
+            this.actions.showToast('Branding removido com sucesso!');
+            this.renderView('configuracoes');
         },
 
         async login(formData) {
@@ -3925,6 +3981,15 @@ const App = {
                     link.href = settings.faviconUrl;
                 }
             }
+        },
+
+        readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsDataURL(file);
+            });
         },
         updateVehicleAvailability(excludeBookingId = null, selectedVehicleId = null) {
             const list = document.getElementById('vehicle-availability-list');
