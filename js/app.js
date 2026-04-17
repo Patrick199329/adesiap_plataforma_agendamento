@@ -7,7 +7,8 @@ const App = {
     currentPath: '',
     state: {},
     
-    init() {
+    async init() {
+        await Storage.init();
         this.loadGoogleMaps();
         this.utils.applyBranding();
         window.addEventListener('hashchange', () => this.handleRouting());
@@ -258,8 +259,9 @@ const App = {
         `;
 
         modal.style.display = 'flex';
-        document.getElementById('modal-confirm-btn').onclick = () => {
-            if (onConfirm()) this.closeModal();
+        document.getElementById('modal-confirm-btn').onclick = async () => {
+            const result = await onConfirm();
+            if (result) App.closeModal();
         };
     },
 
@@ -2397,24 +2399,24 @@ const App = {
         // Listeners
         const fuelForm = document.getElementById('settings-fuel-form');
         if (fuelForm) {
-            fuelForm.onsubmit = (e) => {
+            fuelForm.onsubmit = async (e) => {
                 e.preventDefault();
                 const data = new FormData(fuelForm);
                 const s = Storage.getSettings();
                 s.precoCombustivel = parseFloat(data.get('precoCombustivel'));
-                Storage.setSettings(s);
+                await Storage.setSettings(s);
                 this.actions.showToast('Preços atualizados com sucesso!');
             };
         }
 
         const mapsForm = document.getElementById('settings-maps-form');
         if (mapsForm) {
-            mapsForm.onsubmit = (e) => {
+            mapsForm.onsubmit = async (e) => {
                 e.preventDefault();
                 const data = new FormData(mapsForm);
                 const s = Storage.getSettings();
                 s.googleMapsKey = data.get('googleMapsKey');
-                Storage.setSettings(s);
+                await Storage.setSettings(s);
                 this.actions.showToast('API Key configurada! Recarregando sistema...');
                 setTimeout(() => window.location.reload(), 1500);
             };
@@ -2422,7 +2424,7 @@ const App = {
 
         const brandingForm = document.getElementById('settings-branding-form');
         if (brandingForm) {
-            brandingForm.onsubmit = (e) => {
+            brandingForm.onsubmit = async (e) => {
                 e.preventDefault();
                 const data = new FormData(brandingForm);
                 const s = Storage.getSettings();
@@ -2430,7 +2432,7 @@ const App = {
                 s.subtituloSistema = data.get('subtituloSistema');
                 s.logoUrl = data.get('logoUrl');
                 s.faviconUrl = data.get('faviconUrl');
-                Storage.setSettings(s);
+                await Storage.setSettings(s);
                 this.utils.applyBranding();
                 this.actions.showToast('Identidade Visual personalizada com sucesso!');
             };
@@ -2440,28 +2442,43 @@ const App = {
     // --- ACTIONS ---
 
     actions: {
-        resetSystem() {
+        async resetSystem() {
             if (confirm('ATENÇÃO: Isso irá apagar todos os dados registrados e restaurar o sistema para o padrão de fábrica. Continuar?')) {
-                localStorage.clear();
+                await Storage.logout();
                 window.location.reload();
             }
         },
 
-        login(formData) {
+        async login(formData) {
             const identifier = formData.get('identifier');
             const password = formData.get('password');
-            const user = Storage.getUsers().find(u => (u.nome === identifier || u.email === identifier) && u.senha === password);
 
-            if (user) {
-                if (!user.ativo) {
-                    alert('Usuário inativo. Entre em contato com o administrador.');
-                    return;
-                }
-                Storage.setLoggedInUser(user);
-                window.location.hash = user.trocarSenha ? '#trocar-senha' : '#agendamentos';
-            } else {
-                alert('Credenciais inválidas.');
+            // Support login by name or email
+            let email = identifier;
+            if (!identifier.includes('@')) {
+                const { data } = await supabaseClient.from('profiles').select('email').ilike('nome', identifier).maybeSingle();
+                if (data) email = data.email;
             }
+
+            const { data: authData, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            console.log('Login attempt:', { email, error: error?.message, authData });
+            if (error) {
+                alert('Erro de login: ' + error.message);
+                return;
+            }
+
+            // Load user profile and all data
+            await Storage._loadCurrentUser();
+            await Storage._loadAllData();
+
+            const user = Storage.getLoggedInUser();
+            if (user && !user.ativo) {
+                await supabaseClient.auth.signOut();
+                alert('Usuário inativo. Entre em contato com o administrador.');
+                return;
+            }
+
+            window.location.hash = (user && user.trocarSenha) ? '#trocar-senha' : '#agendamentos';
         },
 
         openCorrectionForm(vehicleId) {
@@ -2507,46 +2524,50 @@ const App = {
                 results: results
             };
 
-            Storage.saveCorrection(data);
+            await Storage.saveCorrection(data);
             this.showToast('Checklist de correção salvo com sucesso!');
             window.location.hash = '#inspecoes';
         },
 
-        deleteCorrection(id) {
+        async deleteCorrection(id) {
             if (confirm('Deseja realmente excluir este lançamento de correção? Esta ação não pode ser desfeita.')) {
-                Storage.deleteCorrection(id);
-                this.renderView('inspecoes');
+                await Storage.deleteCorrection(id);
+                App.renderView('inspecoes');
                 this.showToast('Lançamento excluído com sucesso.');
             }
         },
 
-        logout() {
-            Storage.logout();
+        async logout() {
+            await Storage.logout();
             window.location.hash = '#login';
         },
 
-        changePassword(formData) {
+        async changePassword(formData) {
             const newPwd = formData.get('newPassword');
-            const confirm = formData.get('confirmPassword');
-            const user = Storage.getLoggedInUser();
+            const confirmPwd = formData.get('confirmPassword');
 
-            if (newPwd !== confirm) {
+            if (newPwd !== confirmPwd) {
                 alert('As senhas não coincidem.');
                 return;
             }
 
-            const users = Storage.getUsers();
-            const index = users.findIndex(u => u.id === user.id);
-            if (index >= 0) {
-                users[index].senha = newPwd;
-                users[index].trocarSenha = false;
-                Storage.setUsers(users);
-                Storage.setLoggedInUser(users[index]);
-                window.location.hash = '#agendamentos';
+            const { error } = await supabaseClient.auth.updateUser({ password: newPwd });
+            if (error) {
+                alert('Erro ao alterar senha: ' + error.message);
+                return;
             }
+
+            // Mark trocarSenha as false
+            const user = Storage.getLoggedInUser();
+            if (user) {
+                await supabaseClient.from('profiles').update({ trocar_senha: false }).eq('id', user.id);
+                await Storage._loadCurrentUser();
+            }
+
+            window.location.hash = '#agendamentos';
         },
 
-        saveBooking(formData) {
+        async saveBooking(formData) {
             const bookingId = formData.get('id');
             const vehicleId = document.querySelector('input[name="selectedVehicle"]:checked')?.value;
             
@@ -2571,7 +2592,6 @@ const App = {
 
             // Se for atualização
             if (bookingId && existingBooking) {
-                // Se a viagem já iniciou, restringir campos críticos para garantir integridade
                 if (existingBooking.status !== 'checklist_pendente') {
                     delete data.motoristaId;
                     delete data.dataSaida;
@@ -2582,7 +2602,7 @@ const App = {
                     data.veiculoId = vehicleId;
                 }
 
-                Storage.updateBooking(bookingId, data);
+                await Storage.updateBooking(bookingId, data);
             } else {
                 // Se for criação
                 const vehicle = Storage.getVehicles().find(v => v.id === vehicleId);
@@ -2591,13 +2611,13 @@ const App = {
                 const newBooking = {
                     ...data,
                     veiculoId: vehicleId,
-                    userId: currentUser.id,
+                    criadoPor: currentUser.id,
                     kmInicial: vehicle.km,
                     distanciaPrevista: parseInt(formData.get('distanciaPrevista')) || distanciaPrevista,
                     status: 'checklist_pendente'
                 };
 
-                Storage.setData('ff_bookings', [...bookings, { ...newBooking, id: 'b' + Date.now() }]);
+                await Storage.createBooking(newBooking);
             }
 
             window.location.hash = '#agendamentos';
@@ -2635,7 +2655,7 @@ const App = {
                 </form>
             `;
 
-            App.showModal('Cadastrar Novo Veículo', content, () => {
+            App.showModal('Cadastrar Novo Veículo', content, async () => {
                 const form = document.getElementById('vehicle-form');
                 const formData = new FormData(form);
                 const vehicle = {
@@ -2648,7 +2668,7 @@ const App = {
                     disponivel: true
                 };
 
-                Storage.saveVehicle(vehicle);
+                await Storage.saveVehicle(vehicle);
                 App.renderView('veiculos');
                 return true;
             });
@@ -2686,7 +2706,7 @@ const App = {
                 </form>
             `;
 
-            App.showModal('Editar Veículo', content, () => {
+            App.showModal('Editar Veículo', content, async () => {
                 const form = document.getElementById('edit-vehicle-form');
                 const formData = new FormData(form);
                 const updatedVehicle = {
@@ -2699,15 +2719,15 @@ const App = {
                     status: formData.get('ativo') ? 'ativo' : 'inativo'
                 };
 
-                Storage.saveVehicle(updatedVehicle);
+                await Storage.saveVehicle(updatedVehicle);
                 App.renderView('veiculos');
                 return true;
             });
         },
 
-        deleteVehicle(id) {
+        async deleteVehicle(id) {
             if (confirm('Tem certeza que deseja excluir este veículo? Esta ação não pode ser desfeita.')) {
-                Storage.deleteVehicle(id);
+                await Storage.deleteVehicle(id);
                 App.renderView('veiculos');
             }
         },
@@ -2742,21 +2762,21 @@ const App = {
                     <p class="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase">A senha temporária será <span class="text-primary font-black">FF@123</span></p>
                 </form>
             `;
-            App.showModal('Novo Usuário', content, () => {
+            App.showModal('Novo Usuário', content, async () => {
                 const form = document.getElementById('user-form');
                 const formData = new FormData(form);
-                const user = {
-                    nome: formData.get('nome'),
-                    email: formData.get('email'),
-                    senha: 'FF@123',
-                    trocarSenha: true,
-                    departamento: formData.get('departamento'),
-                    tipo: formData.get('tipo'),
-                    ativo: true,
-                    criadoEm: new Date().toISOString().split('T')[0]
-                };
-                Storage.setData('ff_users', [...Storage.getUsers(), { ...user, id: 'u' + Date.now() }]);
-                App.renderView('usuarios');
+                try {
+                    await Storage.createUser({
+                        nome: formData.get('nome'),
+                        email: formData.get('email'),
+                        senha: 'FF@123',
+                        departamento: formData.get('departamento'),
+                        tipo: formData.get('tipo')
+                    });
+                    App.renderView('usuarios');
+                } catch (err) {
+                    alert('Erro ao criar usuário: ' + err.message);
+                }
                 return true;
             });
         },
@@ -2798,37 +2818,35 @@ const App = {
                     </div>
                 </form>
             `;
-            App.showModal('Editar Usuário', content, () => {
+            App.showModal('Editar Usuário', content, async () => {
                 const form = document.getElementById('edit-user-form');
                 const formData = new FormData(form);
-                const users = Storage.getUsers();
-                const index = users.findIndex(u => u.id === formData.get('id'));
-
-                if (index >= 0) {
-                    users[index] = {
-                        ...users[index],
-                        nome: formData.get('nome'),
-                        email: formData.get('email'),
-                        departamento: formData.get('departamento'),
-                        tipo: formData.get('tipo'),
-                        ativo: formData.get('ativo') === 'on'
-                    };
-                    Storage.setUsers(users);
-                    App.renderView('usuarios');
-                }
+                const profileUpdate = {
+                    id: formData.get('id'),
+                    nome: formData.get('nome'),
+                    email: formData.get('email'),
+                    departamento: formData.get('departamento'),
+                    tipo: formData.get('tipo'),
+                    ativo: formData.get('ativo') === 'on'
+                };
+                await Storage.saveProfile(profileUpdate);
+                App.renderView('usuarios');
                 return true;
             });
         },
 
-        resetPassword(id) {
-            if (confirm('Deseja resetar a senha deste usuário para o padrão FF@123?')) {
-                const users = Storage.getUsers();
-                const index = users.findIndex(u => u.id === id);
-                if (index >= 0) {
-                    users[index].senha = 'FF@123';
-                    users[index].trocarSenha = true;
-                    Storage.setUsers(users);
-                    alert('Senha resetada com sucesso!');
+        async resetPassword(id) {
+            if (confirm('Será enviado um e-mail de redefinição de senha para o usuário. Continuar?')) {
+                const user = Storage.getUsers().find(u => u.id === id);
+                if (user && user.email) {
+                    const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email);
+                    if (error) {
+                        alert('Erro: ' + error.message);
+                    } else {
+                        alert('E-mail de redefinição enviado com sucesso!');
+                    }
+                } else {
+                    alert('Usuário sem e-mail cadastrado.');
                 }
             }
         },
@@ -2850,7 +2868,7 @@ const App = {
                     </div>
                 </form>
             `;
-            App.showModal('Novo Projeto', content, () => {
+            App.showModal('Novo Projeto', content, async () => {
                 const form = document.getElementById('project-form');
                 const formData = new FormData(form);
                 const rubrica = parseFloat(formData.get('rubrica'));
@@ -2860,7 +2878,7 @@ const App = {
                     saldo: rubrica,
                     ativo: formData.get('ativo') === 'on'
                 };
-                Storage.setData('ff_projects', [...Storage.getProjects(), { ...project, id: 'p' + Date.now() }]);
+                await Storage.saveProject(project);
                 App.renderView('projetos');
                 return true;
             });
@@ -2894,49 +2912,41 @@ const App = {
                 </form>
             `;
 
-            App.showModal('Editar Projeto', content, () => {
+            App.showModal('Editar Projeto', content, async () => {
                 const form = document.getElementById('edit-project-form');
                 const formData = new FormData(form);
-                const projects = Storage.getProjects();
-                const index = projects.findIndex(p => p.id === formData.get('id'));
-
-                if (index >= 0) {
-                    projects[index] = {
-                        ...projects[index],
-                        nome: formData.get('nome'),
-                        rubricaAbastecimento: parseFloat(formData.get('rubrica')),
-                        saldo: parseFloat(formData.get('saldo')),
-                        ativo: formData.get('ativo') === 'on'
-                    };
-                    Storage.setProjects(projects);
-                    App.renderView('projetos');
-                }
+                const projectUpdate = {
+                    id: formData.get('id'),
+                    nome: formData.get('nome'),
+                    rubricaAbastecimento: parseFloat(formData.get('rubrica')),
+                    saldo: parseFloat(formData.get('saldo')),
+                    ativo: formData.get('ativo') === 'on'
+                };
+                await Storage.saveProject(projectUpdate);
+                App.renderView('projetos');
                 return true;
             });
         },
 
-        deleteProject(id) {
+        async deleteProject(id) {
             if (confirm('Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.')) {
-                Storage.deleteProject(id);
+                await Storage.deleteProject(id);
                 App.renderView('projetos');
             }
         },
 
-        addChecklistItem() {
+        async addChecklistItem() {
             const nome = prompt('Digite o nome do novo Item de Inspeção:');
             if (nome && nome.trim() !== '') {
-                const items = Storage.getChecklistItems();
-                items.push({ id: 'chk_' + Date.now(), nome: nome.trim() });
-                Storage.setChecklistItems(items);
+                await Storage.addChecklistItem(nome.trim());
                 App.renderView('configuracoes');
                 this.showToast('Item de Inspeção adicionado.');
             }
         },
 
-        deleteChecklistItem(id) {
+        async deleteChecklistItem(id) {
             if (confirm('Tem certeza que deseja excluir este item de inspeção? Isso afetará os próximos agendamentos.')) {
-                const items = Storage.getChecklistItems().filter(i => i.id !== id);
-                Storage.setChecklistItems(items);
+                await Storage.deleteChecklistItem(id);
                 App.renderView('configuracoes');
                 this.showToast('Item de Inspeção removido.');
             }
@@ -2972,7 +2982,7 @@ const App = {
                 </form>
             `;
 
-            App.showModal(rule ? 'Editar Regra de Manutenção' : 'Nova Regra de Manutenção', content, () => {
+            App.showModal(rule ? 'Editar Regra de Manutenção' : 'Nova Regra de Manutenção', content, async () => {
                 const form = document.getElementById('maintenance-rule-form');
                 if (!form.checkValidity()) {
                     form.reportValidity();
@@ -2980,21 +2990,21 @@ const App = {
                 }
                 const formData = new FormData(form);
                 const data = {
-                    id: formData.get('id'),
+                    id: formData.get('id') || undefined,
                     nome: formData.get('nome'),
                     intervaloKM: parseInt(formData.get('intervaloKM')),
                     icone: formData.get('icone') || 'handyman'
                 };
-                Storage.saveMaintenanceRule(data);
+                await Storage.saveMaintenanceRule(data);
                 App.renderView('configuracoes');
                 this.showToast(rule ? 'Regra atualizada.' : 'Regra criada.');
                 return true;
             });
         },
 
-        deleteMaintenanceRule(id) {
+        async deleteMaintenanceRule(id) {
             if (confirm('Deseja excluir esta regra de manutenção preventiva?')) {
-                Storage.deleteMaintenanceRule(id);
+                await Storage.deleteMaintenanceRule(id);
                 App.renderView('configuracoes');
                 this.showToast('Regra excluída.');
             }
@@ -3046,7 +3056,7 @@ const App = {
                 </form>
             `;
 
-            App.showModal('Registrar Manutenção Corretiva', content, () => {
+            App.showModal('Registrar Manutenção Corretiva', content, async () => {
                 const form = document.getElementById('corrective-form');
                 if (!form.checkValidity()) { form.reportValidity(); return false; }
                 const formData = new FormData(form);
@@ -3061,7 +3071,7 @@ const App = {
                     usuarioNome: user ? user.nome : 'Sistema',
                     data: formData.get('data') ? new Date(formData.get('data') + 'T12:00:00Z').toISOString() : new Date().toISOString()
                 };
-                Storage.saveMaintenanceLog(log);
+                await Storage.saveMaintenanceLog(log);
                 App.renderView('manutencao');
                 this.showToast('Manutenção Corretiva registrada.');
                 return true;
@@ -3126,7 +3136,7 @@ const App = {
                 </form>
             `;
 
-            App.showModal('Realizar Manutenção Preventiva', content, () => {
+            App.showModal('Realizar Manutenção Preventiva', content, async () => {
                 const form = document.getElementById('preventive-form');
                 const checked = form.querySelectorAll('input[name="regraIds"]:checked');
                 if (checked.length === 0) {
@@ -3139,7 +3149,7 @@ const App = {
                 const valorRateado = parseFloat(formData.get('valor')) / checked.length;
                 const user = Storage.getLoggedInUser();
                 
-                checked.forEach(cb => {
+                for (const cb of checked) {
                     const log = {
                         tipo: 'preventiva',
                         veiculoId: formData.get('veiculoId'),
@@ -3150,8 +3160,8 @@ const App = {
                         usuarioNome: user ? user.nome : 'Sistema',
                         data: formData.get('data') ? new Date(formData.get('data') + 'T12:00:00Z').toISOString() : new Date().toISOString()
                     };
-                    Storage.saveMaintenanceLog(log);
-                });
+                    await Storage.saveMaintenanceLog(log);
+                }
 
                 App.renderView('manutencao');
                 this.showToast('Manutenção Preventiva registrada na saúde do veículo!');
@@ -3207,13 +3217,12 @@ const App = {
             const logKey = type === 'out' ? 'checklistSaida' : 'checklistRetorno';
             
             // Update Booking
-            Storage.updateBooking(bookingId, { 
+            await Storage.updateBooking(bookingId, { 
                 status: newStatus,
                 [logKey]: { 
                     results: checklistResults, 
                     hasInconformity, 
                     data: new Date().toISOString(),
-                    // Cache de info da reserva para auditoria facilitada
                     resumo: {
                         destino: booking.destino,
                         projeto: Storage.getProjects().find(p => p.id === booking.projetoId)?.nome || 'N/A'
@@ -3223,13 +3232,11 @@ const App = {
             });
 
             // Update Vehicle
-            const vehicles = Storage.getVehicles();
-            const vIndex = vehicles.findIndex(v => v.id === booking.veiculoId);
-            if (vIndex >= 0) {
-                vehicles[vIndex].km = km;
-                vehicles[vIndex].disponivel = (newStatus === 'concluido');
-                Storage.setVehicles(vehicles);
-            }
+            await supabaseClient.from('vehicles').update({
+                km: km,
+                disponivel: (newStatus === 'concluido')
+            }).eq('id', booking.veiculoId);
+            await Storage._refreshTable('vehicles');
 
             if (hasInconformity) {
                 this.showToast('Checklist salvo com Inconformidades registradas.', 'error');
@@ -3285,15 +3292,15 @@ const App = {
                 </div>
             `;
 
-            App.showModal('Registrar Abastecimento', content, () => {
+            App.showModal('Registrar Abastecimento', content, async () => {
                 const form = document.getElementById('fuel-form');
                 const formData = new FormData(form);
-                this.saveFuelEntry(formData);
+                await this.saveFuelEntry(formData);
                 return true;
             });
         },
 
-        saveFuelEntry(formData) {
+        async saveFuelEntry(formData) {
             const entry = {
                 bookingId: formData.get('bookingId'),
                 projetoId: formData.get('projetoId'),
@@ -3302,7 +3309,7 @@ const App = {
                 valor: parseFloat(formData.get('valor'))
             };
             
-            Storage.saveFuelEntry(entry);
+            await Storage.saveFuelEntry(entry);
             App.renderView('agendamentos');
             // Notificação Premium
             const toast = document.createElement('div');
@@ -3337,46 +3344,40 @@ const App = {
                 </div>
             `;
 
-            App.showModal('Finalizar Viagem', content, () => {
+            App.showModal('Finalizar Viagem', content, async () => {
                 const kmFinal = parseInt(document.getElementById('final-km').value);
-                const bookings = Storage.getBookings();
-                const bIndex = bookings.findIndex(b => b.id === bookingId);
                 
-                if (bIndex >= 0) {
-                    bookings[bIndex].status = 'concluido';
-                    bookings[bIndex].kmFinal = kmFinal;
-                    bookings[bIndex].dataConclusao = new Date().toISOString();
-                    Storage.setBookings(bookings);
+                await Storage.updateBooking(bookingId, {
+                    status: 'concluido',
+                    kmFinal: kmFinal,
+                    dataConclusao: new Date().toISOString()
+                });
 
-                    // Atualizar Veículo
-                    const vehicles = Storage.getVehicles();
-                    const vIndex = vehicles.findIndex(v => v.id === booking.veiculoId);
-                    if (vIndex >= 0) {
-                        vehicles[vIndex].km = kmFinal;
-                        vehicles[vIndex].disponivel = true;
-                        Storage.setVehicles(vehicles);
-                    }
+                // Atualizar Veículo
+                await supabaseClient.from('vehicles').update({
+                    km: kmFinal,
+                    disponivel: true
+                }).eq('id', booking.veiculoId);
+                await Storage._refreshTable('vehicles');
 
-                    App.renderView('agendamentos');
-                    return true;
-                }
-                return false;
+                App.renderView('agendamentos');
+                return true;
             });
         },
 
         openEditBooking(id) { 
             window.location.hash = `#editar-agendamento?id=${id}`;
         },
-        deleteBooking(id) {
+        async deleteBooking(id) {
             if (confirm('Deseja excluir permanentemente este agendamento?')) {
-                const bookings = Storage.getBookings().filter(b => b.id !== id);
-                Storage.setBookings(bookings);
+                await supabaseClient.from('bookings').delete().eq('id', id);
+                await Storage._refreshTable('bookings');
                 App.renderView('agendamentos');
             }
         },
-        cancelBooking(id) {
+        async cancelBooking(id) {
             if (confirm('Deseja cancelar esta viagem? O veículo será liberado imediatamente.')) {
-                Storage.cancelBooking(id);
+                await Storage.cancelBooking(id);
                 App.renderView('agendamentos');
             }
         },

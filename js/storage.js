@@ -1,266 +1,479 @@
 /**
- * FrotaFlow Storage & Data Manager
- * Gerencia a persistência no LocalStorage e provê dados iniciais.
+ * FrotaFlow Storage & Data Manager — Supabase Edition
+ * Camada de dados com cache local para leitura síncrona
+ * e escrita assíncrona via Supabase.
  */
 
-const STORAGE_KEYS = {
-    VEHICLES: 'ff_vehicles',
-    USERS: 'ff_users',
-    PROJECTS: 'ff_projects',
-    BOOKINGS: 'ff_bookings',
-    CHECKLIST_ITEMS: 'ff_checklist_items',
-    MAINTENANCE_LOGS: 'ff_maintenance_logs',
-    FUEL_LOGS: 'ff_fuel_logs',
-    CORRECTIONS: 'ff_corrections',
-    SESSION: 'ff_session',
-    SETTINGS: 'ff_settings'
+// ============================================================
+// Helpers: snake_case ↔ camelCase
+// ============================================================
+// Special field name mappings (snake → camel) for edge cases
+const FIELD_REMAP_TO_CAMEL = {
+    'intervalo_km': 'intervaloKM',
+    'km_realizada': 'kmRealizada',
+    'usuario_nome': 'usuarioNome',
+    'regra_id': 'regraId',
+    'checklist_saida': 'checklistSaida',
+    'checklist_retorno': 'checklistRetorno',
+    'data_saida': 'dataSaida',
+    'data_chegada': 'dataChegada',
+    'data_conclusao': 'dataConclusao',
+    'data_registro': 'dataRegistro',
+    'data_correcao': 'dataCorrecao',
+    'km_inicial': 'kmInicial',
+    'km_final': 'kmFinal',
+    'distancia_prevista': 'distanciaPrevista',
+    'has_inconformity': 'hasInconformity',
+    'veiculo_id': 'veiculoId',
+    'motorista_id': 'motoristaId',
+    'projeto_id': 'projetoId',
+    'booking_id': 'bookingId',
+    'criado_por': 'criadoPor',
+    'rubrica_abastecimento': 'rubricaAbastecimento',
+    'trocar_senha': 'trocarSenha',
+    'criado_em': 'criadoEm',
+    'preco_combustivel': 'precoCombustivel',
+    'google_maps_key': 'googleMapsKey',
+    'nome_sistema': 'nomeSistema',
+    'subtitulo_sistema': 'subtituloSistema',
+    'logo_url': 'logoUrl',
+    'favicon_url': 'faviconUrl',
+    'foto_url': 'fotoUrl',
+    'created_at': 'createdAt'
 };
 
-const DEFAULT_DATA = {
-    veiculos: [
-        { id: 'v1', nome: 'Volvo FH 540', placa: 'ABC-1234', km: 125400, status: 'ativo', disponivel: true, consumption: 8.5, foto: 'https://images.unsplash.com/photo-1586191582151-f7396654df42?q=80&w=400' },
-        { id: 'v2', nome: 'Scania R 450', placa: 'XYZ-9876', km: 89200, status: 'ativo', disponivel: false, consumption: 9.0, foto: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=400' },
-        { id: 'v3', nome: 'Mercedes-Benz Actros', placa: 'DEF-5678', km: 45000, status: 'ativo', disponivel: true, consumption: 7.5, foto: 'https://images.unsplash.com/photo-1591768793355-74d7c514c337?q=80&w=400' },
-        { id: 'v4', nome: 'VW Constellation', placa: 'GHI-9012', km: 210000, status: 'inativo', disponivel: true, consumption: 10.0, foto: 'https://images.unsplash.com/photo-1542441526-78c92ba3052c?q=80&w=400' }
-    ],
-    usuarios: [
-        { id: 'u1', nome: 'Patrick Chieza', email: 'patrick@frotaflow.com.br', senha: 'Adesiap@123', departamento: 'Gestão', tipo: 'administrador', ativo: true, trocarSenha: false, criadoEm: '2023-10-01' },
-        { id: 'u2', nome: 'Ricardo Alves', email: 'ricardo@frotaflow.com.br', senha: 'FF@123', departamento: 'Logística', tipo: 'logistica', ativo: true, trocarSenha: true, criadoEm: '2023-11-15' },
-        { id: 'u3', nome: 'Claudio Santos', email: 'claudio@frotaflow.com.br', senha: 'FF@123', departamento: 'Operacional', tipo: 'motorista', ativo: true, trocarSenha: true, criadoEm: '2024-01-20' }
-    ],
-    projetos: [
-        { id: 'p1', nome: 'Logística Agrícola', rubricaAbastecimento: 50000, saldo: 42400, ativo: true },
-        { id: 'p2', nome: 'Distribuição Urbana', rubricaAbastecimento: 30000, saldo: 28150, ativo: true },
-        { id: 'p3', nome: 'Mineração Sul', rubricaAbastecimento: 20000, saldo: 15900, ativo: true }
-    ],
-    checklistItems: [
-        { id: 'c1', nome: 'Nível de Óleo', ativo: true },
-        { id: 'c2', nome: 'Pressão dos Pneus', ativo: true },
-        { id: 'c3', nome: 'Luzes de Freio', ativo: true },
-        { id: 'c4', nome: 'Estado do Estepe', ativo: true },
-        { id: 'c5', nome: 'Limpeza Interna', ativo: true }
-    ],
-    maintenanceRules: [
-        { id: 'r1', nome: 'Óleo do Motor', intervaloKM: 5000, icone: 'oil_barrel' },
-        { id: 'r2', nome: 'Filtro de Óleo', intervaloKM: 5000, icone: 'filter_alt' },
-        { id: 'r3', nome: 'Filtro de Combustível', intervaloKM: 5000, icone: 'gas_meter' },
-        { id: 'r4', nome: 'Filtro de Ar', intervaloKM: 5000, icone: 'air' },
-        { id: 'r5', nome: 'Alinhamento', intervaloKM: 1000, icone: 'straighten' },
-        { id: 'r6', nome: 'Balanceamento', intervaloKM: 1000, icone: 'settings_backup_restore' },
-        { id: 'r7', nome: 'Cambagem', intervaloKM: 1000, icone: 'architecture' },
-        { id: 'r8', nome: 'Correia Dentada / Corrente', intervaloKM: 45000, icone: 'handyman' },
-        { id: 'r9', nome: 'Velas / Cabo de Vela', intervaloKM: 30000, icone: 'electric_bolt' }
-    ],
-    bookings: [
-        { 
-            id: 'b1', 
-            veiculoId: 'v2', 
-            motoristaId: 'u3', 
-            dataSaida: '2024-05-24T08:00', 
-            dataChegada: '2024-05-24T18:00',
-            origem: 'Curitiba, PR',
-            destino: 'São Paulo, SP',
-            kmInicial: 89000,
-            kmFinalPrevisto: 89800,
-            status: 'em_curso'
-        }
-    ],
-    settings: {
-        precoCombustivel: 5.85,
-        googleMapsKey: '',
-        nomeSistema: 'FrotaFlow',
-        subtituloSistema: '',
-        logoUrl: '',
-        faviconUrl: ''
+const FIELD_REMAP_TO_SNAKE = {};
+for (const [snake, camel] of Object.entries(FIELD_REMAP_TO_CAMEL)) {
+    FIELD_REMAP_TO_SNAKE[camel] = snake;
+}
+
+function _toCamel(obj) {
+    if (Array.isArray(obj)) return obj.map(_toCamel);
+    if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+        const camelKey = FIELD_REMAP_TO_CAMEL[key] || key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+        result[camelKey] = value;
     }
-};
+    return result;
+}
 
+function _toSnake(obj) {
+    if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) return obj.map(_toSnake);
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+        const snakeKey = FIELD_REMAP_TO_SNAKE[key] || key.replace(/[A-Z]/g, c => '_' + c.toLowerCase());
+        result[snakeKey] = value;
+    }
+    return result;
+}
+
+// ============================================================
+// Storage Object (Cache + Supabase)
+// ============================================================
 const Storage = {
-    init() {
-        // Se não houver veículos (primeira vez) ou se o admin novo não existir (migração)
-        const vehiclesRaw = localStorage.getItem(STORAGE_KEYS.VEHICLES);
-        const usersRaw = localStorage.getItem(STORAGE_KEYS.USERS);
-        
-        const needsInit = !vehiclesRaw;
-        const needsUserMigration = usersRaw && !usersRaw.includes('patrick@frotaflow.com.br');
-
-        if (needsInit) {
-            this.setVehicles(DEFAULT_DATA.veiculos);
-            this.setUsers(DEFAULT_DATA.usuarios);
-            this.setProjects(DEFAULT_DATA.projetos);
-            this.setChecklistItems(DEFAULT_DATA.checklistItems);
-            this.setBookings(DEFAULT_DATA.bookings);
-            this.setData(STORAGE_KEYS.MAINTENANCE_LOGS, []);
-            this.setData(STORAGE_KEYS.FUEL_LOGS, []);
-            this.setData(STORAGE_KEYS.CORRECTIONS, []);
-            this.setData('ff_maintenance_rules', DEFAULT_DATA.maintenanceRules);
-            this.setSettings(DEFAULT_DATA.settings);
-        } else if (needsUserMigration) {
-            this.setUsers(DEFAULT_DATA.usuarios);
-            console.log('FrotaFlow: Usuários migrados.');
-        }
-
-        // Automação: Fechar viagens em atraso
-        this.autoCloseLateBookings();
+    _cache: {
+        vehicles: [],
+        users: [],
+        projects: [],
+        bookings: [],
+        checklistItems: [],
+        maintenanceRules: [],
+        maintenanceLogs: [],
+        fuelLogs: [],
+        corrections: [],
+        settings: {},
+        currentUser: null
     },
 
-    autoCloseLateBookings() {
-        const bookings = this.getBookings();
-        const vehicles = this.getVehicles();
+    // ----------------------------------------------------------
+    // Initialization
+    // ----------------------------------------------------------
+    async init() {
+        try {
+            // Check existing auth session
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                await this._loadCurrentUser();
+                await this._loadAllData();
+                this.autoCloseLateBookings();
+            }
+            console.log('FrotaFlow: Storage inicializado via Supabase.');
+        } catch (error) {
+            console.error('FrotaFlow: Erro na inicialização:', error);
+        }
+    },
+
+    async _loadCurrentUser() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (user) {
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            this._cache.currentUser = profile ? _toCamel(profile) : null;
+        } else {
+            this._cache.currentUser = null;
+        }
+    },
+
+    async _loadAllData() {
+        const [vehicles, users, projects, bookings, checklistItems, maintenanceRules, maintenanceLogs, fuelLogs, corrections, settings] = await Promise.all([
+            supabaseClient.from('vehicles').select('*').order('nome'),
+            supabaseClient.from('profiles').select('*').order('nome'),
+            supabaseClient.from('projects').select('*').order('nome'),
+            supabaseClient.from('bookings').select('*').order('data_saida', { ascending: false }),
+            supabaseClient.from('checklist_items').select('*').order('ordem'),
+            supabaseClient.from('maintenance_rules').select('*').order('nome'),
+            supabaseClient.from('maintenance_logs').select('*').order('data', { ascending: false }),
+            supabaseClient.from('fuel_logs').select('*').order('data', { ascending: false }),
+            supabaseClient.from('corrections').select('*').order('data_registro', { ascending: false }),
+            supabaseClient.from('settings').select('*').eq('id', 1).single()
+        ]);
+
+        this._cache.vehicles = _toCamel(vehicles.data || []);
+        this._cache.users = _toCamel(users.data || []);
+        this._cache.projects = _toCamel(projects.data || []);
+        this._cache.bookings = _toCamel(bookings.data || []);
+        this._cache.checklistItems = _toCamel(checklistItems.data || []);
+        this._cache.maintenanceRules = _toCamel(maintenanceRules.data || []);
+        this._cache.maintenanceLogs = _toCamel(maintenanceLogs.data || []);
+        this._cache.fuelLogs = _toCamel(fuelLogs.data || []);
+        this._cache.corrections = _toCamel(corrections.data || []);
+        this._cache.settings = settings.data ? _toCamel(settings.data) : this._defaultSettings();
+    },
+
+    _defaultSettings() {
+        return {
+            precoCombustivel: 5.85,
+            googleMapsKey: '',
+            nomeSistema: 'FrotaFlow',
+            subtituloSistema: '',
+            logoUrl: '',
+            faviconUrl: ''
+        };
+    },
+
+    // ----------------------------------------------------------
+    // Auto-close late bookings (runs client-side on init)
+    // ----------------------------------------------------------
+    async autoCloseLateBookings() {
         const now = new Date().getTime();
         const twentyFourHours = 24 * 60 * 60 * 1000;
         let changed = false;
 
-        bookings.forEach(b => {
+        for (const b of this._cache.bookings) {
             if (b.status === 'em_curso') {
                 const arrivalTime = new Date(b.dataChegada).getTime();
                 if (now > (arrivalTime + twentyFourHours)) {
-                    b.status = 'concluido';
-                    b.kmFinal = b.kmInicial + (b.distanciaPrevista || 0);
-                    b.dataConclusao = new Date().toISOString();
-                    
-                    // Atualizar KM do veículo
-                    const vIndex = vehicles.findIndex(v => v.id === b.veiculoId);
-                    if (vIndex >= 0) {
-                        vehicles[vIndex].km = b.kmFinal;
-                        vehicles[vIndex].disponivel = true;
-                    }
+                    const kmFinal = b.kmInicial + (b.distanciaPrevista || 0);
+                    const dataConclusao = new Date().toISOString();
+
+                    await supabaseClient.from('bookings').update(_toSnake({
+                        status: 'concluido',
+                        kmFinal: kmFinal,
+                        dataConclusao: dataConclusao
+                    })).eq('id', b.id);
+
+                    // Update vehicle
+                    await supabaseClient.from('vehicles').update({
+                        km: kmFinal,
+                        disponivel: true
+                    }).eq('id', b.veiculoId);
+
                     changed = true;
                 }
             }
-        });
+        }
 
         if (changed) {
-            this.setBookings(bookings);
-            this.setVehicles(vehicles);
+            await this._loadAllData();
             console.log('FrotaFlow: Agendamentos em atraso finalizados automaticamente.');
         }
     },
 
-    // Generic Getters/Setters
-    getData(key) {
-        return JSON.parse(localStorage.getItem(key)) || [];
-    },
-    setData(key, data) {
-        localStorage.setItem(key, JSON.stringify(data));
+    // ----------------------------------------------------------
+    // SYNC Getters (read from cache)
+    // ----------------------------------------------------------
+    getVehicles() { return this._cache.vehicles; },
+    getUsers() { return this._cache.users; },
+    getProjects() { return this._cache.projects; },
+    getBookings() { return this._cache.bookings; },
+    getChecklistItems() { return this._cache.checklistItems; },
+    getMaintenanceRules() { return this._cache.maintenanceRules; },
+    getMaintenanceLogs() { return this._cache.maintenanceLogs; },
+    getFuelLogs() { return this._cache.fuelLogs; },
+    getCorrections() { return this._cache.corrections; },
+
+    getSettings() {
+        return { ...this._defaultSettings(), ...this._cache.settings };
     },
 
-    // Vehicles
-    getVehicles() { return this.getData(STORAGE_KEYS.VEHICLES); },
-    setVehicles(data) { this.setData(STORAGE_KEYS.VEHICLES, data); },
-    saveVehicle(vehicle) {
-        const vehicles = this.getVehicles();
-        const index = vehicles.findIndex(v => v.id === vehicle.id);
-        if (index >= 0) vehicles[index] = { ...vehicles[index], ...vehicle };
-        else vehicles.push({ ...vehicle, id: 'v' + Date.now() });
-        this.setVehicles(vehicles);
+    getLoggedInUser() {
+        return this._cache.currentUser;
     },
 
-    deleteVehicle(id) {
-        const vehicles = this.getVehicles().filter(v => v.id !== id);
-        this.setVehicles(vehicles);
-    },
-
-    updateVehicleStatus(id, disponivel) {
-        const vehicles = this.getVehicles();
-        const index = vehicles.findIndex(v => v.id === id);
-        if (index >= 0) {
-            vehicles[index].disponivel = disponivel;
-            this.setVehicles(vehicles);
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Vehicles
+    // ----------------------------------------------------------
+    async saveVehicle(vehicle) {
+        if (vehicle.id) {
+            await supabaseClient.from('vehicles')
+                .update(_toSnake(vehicle))
+                .eq('id', vehicle.id);
+        } else {
+            await supabaseClient.from('vehicles')
+                .insert(_toSnake(vehicle));
         }
+        await this._refreshTable('vehicles');
     },
 
-    // Users
-    getUsers() { return this.getData(STORAGE_KEYS.USERS); },
-    setUsers(data) { this.setData(STORAGE_KEYS.USERS, data); },
-
-    // Projects
-    getProjects() { return this.getData(STORAGE_KEYS.PROJECTS); },
-    setProjects(data) { this.setData(STORAGE_KEYS.PROJECTS, data); },
-    deleteProject(id) {
-        const projects = this.getProjects().filter(p => p.id !== id);
-        this.setProjects(projects);
+    async deleteVehicle(id) {
+        await supabaseClient.from('vehicles').delete().eq('id', id);
+        await this._refreshTable('vehicles');
     },
 
-    // Bookings
-    getBookings() { return this.getData(STORAGE_KEYS.BOOKINGS); },
-    setBookings(data) { this.setData(STORAGE_KEYS.BOOKINGS, data); },
+    async updateVehicleStatus(id, disponivel) {
+        await supabaseClient.from('vehicles').update({ disponivel }).eq('id', id);
+        await this._refreshTable('vehicles');
+    },
 
-    // Fuel Logs
-    getFuelLogs() { return this.getData(STORAGE_KEYS.FUEL_LOGS) || []; },
-    saveFuelEntry(entry) {
-        const logs = this.getFuelLogs();
-        logs.push({ ...entry, id: 'f' + Date.now(), data: new Date().toISOString() });
-        this.setData(STORAGE_KEYS.FUEL_LOGS, logs);
-
-        // Subtrair do Saldo do Projeto
-        const projects = this.getProjects();
-        const pIndex = projects.findIndex(p => p.id === entry.projetoId);
-        if (pIndex >= 0) {
-            projects[pIndex].saldo -= entry.valor;
-            this.setProjects(projects);
+    async setVehicles(data) {
+        // Batch update — used internally for km updates etc.
+        for (const v of data) {
+            await supabaseClient.from('vehicles').update(_toSnake(v)).eq('id', v.id);
         }
-
-        // Atualizar KM do Veículo
-        const vehicles = this.getVehicles();
-        const vIndex = vehicles.findIndex(v => v.id === entry.veiculoId);
-        if (vIndex >= 0) {
-            vehicles[vIndex].km = entry.km;
-            this.setVehicles(vehicles);
-        }
-    },
-    updateBooking(id, data) {
-        const bookings = this.getBookings();
-        const index = bookings.findIndex(b => b.id === id);
-        if (index >= 0) {
-            bookings[index] = { ...bookings[index], ...data };
-            this.setBookings(bookings);
-        }
+        await this._refreshTable('vehicles');
     },
 
-    cancelBooking(id) {
-        const bookings = this.getBookings();
-        const index = bookings.findIndex(b => b.id === id);
-        if (index >= 0) {
-            const booking = bookings[index];
-            bookings[index].status = 'cancelado';
-            this.setBookings(bookings);
-            
-            // Liberar Veículo
-            this.updateVehicleStatus(booking.veiculoId, true);
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Users/Profiles
+    // ----------------------------------------------------------
+    async setUsers(data) {
+        for (const u of data) {
+            const snake = _toSnake(u);
+            delete snake.senha; // Never store password in profiles
+            delete snake.email; // Email is managed by auth.users
+            await supabaseClient.from('profiles').update(snake).eq('id', u.id);
+        }
+        await this._refreshTable('users');
+    },
+
+    async saveProfile(profile) {
+        const snake = _toSnake(profile);
+        delete snake.senha;
+        await supabaseClient.from('profiles').update(snake).eq('id', profile.id);
+        await this._refreshTable('users');
+    },
+
+    async createUser(userData) {
+        // Create auth user with a non-persistent client (won't log out admin)
+        const { createClient: createTempClient } = supabase;
+        const tempClient = createTempClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: false }
+        });
+
+        const { data, error } = await tempClient.auth.signUp({
+            email: userData.email,
+            password: userData.senha || 'FF@123',
+            options: {
+                data: {
+                    nome: userData.nome,
+                    departamento: userData.departamento,
+                    tipo: userData.tipo,
+                    trocarSenha: true
+                }
+            }
+        });
+
+        if (error) throw error;
+
+        // Wait briefly for the trigger to create the profile
+        await new Promise(r => setTimeout(r, 1000));
+        await this._refreshTable('users');
+        return data;
+    },
+
+    // Session -- now handled by Supabase Auth
+    setLoggedInUser(user) {
+        this._cache.currentUser = user;
+    },
+
+    async logout() {
+        await supabaseClient.auth.signOut();
+        this._cache.currentUser = null;
+        // Clear all caches
+        Object.keys(this._cache).forEach(key => {
+            if (Array.isArray(this._cache[key])) this._cache[key] = [];
+            else if (key === 'settings') this._cache[key] = this._defaultSettings();
+            else this._cache[key] = null;
+        });
+    },
+
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Projects
+    // ----------------------------------------------------------
+    async setProjects(data) {
+        for (const p of data) {
+            await supabaseClient.from('projects').update(_toSnake(p)).eq('id', p.id);
+        }
+        await this._refreshTable('projects');
+    },
+
+    async saveProject(project) {
+        if (project.id) {
+            await supabaseClient.from('projects').update(_toSnake(project)).eq('id', project.id);
+        } else {
+            await supabaseClient.from('projects').insert(_toSnake(project));
+        }
+        await this._refreshTable('projects');
+    },
+
+    async deleteProject(id) {
+        await supabaseClient.from('projects').delete().eq('id', id);
+        await this._refreshTable('projects');
+    },
+
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Bookings
+    // ----------------------------------------------------------
+    async setBookings(data) {
+        for (const b of data) {
+            await supabaseClient.from('bookings').update(_toSnake(b)).eq('id', b.id);
+        }
+        await this._refreshTable('bookings');
+    },
+
+    async createBooking(bookingData) {
+        const { data, error } = await supabaseClient.from('bookings')
+            .insert(_toSnake(bookingData))
+            .select()
+            .single();
+        if (error) console.error('Erro ao criar agendamento:', error);
+        await this._refreshTable('bookings');
+        return data ? _toCamel(data) : null;
+    },
+
+    async updateBooking(id, updateData) {
+        await supabaseClient.from('bookings')
+            .update(_toSnake(updateData))
+            .eq('id', id);
+        await this._refreshTable('bookings');
+    },
+
+    async cancelBooking(id) {
+        const booking = this.getBookings().find(b => b.id === id);
+        if (booking) {
+            await supabaseClient.from('bookings')
+                .update({ status: 'cancelado' })
+                .eq('id', id);
+            await supabaseClient.from('vehicles')
+                .update({ disponivel: true })
+                .eq('id', booking.veiculoId);
+            await this._refreshTable('bookings');
+            await this._refreshTable('vehicles');
             return true;
         }
         return false;
     },
 
-    getChecklistItems() { return this.getData(STORAGE_KEYS.CHECKLIST_ITEMS); },
-    setChecklistItems(data) { this.setData(STORAGE_KEYS.CHECKLIST_ITEMS, data); },
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Fuel Logs
+    // ----------------------------------------------------------
+    async saveFuelEntry(entry) {
+        const fuelData = {
+            veiculoId: entry.veiculoId,
+            bookingId: entry.bookingId,
+            projetoId: entry.projetoId,
+            km: entry.km,
+            valor: entry.valor
+        };
+        await supabaseClient.from('fuel_logs').insert(_toSnake(fuelData));
 
-    // Corrections
-    getCorrections() { return this.getData(STORAGE_KEYS.CORRECTIONS) || []; },
-    saveCorrection(entry) {
-        const corrections = this.getCorrections();
-        corrections.push({ 
-            ...entry, 
-            id: 'cor' + Date.now(), 
-            dataRegistro: new Date().toISOString(),
-            hasInconformity: entry.results?.some(r => r.status === 'nok') || false
-        });
-        this.setData(STORAGE_KEYS.CORRECTIONS, corrections);
+        // Update project balance
+        if (entry.projetoId && entry.valor) {
+            const project = this.getProjects().find(p => p.id === entry.projetoId);
+            if (project) {
+                await supabaseClient.from('projects')
+                    .update({ saldo: project.saldo - entry.valor })
+                    .eq('id', entry.projetoId);
+            }
+        }
+
+        // Update vehicle km
+        if (entry.veiculoId && entry.km) {
+            await supabaseClient.from('vehicles')
+                .update({ km: entry.km })
+                .eq('id', entry.veiculoId);
+        }
+
+        await Promise.all([
+            this._refreshTable('fuelLogs'),
+            this._refreshTable('projects'),
+            this._refreshTable('vehicles')
+        ]);
     },
 
-    deleteCorrection(id) {
-        let corrections = this.getCorrections();
-        corrections = corrections.filter(c => c.id !== id);
-        this.setData(STORAGE_KEYS.CORRECTIONS, corrections);
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Checklist Items
+    // ----------------------------------------------------------
+    async setChecklistItems(data) {
+        // For simple cases: delete all and re-insert
+        // But safer: upsert each item
+        for (const item of data) {
+            const snake = _toSnake(item);
+            if (item.id && !item.id.startsWith('chk_')) {
+                await supabaseClient.from('checklist_items').update(snake).eq('id', item.id);
+            } else {
+                delete snake.id; // Let DB generate UUID
+                await supabaseClient.from('checklist_items').insert(snake);
+            }
+        }
+        await this._refreshTable('checklistItems');
+    },
+
+    async addChecklistItem(nome) {
+        await supabaseClient.from('checklist_items').insert({
+            nome: nome,
+            ativo: true,
+            ordem: this._cache.checklistItems.length + 1
+        });
+        await this._refreshTable('checklistItems');
+    },
+
+    async deleteChecklistItem(id) {
+        await supabaseClient.from('checklist_items').delete().eq('id', id);
+        await this._refreshTable('checklistItems');
+    },
+
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Corrections
+    // ----------------------------------------------------------
+    async saveCorrection(entry) {
+        const correctionData = {
+            veiculoId: entry.veiculoId,
+            responsavel: entry.responsavel || '',
+            results: entry.results || [],
+            hasInconformity: entry.results?.some(r => r.status === 'nok') || false,
+            dataCorrecao: entry.data || null
+        };
+        await supabaseClient.from('corrections').insert(_toSnake(correctionData));
+        await this._refreshTable('corrections');
+    },
+
+    async deleteCorrection(id) {
+        await supabaseClient.from('corrections').delete().eq('id', id);
+        await this._refreshTable('corrections');
     },
 
     getPendingInconformities(vehicleId) {
         const bookings = this.getBookings().filter(b => b.veiculoId === vehicleId);
         const corrections = this.getCorrections().filter(c => c.veiculoId === vehicleId);
         const nokItems = {};
-        
-        // Coletar todos os eventos cronologicamente
+
+        // Collect all events chronologically
         const events = [];
         bookings.forEach(b => {
             if (b.checklistSaida) events.push({ data: b.checklistSaida.data, results: b.checklistSaida.results });
@@ -291,72 +504,55 @@ const Storage = {
         return Object.entries(nokItems).map(([nome, details]) => ({ nome, ...details }));
     },
 
-    // Session Management
-    getLoggedInUser() {
-        const session = localStorage.getItem(STORAGE_KEYS.SESSION);
-        if (!session) return null;
-        const userId = JSON.parse(session).userId;
-        return this.getUsers().find(u => u.id === userId);
-    },
-    setLoggedInUser(user) {
-        this.setData(STORAGE_KEYS.SESSION, { userId: user.id, timestamp: Date.now() });
-    },
-    logout() {
-        localStorage.removeItem(STORAGE_KEYS.SESSION);
-    },
-
-    // Maintenance
-    getMaintenanceRules() { return this.getData('ff_maintenance_rules') || []; },
-    setMaintenanceRules(rules) { this.setData('ff_maintenance_rules', rules); },
-    getMaintenanceLogs() { return this.getData(STORAGE_KEYS.MAINTENANCE_LOGS) || []; },
-    
-    saveMaintenanceLog(log) {
-        const logs = this.getMaintenanceLogs();
-        logs.push({ 
-            ...log, 
-            id: 'm' + Date.now(), 
-            data: log.data || new Date().toISOString() 
-        });
-        this.setData(STORAGE_KEYS.MAINTENANCE_LOGS, logs);
-
-        // Atualizar KM do veículo
-        if (log.kmRealizada && log.veiculoId) {
-            const vehicles = this.getVehicles();
-            const vIndex = vehicles.findIndex(v => v.id === log.veiculoId);
-            if (vIndex >= 0) {
-                // Só atualiza se o KM informado for maior que o atual (evita retrocessos acidentais)
-                if (log.kmRealizada > vehicles[vIndex].km) {
-                    vehicles[vIndex].km = log.kmRealizada;
-                    this.setVehicles(vehicles);
-                }
-            }
-        }
-
-        // Se houver valor e projeto, abater do saldo do projeto
-        if (log.valor && log.projetoId) {
-            const projects = this.getProjects();
-            const pIndex = projects.findIndex(p => p.id === log.projetoId);
-            if (pIndex >= 0) {
-                projects[pIndex].saldo -= parseFloat(log.valor);
-                this.setProjects(projects);
-            }
-        }
-    },
-
-    saveMaintenanceRule(rule) {
-        const rules = this.getMaintenanceRules();
-        const index = rules.findIndex(r => r.id === rule.id);
-        if (index >= 0) {
-            rules[index] = { ...rules[index], ...rule };
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Maintenance
+    // ----------------------------------------------------------
+    async saveMaintenanceRule(rule) {
+        const snake = _toSnake(rule);
+        if (rule.id) {
+            await supabaseClient.from('maintenance_rules').update(snake).eq('id', rule.id);
         } else {
-            rules.push({ ...rule, id: 'r' + Date.now() });
+            delete snake.id;
+            await supabaseClient.from('maintenance_rules').insert(snake);
         }
-        this.setMaintenanceRules(rules);
+        await this._refreshTable('maintenanceRules');
     },
 
-    deleteMaintenanceRule(id) {
-        const rules = this.getMaintenanceRules().filter(r => r.id !== id);
-        this.setMaintenanceRules(rules);
+    async deleteMaintenanceRule(id) {
+        await supabaseClient.from('maintenance_rules').delete().eq('id', id);
+        await this._refreshTable('maintenanceRules');
+    },
+
+    async saveMaintenanceLog(log) {
+        const logData = { ...log };
+        delete logData.id; // Let DB generate UUID
+        await supabaseClient.from('maintenance_logs').insert(_toSnake(logData));
+
+        // Update vehicle km
+        if (log.kmRealizada && log.veiculoId) {
+            const vehicle = this.getVehicles().find(v => v.id === log.veiculoId);
+            if (vehicle && log.kmRealizada > vehicle.km) {
+                await supabaseClient.from('vehicles')
+                    .update({ km: log.kmRealizada })
+                    .eq('id', log.veiculoId);
+            }
+        }
+
+        // Deduct from project balance
+        if (log.valor && log.projetoId) {
+            const project = this.getProjects().find(p => p.id === log.projetoId);
+            if (project) {
+                await supabaseClient.from('projects')
+                    .update({ saldo: project.saldo - parseFloat(log.valor) })
+                    .eq('id', log.projetoId);
+            }
+        }
+
+        await Promise.all([
+            this._refreshTable('maintenanceLogs'),
+            this._refreshTable('vehicles'),
+            this._refreshTable('projects')
+        ]);
     },
 
     calculateMaintenanceStatus(vehicleId) {
@@ -370,13 +566,13 @@ const Storage = {
             const lastService = logs
                 .filter(l => l.regraId === rule.id)
                 .sort((a, b) => b.kmRealizada - a.kmRealizada)[0];
-            
+
             const kmSinceLast = lastService ? (vehicle.km - lastService.kmRealizada) : vehicle.km;
             const kmRemaining = rule.intervaloKM - kmSinceLast;
-            
-            let status = 'success'; // OK
-            if (kmRemaining <= 0) status = 'error'; // Crítico
-            else if (kmRemaining <= 500) status = 'warning'; // Próximo
+
+            let status = 'success';
+            if (kmRemaining <= 0) status = 'error';
+            else if (kmRemaining <= 500) status = 'warning';
 
             return {
                 ...rule,
@@ -387,15 +583,121 @@ const Storage = {
         });
     },
 
-    // Settings
-    getSettings() {
-        const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS)) || {};
-        return { ...DEFAULT_DATA.settings, ...stored };
+    // ----------------------------------------------------------
+    // ASYNC Mutators — Settings
+    // ----------------------------------------------------------
+    async setSettings(data) {
+        const snake = _toSnake(data);
+        snake.id = 1;
+        await supabaseClient.from('settings').upsert(snake);
+        await this._refreshTable('settings');
     },
-    setSettings(data) {
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(data));
+
+    // ----------------------------------------------------------
+    // Legacy compatibility — setData (used by some app.js actions)
+    // ----------------------------------------------------------
+    async setData(key, data) {
+        // Map legacy localStorage keys to Supabase table operations
+        const keyMap = {
+            'ff_bookings': 'bookings',
+            'ff_users': 'users',
+            'ff_projects': 'projects',
+            'ff_vehicles': 'vehicles',
+            'ff_checklist_items': 'checklistItems',
+            'ff_maintenance_rules': 'maintenanceRules',
+            'ff_maintenance_logs': 'maintenanceLogs',
+            'ff_fuel_logs': 'fuelLogs',
+            'ff_corrections': 'corrections'
+        };
+
+        console.warn('FrotaFlow: setData() called with legacy key:', key, '— use specific methods instead.');
+
+        const tableName = keyMap[key];
+        if (!tableName) return;
+
+        // For array-based setData, we need to handle creates vs updates
+        if (Array.isArray(data)) {
+            const existingIds = this._cache[tableName].map(item => item.id);
+            for (const item of data) {
+                const snake = _toSnake(item);
+                if (existingIds.includes(item.id)) {
+                    await supabaseClient.from(this._tableNameForKey(tableName)).update(snake).eq('id', item.id);
+                } else {
+                    delete snake.id; // Remove non-UUID ids like 'b1234567'
+                    await supabaseClient.from(this._tableNameForKey(tableName)).insert(snake);
+                }
+            }
+            await this._refreshTable(tableName);
+        }
+    },
+
+    _tableNameForKey(cacheKey) {
+        const map = {
+            'vehicles': 'vehicles',
+            'users': 'profiles',
+            'projects': 'projects',
+            'bookings': 'bookings',
+            'checklistItems': 'checklist_items',
+            'maintenanceRules': 'maintenance_rules',
+            'maintenanceLogs': 'maintenance_logs',
+            'fuelLogs': 'fuel_logs',
+            'corrections': 'corrections'
+        };
+        return map[cacheKey] || cacheKey;
+    },
+
+    // ----------------------------------------------------------
+    // Cache Refresh
+    // ----------------------------------------------------------
+    async _refreshTable(tableName) {
+        const fetchMap = {
+            vehicles: async () => {
+                const { data } = await supabaseClient.from('vehicles').select('*').order('nome');
+                this._cache.vehicles = _toCamel(data || []);
+            },
+            users: async () => {
+                const { data } = await supabaseClient.from('profiles').select('*').order('nome');
+                this._cache.users = _toCamel(data || []);
+            },
+            projects: async () => {
+                const { data } = await supabaseClient.from('projects').select('*').order('nome');
+                this._cache.projects = _toCamel(data || []);
+            },
+            bookings: async () => {
+                const { data } = await supabaseClient.from('bookings').select('*').order('data_saida', { ascending: false });
+                this._cache.bookings = _toCamel(data || []);
+            },
+            checklistItems: async () => {
+                const { data } = await supabaseClient.from('checklist_items').select('*').order('ordem');
+                this._cache.checklistItems = _toCamel(data || []);
+            },
+            maintenanceRules: async () => {
+                const { data } = await supabaseClient.from('maintenance_rules').select('*').order('nome');
+                this._cache.maintenanceRules = _toCamel(data || []);
+            },
+            maintenanceLogs: async () => {
+                const { data } = await supabaseClient.from('maintenance_logs').select('*').order('data', { ascending: false });
+                this._cache.maintenanceLogs = _toCamel(data || []);
+            },
+            fuelLogs: async () => {
+                const { data } = await supabaseClient.from('fuel_logs').select('*').order('data', { ascending: false });
+                this._cache.fuelLogs = _toCamel(data || []);
+            },
+            corrections: async () => {
+                const { data } = await supabaseClient.from('corrections').select('*').order('data_registro', { ascending: false });
+                this._cache.corrections = _toCamel(data || []);
+            },
+            settings: async () => {
+                const { data } = await supabaseClient.from('settings').select('*').eq('id', 1).single();
+                this._cache.settings = data ? _toCamel(data) : this._defaultSettings();
+            }
+        };
+
+        if (fetchMap[tableName]) {
+            await fetchMap[tableName]();
+        }
     }
 };
 
-// Initialize on load
-Storage.init();
+// Note: init() is called by App.init() — NOT here anymore
+// (since init is async and depends on auth state)
