@@ -302,7 +302,7 @@ const App = {
                     <!-- Esquerda: Brand Area (Desktop Only) -->
                     <div class="hidden md:flex w-1/2 signature-gradient p-12 flex-col justify-center text-white relative overflow-hidden">
                         <div class="relative z-10">
-                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${systemName}</h1>`}
+                            ${settings.logoUrl ? `<img src="${settings.logoUrl}" class="h-16 w-auto mb-8 animate-in slide-in-from-left duration-700">` : `<h1 class="text-4xl font-black tracking-tighter mb-4 text-white">${settings.nomeSistema || 'Sistema'}</h1>`}
                             <h2 class="text-4xl font-extrabold leading-tight tracking-tighter text-white opacity-80">${settings.subtituloSistema || 'Portal de Gestão'}</h2>
                         </div>
 
