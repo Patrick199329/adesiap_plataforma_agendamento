@@ -8,15 +8,21 @@ const App = {
     state: {},
     
     async init() {
-        // Monitor de Autenticação para links de recuperação (MOVIDO PARA INÍCIO)
+        // Monitor de Autenticação para links de recuperação (PRIORIDADE MÁXIMA)
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'PASSWORD_RECOVERY') {
+            console.log('Sistema: Evento de Autenticação:', event);
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && window.location.hash.includes('type=recovery'))) {
                 window.location.hash = '#trocar-senha';
             }
         });
 
+        const hash = window.location.hash;
+        if (hash.includes('access_token=') || hash.includes('type=recovery')) {
+             console.log('Sistema: Recuperação detectada. Inicializando em modo seguro...');
+        }
+
         await Storage.init();
-        this.utils.applyBranding(); // Aplicar branding o mais rápido possível
+        this.utils.applyBranding(); 
         this.loadGoogleMaps();
 
         window.addEventListener('hashchange', () => this.handleRouting());
@@ -45,8 +51,8 @@ const App = {
 
         // ABORTAR ROTEAMENTO SE FOR UM LINK DE RECUPERAÇÃO/TOKEN
         // Isso evita que o roteador limpe a URL antes do Supabase processar o token
-        if (hash.includes('access_token=') || hash.includes('type=recovery')) {
-            console.log('Sistema: Detectado token de acesso. Aguardando processamento do Supabase...');
+        if (hash.includes('access_token=') || hash.includes('type=recovery') || hash.includes('error=')) {
+            console.log('Sistema: Detectado token/erro de autenticação. Aguardando...');
             return;
         }
 
@@ -3060,7 +3066,7 @@ const App = {
                 const user = Storage.getUsers().find(u => u.id === id);
                 if (user && user.email) {
                     const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email, {
-                        redirectTo: `${window.location.origin}/#login`
+                        redirectTo: `${window.location.origin}/`
                     });
                     if (error) {
                         alert('Erro: ' + error.message);
@@ -3094,7 +3100,7 @@ const App = {
 
                 try {
                     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                        redirectTo: `${window.location.origin}/#login`
+                        redirectTo: `${window.location.origin}/`
                     });
 
                     if (error) throw error;
