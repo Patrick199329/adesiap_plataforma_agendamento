@@ -396,7 +396,8 @@ const Storage = {
             bookingId: entry.bookingId,
             projetoId: entry.projetoId,
             km: entry.km,
-            valor: entry.valor
+            valor: entry.valor,
+            foto: entry.foto || ''
         };
         await supabaseClient.from('fuel_logs').insert(_toSnake(fuelData));
 

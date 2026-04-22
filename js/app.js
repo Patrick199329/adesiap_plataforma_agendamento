@@ -3580,6 +3580,7 @@ const App = {
                         <input type="hidden" name="bookingId" value="${bookingId}">
                         <input type="hidden" name="projetoId" value="${booking.projetoId}">
                         <input type="hidden" name="veiculoId" value="${booking.veiculoId}">
+                        <input type="hidden" name="fotoBase64" id="fuel-photo-data">
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-2">
@@ -3594,10 +3595,19 @@ const App = {
 
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Cupom Fiscal / Recibo</label>
-                            <div onclick="this.querySelector('input').click()" class="w-full h-40 border-2 border-dashed border-outline-variant/20 rounded-3xl flex flex-col items-center justify-center text-on-surface-variant bg-surface-container-lowest hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group">
-                                <span class="material-symbols-outlined text-4xl opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all">add_a_photo</span>
-                                <span class="text-[9px] font-black uppercase tracking-widest mt-3 opacity-40">Clique para anexar imagem</span>
-                                <input type="file" class="hidden" accept="image/*">
+                            <div id="fuel-dropzone" onclick="document.getElementById('fuel-file-input').click()" class="w-full min-h-[160px] border-2 border-dashed border-outline-variant/20 rounded-3xl flex flex-col items-center justify-center text-on-surface-variant bg-surface-container-lowest hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group relative overflow-hidden">
+                                <div id="fuel-preview-empty" class="flex flex-col items-center py-8">
+                                    <span class="material-symbols-outlined text-4xl opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all">add_a_photo</span>
+                                    <span class="text-[9px] font-black uppercase tracking-widest mt-3 opacity-40">Tirar foto ou escolher arquivo</span>
+                                </div>
+                                <div id="fuel-preview-container" class="hidden w-full h-full absolute inset-0">
+                                    <img id="fuel-img-preview" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                        <span class="material-symbols-outlined text-white text-3xl">cached</span>
+                                        <p class="text-[10px] font-black text-white uppercase ml-2">Trocar Foto</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="fuel-file-input" class="hidden" accept="image/*">
                             </div>
                         </div>
                     </form>
@@ -3611,13 +3621,34 @@ const App = {
                 
                 try {
                     await this.saveFuelEntry(formData);
-                    // O toast já é mostrado em saveFuelEntry, mas podemos reforçar aqui se necessário
                     return true;
                 } catch (err) {
                     alert('Erro ao registrar abastecimento: ' + err.message);
                     return false;
                 }
             });
+
+            // Handlers para Imagem
+            const fileInput = document.getElementById('fuel-file-input');
+            const previewEmpty = document.getElementById('fuel-preview-empty');
+            const previewContainer = document.getElementById('fuel-preview-container');
+            const imgPreview = document.getElementById('fuel-img-preview');
+            const photoHidden = document.getElementById('fuel-photo-data');
+
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        photoHidden.value = event.target.result;
+                        imgPreview.src = event.target.result;
+                        previewEmpty.classList.add('hidden');
+                        previewContainer.classList.remove('hidden');
+                        this.showToast('Imagem carregada!', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
         },
 
         async saveFuelEntry(formData) {
@@ -3626,7 +3657,8 @@ const App = {
                 projetoId: formData.get('projetoId'),
                 veiculoId: formData.get('veiculoId'),
                 km: parseInt(formData.get('km')),
-                valor: parseFloat(formData.get('valor'))
+                valor: parseFloat(formData.get('valor')),
+                foto: formData.get('fotoBase64') || ''
             };
             
             await Storage.saveFuelEntry(entry);
