@@ -3033,7 +3033,9 @@ const App = {
             if (confirm('Será enviado um e-mail de redefinição de senha para o usuário. Continuar?')) {
                 const user = Storage.getUsers().find(u => u.id === id);
                 if (user && user.email) {
-                    const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email);
+                    const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email, {
+                        redirectTo: `${window.location.origin}/#login`
+                    });
                     if (error) {
                         alert('Erro: ' + error.message);
                     } else {
