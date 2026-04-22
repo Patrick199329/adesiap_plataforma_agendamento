@@ -11,6 +11,14 @@ const App = {
         await Storage.init();
         this.utils.applyBranding(); // Aplicar branding o mais rápido possível
         this.loadGoogleMaps();
+
+        // Monitor de Autenticação para links de recuperação
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                window.location.hash = '#trocar-senha';
+            }
+        });
+
         window.addEventListener('hashchange', () => this.handleRouting());
         this.handleRouting();
     },
@@ -377,6 +385,12 @@ const App = {
                             </button>
                         </form>
 
+                        <div class="mt-6 text-center">
+                            <button id="forgot-password-link" class="text-[10px] font-black text-primary/40 hover:text-primary uppercase tracking-[0.2em] transition-colors outline-none">
+                                Esqueceu a senha?
+                            </button>
+                        </div>
+
                         <div class="mt-12 text-center">
                             <p class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest leading-loose">
                                 Desenvolvido por<br>
@@ -395,6 +409,11 @@ const App = {
                     e.preventDefault();
                     this.actions.login(new FormData(form));
                 };
+            }
+
+            const forgotBtn = document.getElementById('forgot-password-link');
+            if (forgotBtn) {
+                forgotBtn.onclick = () => this.actions.forgotPassword();
             }
         }, 0);
     },
@@ -3045,6 +3064,41 @@ const App = {
                     alert('Usuário sem e-mail cadastrado.');
                 }
             }
+        },
+
+        async forgotPassword() {
+            const content = `
+                <div class="space-y-6">
+                    <p class="text-sm font-medium text-on-surface-variant leading-relaxed">Insira seu e-mail cadastrado para receber as instruções de recuperação de senha.</p>
+                    <form id="forgot-pwd-form" class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">E-mail de Cadastro</label>
+                            <input name="email" type="email" placeholder="seu@email.com" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-primary focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            App.showModal('Recuperar Senha', content, async () => {
+                const form = document.getElementById('forgot-pwd-form');
+                if (!form.checkValidity()) { form.reportValidity(); return false; }
+                const formData = new FormData(form);
+                const email = formData.get('email');
+
+                try {
+                    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                        redirectTo: `${window.location.origin}/#login`
+                    });
+
+                    if (error) throw error;
+
+                    alert('Se o e-mail estiver cadastrado, você receberá um link de recuperação em instantes.');
+                    return true;
+                } catch (err) {
+                    alert('Erro ao processar solicitação: ' + err.message);
+                    return false;
+                }
+            });
         },
 
         openAddProject() {
