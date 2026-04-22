@@ -8,16 +8,16 @@ const App = {
     state: {},
     
     async init() {
-        await Storage.init();
-        this.utils.applyBranding(); // Aplicar branding o mais rápido possível
-        this.loadGoogleMaps();
-
-        // Monitor de Autenticação para links de recuperação
+        // Monitor de Autenticação para links de recuperação (MOVIDO PARA INÍCIO)
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (event === 'PASSWORD_RECOVERY') {
                 window.location.hash = '#trocar-senha';
             }
         });
+
+        await Storage.init();
+        this.utils.applyBranding(); // Aplicar branding o mais rápido possível
+        this.loadGoogleMaps();
 
         window.addEventListener('hashchange', () => this.handleRouting());
         this.handleRouting();
@@ -42,6 +42,13 @@ const App = {
 
         // UI Prep
         this.updateShellVisibility(user);
+
+        // ABORTAR ROTEAMENTO SE FOR UM LINK DE RECUPERAÇÃO/TOKEN
+        // Isso evita que o roteador limpe a URL antes do Supabase processar o token
+        if (hash.includes('access_token=') || hash.includes('type=recovery')) {
+            console.log('Sistema: Detectado token de acesso. Aguardando processamento do Supabase...');
+            return;
+        }
 
         if (!user && path !== 'login') {
             window.location.hash = '#login';
