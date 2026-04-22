@@ -5,13 +5,16 @@
 
 const App = {
     currentPath: '',
-    state: {},
+    state: {
+        isRecovery: false
+    },
     
     async init() {
         // Monitor de Autenticação para links de recuperação (PRIORIDADE MÁXIMA)
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             console.log('Sistema: Evento de Autenticação:', event);
             if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && window.location.hash.includes('type=recovery'))) {
+                this.state.isRecovery = true;
                 window.location.hash = '#trocar-senha';
             }
         });
@@ -105,12 +108,13 @@ const App = {
         const sidebar = document.getElementById('sidebar');
         const main = document.querySelector('main');
         const header = document.querySelector('header');
+        const path = window.location.hash.replace('#', '').split('?')[0];
 
-        if (!user) {
+        if (!user || path === 'trocar-senha') {
             sidebar?.classList.add('hidden');
             if (main) main.classList.remove('lg:ml-64');
             if (header) header.classList.add('hidden');
-            document.body.classList.remove('flex'); // Allow login to center
+            document.body.classList.remove('flex'); // Allow centering
         } else {
             sidebar?.classList.remove('hidden');
             if (main) main.classList.add('lg:ml-64');
@@ -432,12 +436,18 @@ const App = {
     },
 
     renderTrocarSenha(container) {
+        const title = this.state.isRecovery ? 'Redefinir Senha' : 'Primeiro Acesso';
+        const subtitle = this.state.isRecovery 
+            ? 'Crie uma nova senha forte para sua conta.'
+            : 'Para sua segurança, defina uma nova senha.';
+
         container.innerHTML = `
-            <div class="h-full flex items-center justify-center -mt-20">
-                <div class="bg-white p-12 rounded-3xl shadow-2xl w-full max-w-md space-y-8 animate-in slide-in-from-bottom-8 duration-500">
+            <div class="min-h-screen flex items-center justify-center p-4 bg-surface-container-lowest">
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl shadow-primary/5 w-full max-w-md space-y-8 animate-in zoom-in-95 duration-500 border border-outline-variant/5">
                     <div class="text-center">
-                        <h2 class="text-3xl font-black text-primary tracking-tight">Primeiro Acesso</h2>
-                        <p class="text-on-surface-variant font-medium mt-2">Para sua segurança, defina uma nova senha.</p>
+                        <h2 class="text-3xl font-black text-primary tracking-tight">${title}</h2>
+                        <p class="text-on-surface-variant font-medium mt-2 text-sm opacity-60 uppercase tracking-wider">${subtitle}</p>
+                    </div>
                     </div>
 
                     <form id="change-pwd-form" class="space-y-6">
