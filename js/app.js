@@ -4068,12 +4068,16 @@ const App = {
                     const passFim = !dataFim || logDate <= dataFim;
 
                     if (passProjeto && passVeiculo && passInicio && passFim) {
+                        const booking = bookings.find(b => b.id === f.bookingId);
                         financialEntries.push({
                             tipo: 'ABASTECIMENTO',
                             data: f.data,
                             veiculoId: f.veiculoId,
                             projetoId: f.projetoId,
-                            descricao: 'Abastecimento Real',
+                            responsavel: booking ? Storage.getUsers().find(u => u.id === booking.motoristaId)?.nome : 'Motorista',
+                            descricao: 'Abastecimento em Trânsito',
+                            rota: booking ? `${booking.origem} → ${booking.destino}` : 'Lançamento Direto',
+                            observacao: f.observacao || '',
                             valor: parseFloat(f.valor || 0),
                             detalhe: `${f.km} KM`,
                             foto: f.foto
@@ -4081,9 +4085,7 @@ const App = {
                     }
                 });
 
-                // 2. Adicionar Viagens (Custo Estimado se não houver abastecimento vinculado?) 
-                // Ou apenas para registro de KM? O usuário pediu novos abastecimentos, então focaremos neles.
-                // Mas manteremos as viagens concluídas para contexto de KM.
+                // 2. Adicionar Viagens Concluídas
                 bookings.forEach(b => {
                     if (b.status !== 'concluido') return;
                     const passProjeto = projetoId === 'all' || b.projetoId === projetoId;
@@ -4098,8 +4100,11 @@ const App = {
                             data: b.dataSaida,
                             veiculoId: b.veiculoId,
                             projetoId: b.projetoId,
-                            descricao: b.destino,
-                            valor: 0, // Custo KM será apenas informativo ou 0 se focarmos em logs reais
+                            responsavel: Storage.getUsers().find(u => u.id === b.motoristaId)?.nome || 'N/A',
+                            descricao: `Viagem: ${b.destino}`,
+                            rota: `${b.origem} → ${b.destino}`,
+                            observacao: b.observacao || '',
+                            valor: 0, 
                             detalhe: `${b.kmFinal - b.kmInicial} KM percorridos`,
                             dataFim: b.dataChegada
                         });
@@ -4129,15 +4134,15 @@ const App = {
                             ${veiculoId !== 'all' ? `<p class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Veículo: ${vehicles.find(v => v.id === veiculoId)?.nome}</p>` : ''}
                         </div>
 
-                        <table class="w-full text-[10px] border-collapse">
+                        <table class="w-full text-[9px] border-collapse">
                             <thead>
                                 <tr class="bg-primary text-white text-left">
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Data</th>
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Tipo / Descrição</th>
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Veículo / Projeto</th>
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Detalhes</th>
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Evidência</th>
-                                    <th class="py-3 px-3 uppercase text-[9px] font-black text-right">Valor Real</th>
+                                    <th class="py-3 px-3 uppercase font-black">Data</th>
+                                    <th class="py-3 px-3 uppercase font-black">Responsável</th>
+                                    <th class="py-3 px-3 uppercase font-black">Origem / Destino</th>
+                                    <th class="py-3 px-3 uppercase font-black">Veículo / Projeto</th>
+                                    <th class="py-3 px-3 uppercase font-black">Obs / Detalhes</th>
+                                    <th class="py-3 px-3 uppercase font-black text-right">Valor Real</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-outline-variant/20">
@@ -4146,35 +4151,18 @@ const App = {
                                     const p = projects.find(proj => proj.id === e.projetoId);
                                     const isAbastecimento = e.tipo === 'ABASTECIMENTO';
                                     
-                                    // Processar fotos (pode ser string JSON ou URL única)
-                                    let photos = [];
-                                    if (e.foto) {
-                                        try {
-                                            photos = e.foto.startsWith('[') ? JSON.parse(e.foto) : [e.foto];
-                                        } catch (err) {
-                                            photos = [e.foto];
-                                        }
-                                    }
-
                                     return `
-                                        <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/30'}">
+                                        <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/20'}">
                                             <td class="py-4 px-3 font-bold">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
-                                            <td class="py-4 px-3">
-                                                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase ${isAbastecimento ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}">${e.tipo}</span>
-                                                <p class="mt-1 font-bold text-primary uppercase">${e.descricao}</p>
-                                            </td>
+                                            <td class="py-4 px-3 font-bold text-primary uppercase">${e.responsavel || 'N/A'}</td>
+                                            <td class="py-4 px-3 italic">${e.rota}</td>
                                             <td class="py-4 px-3">
                                                 <p class="font-bold text-primary">${v?.nome || 'N/A'}</p>
                                                 <p class="opacity-50 text-[8px] uppercase font-black">${p?.nome || 'N/A'}</p>
                                             </td>
-                                            <td class="py-4 px-3 font-medium opacity-60">${e.detalhe}</td>
                                             <td class="py-4 px-3">
-                                                <div class="flex gap-1">
-                                                    ${photos.map(url => `
-                                                        <img src="${url}" onclick="App.utils.viewImage('${url}')" class="h-10 w-10 object-cover rounded border border-outline-variant/20 shadow-sm cursor-zoom-in hover:scale-110 transition-transform">
-                                                    `).join('')}
-                                                    ${photos.length === 0 ? '<span class="opacity-20 italic">Sem foto</span>' : ''}
-                                                </div>
+                                                <p class="font-bold text-[9px]">${e.detalhe}</p>
+                                                <p class="text-[8px] opacity-60">${e.observacao || ''}</p>
                                             </td>
                                             <td class="py-4 px-3 text-right font-black text-primary text-sm">
                                                 ${e.valor > 0 ? `R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
@@ -4190,6 +4178,34 @@ const App = {
                                 </tr>
                             </tfoot>
                         </table>
+
+                        <!-- Seção de Anexo de Cupons (Visível apenas na Impressão ou ao rolar) -->
+                        <div class="mt-20 space-y-10 page-break-before">
+                            <h3 class="text-xl font-black text-primary uppercase tracking-tighter border-b-2 border-primary pb-2">Anexo I: Comprovantes e Evidências</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                ${financialEntries.filter(e => e.foto).map(e => {
+                                    let photos = [];
+                                    try { photos = e.foto.startsWith('[') ? JSON.parse(e.foto) : [e.foto]; } catch(err) { photos = [e.foto]; }
+                                    
+                                    const v = vehicles.find(veh => veh.id === e.veiculoId);
+                                    
+                                    return photos.map((url, idx) => `
+                                        <div class="border-2 border-outline-variant/10 rounded-3xl p-6 bg-white space-y-4 break-inside-avoid shadow-sm">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <p class="text-[10px] font-black text-primary uppercase tracking-widest">Cupom ${new Date(e.data).toLocaleDateString('pt-BR')}</p>
+                                                    <p class="text-xs font-bold text-on-surface-variant">${v?.nome} - R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <span class="text-[9px] font-black text-on-surface-variant/40">ANEXO ${idx + 1}</span>
+                                            </div>
+                                            <img src="${url}" class="w-full h-auto max-h-[600px] object-contain rounded-2xl shadow-inner bg-surface-container-low">
+                                            <p class="text-[9px] italic text-on-surface-variant opacity-60 text-center">Evidência capturada via plataforma digital adesiap</p>
+                                        </div>
+                                    `).join('');
+                                }).join('')}
+                            </div>
+                        </div>
                     </div>
                 `;
             }
