@@ -6,6 +6,37 @@
     <title id="app-title">Carregando...</title>
     <link id="app-favicon" rel="icon" type="image/x-icon" href="favicon.ico">
     
+    <script>
+        // Global Error Handler for Diagnostics
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Erro Global Detectado:', {msg, url, lineNo, columnNo, error});
+            const contentArea = document.getElementById('view-content');
+            if (contentArea) {
+                contentArea.innerHTML = `
+                    <div style="padding: 40px; text-align: center; font-family: sans-serif;">
+                        <h2 style="color: #ba1a1a; font-weight: 800;">Erro Crítico de Script</h2>
+                        <p style="color: #43474f; font-weight: 500;">Não foi possível carregar os componentes do sistema.</p>
+                        
+                        <div style="background: #fdf2f2; color: #93000a; padding: 20px; border-radius: 15px; font-size: 12px; margin: 25px auto; font-family: monospace; text-align: left; max-width: 600px; border: 1px solid #ffdad6; line-height: 1.6;">
+                            <b>Mensagem:</b> ${msg}<br>
+                            <b>Arquivo:</b> ${url || 'Desconhecido'}<br>
+                            <b>Linha:</b> ${lineNo}:${columnNo}<br>
+                            ${error ? `<b>Detalhes:</b> ${error.stack || error}` : ''}
+                        </div>
+
+                        <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                            <button onclick="window.location.reload()" style="padding: 12px 30px; background: #00193c; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 11px;">Tentar Recarregar</button>
+                            <p style="font-size: 10px; color: #777; max-width: 400px;">
+                                <b>Dica:</b> Se você estiver abrindo o arquivo diretamente da pasta, tente usar a extensão <b>Live Server</b> do VS Code ou o comando <b>npm run dev</b>.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            return false;
+        };
+    </script>
+    
     <!-- Fonts --> 
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>

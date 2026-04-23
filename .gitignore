@@ -1,0 +1,11 @@
+# Temporary files
+modal_check.txt
+modal_check_2.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

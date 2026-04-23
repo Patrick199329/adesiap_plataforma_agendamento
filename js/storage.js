@@ -130,27 +130,45 @@ const Storage = {
     },
 
     async _loadAllData() {
-        const [vehicles, users, projects, bookings, checklistItems, maintenanceRules, maintenanceLogs, fuelLogs, corrections] = await Promise.all([
-            supabaseClient.from('vehicles').select('*').order('nome'),
-            supabaseClient.from('profiles').select('*').order('nome'),
-            supabaseClient.from('projects').select('*').order('nome'),
-            supabaseClient.from('bookings').select('*').order('data_saida', { ascending: false }),
-            supabaseClient.from('checklist_items').select('*').order('ordem'),
-            supabaseClient.from('maintenance_rules').select('*').order('nome'),
-            supabaseClient.from('maintenance_logs').select('*').order('data', { ascending: false }),
-            supabaseClient.from('fuel_logs').select('*').order('data', { ascending: false }),
-            supabaseClient.from('corrections').select('*').order('data_registro', { ascending: false })
-        ]);
+        console.log('Storage: Carregando dados do banco...');
+        try {
+            // Executamos as queries em paralelo, mas com tratamento individual para evitar que uma falha trave tudo
+            const fetchTable = async (table, orderCol, ascending = true) => {
+                const { data, error } = await supabaseClient.from(table).select('*').order(orderCol, { ascending });
+                if (error) {
+                    console.error(`Storage: Erro ao carregar tabela ${table}:`, error);
+                    return [];
+                }
+                return data || [];
+            };
 
-        this._cache.vehicles = _toCamel(vehicles.data || []);
-        this._cache.users = _toCamel(users.data || []);
-        this._cache.projects = _toCamel(projects.data || []);
-        this._cache.bookings = _toCamel(bookings.data || []);
-        this._cache.checklistItems = _toCamel(checklistItems.data || []);
-        this._cache.maintenanceRules = _toCamel(maintenanceRules.data || []);
-        this._cache.maintenanceLogs = _toCamel(maintenanceLogs.data || []);
-        this._cache.fuelLogs = _toCamel(fuelLogs.data || []);
-        this._cache.corrections = _toCamel(corrections.data || []);
+            const [vehicles, users, projects, bookings, checklistItems, maintenanceRules, maintenanceLogs, fuelLogs, corrections] = await Promise.all([
+                fetchTable('vehicles', 'nome'),
+                fetchTable('profiles', 'nome'),
+                fetchTable('projects', 'nome'),
+                fetchTable('bookings', 'data_saida', false),
+                fetchTable('checklist_items', 'ordem'),
+                fetchTable('maintenance_rules', 'nome'),
+                fetchTable('maintenance_logs', 'data', false),
+                fetchTable('fuel_logs', 'data', false),
+                fetchTable('corrections', 'data_registro', false)
+            ]);
+
+            this._cache.vehicles = _toCamel(vehicles);
+            this._cache.users = _toCamel(users);
+            this._cache.projects = _toCamel(projects);
+            this._cache.bookings = _toCamel(bookings);
+            this._cache.checklistItems = _toCamel(checklistItems);
+            this._cache.maintenanceRules = _toCamel(maintenanceRules);
+            this._cache.maintenanceLogs = _toCamel(maintenanceLogs);
+            this._cache.fuelLogs = _toCamel(fuelLogs);
+            this._cache.corrections = _toCamel(corrections);
+            
+            console.log('Storage: Todos os dados carregados com sucesso.');
+        } catch (error) {
+            console.error('Storage: Falha inesperada ao carregar dados:', error);
+            throw error; // Repassa para o init() tratar
+        }
     },
 
     _defaultSettings() {
