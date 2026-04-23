@@ -2747,7 +2747,7 @@ const App = {
                     observacao: obs || '',
                     fotoData: fotoData
                 };
-            }));
+            });
 
             const data = {
                 veiculoId: veiculoId,
