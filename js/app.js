@@ -1934,10 +1934,16 @@ const App = {
                             <p class="text-xs font-semibold text-on-surface-variant opacity-60 mt-2">Viagens e despesas vinculadas a projetos.</p>
                         </div>
                         <form onsubmit="event.preventDefault(); App.actions.generateReport('financeiro', new FormData(event.target))" class="space-y-4">
-                            <select name="projetoId" class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-xs font-bold text-primary outline-none" required>
-                                <option value="all">Todos os Projetos</option>
-                                ${projects.map(p => `<option value="${p.id}">${p.nome}</option>`).join('')}
-                            </select>
+                            <div class="flex gap-4">
+                                <select name="projetoId" class="flex-1 bg-surface-container-low border-none rounded-xl px-4 py-3 text-xs font-bold text-primary outline-none" required>
+                                    <option value="all">Todos os Projetos</option>
+                                    ${projects.map(p => `<option value="${p.id}">${p.nome}</option>`).join('')}
+                                </select>
+                                <select name="veiculoId" class="flex-1 bg-surface-container-low border-none rounded-xl px-4 py-3 text-xs font-bold text-primary outline-none" required>
+                                    <option value="all">Todos os Veículos</option>
+                                    ${vehicles.map(v => `<option value="${v.id}">${v.nome}</option>`).join('')}
+                                </select>
+                            </div>
                             <div class="flex gap-4">
                                 <div class="flex-1 space-y-1">
                                     <label class="text-[9px] font-black uppercase text-on-surface-variant opacity-60">Data Inicial</label>
@@ -4041,20 +4047,68 @@ const App = {
             } else if (type === 'financeiro') {
                 isLandscape = true;
                 const projetoId = formData.get('projetoId');
+                const veiculoId = formData.get('veiculoId');
                 const dataInicio = formData.get('dataInicio');
                 const dataFim = formData.get('dataFim');
-                const bookings = Storage.getBookings().filter(b => {
-                    const passprojeto = projetoId === 'all' || b.projetoId === projetoId;
-                    const passStatus = b.status === 'concluido';
-                    if (!passprojeto || !passStatus) return false;
-                    if (!dataInicio && !dataFim) return true;
-                    const bookingDate = (b.dataSaida || '').split('T')[0];
-                    const passInicio = !dataInicio || bookingDate >= dataInicio;
-                    const passFim = !dataFim || bookingDate <= dataFim;
-                    return passInicio && passFim;
-                });
+                
                 const projects = Storage.getProjects();
                 const vehicles = Storage.getVehicles();
+                const fuelLogs = Storage.getFuelLogs();
+                const bookings = Storage.getBookings();
+
+                // Unificar dados financeiros
+                let financialEntries = [];
+
+                // 1. Adicionar Abastecimentos Reais
+                fuelLogs.forEach(f => {
+                    const passProjeto = projetoId === 'all' || f.projetoId === projetoId;
+                    const passVeiculo = veiculoId === 'all' || f.veiculoId === veiculoId;
+                    const logDate = (f.data || '').split('T')[0];
+                    const passInicio = !dataInicio || logDate >= dataInicio;
+                    const passFim = !dataFim || logDate <= dataFim;
+
+                    if (passProjeto && passVeiculo && passInicio && passFim) {
+                        financialEntries.push({
+                            tipo: 'ABASTECIMENTO',
+                            data: f.data,
+                            veiculoId: f.veiculoId,
+                            projetoId: f.projetoId,
+                            descricao: 'Abastecimento Real',
+                            valor: parseFloat(f.valor || 0),
+                            detalhe: `${f.km} KM`,
+                            foto: f.foto
+                        });
+                    }
+                });
+
+                // 2. Adicionar Viagens (Custo Estimado se não houver abastecimento vinculado?) 
+                // Ou apenas para registro de KM? O usuário pediu novos abastecimentos, então focaremos neles.
+                // Mas manteremos as viagens concluídas para contexto de KM.
+                bookings.forEach(b => {
+                    if (b.status !== 'concluido') return;
+                    const passProjeto = projetoId === 'all' || b.projetoId === projetoId;
+                    const passVeiculo = veiculoId === 'all' || b.veiculoId === veiculoId;
+                    const logDate = (b.dataSaida || '').split('T')[0];
+                    const passInicio = !dataInicio || logDate >= dataInicio;
+                    const passFim = !dataFim || logDate <= dataFim;
+
+                    if (passProjeto && passVeiculo && passInicio && passFim) {
+                        financialEntries.push({
+                            tipo: 'VIAGEM',
+                            data: b.dataSaida,
+                            veiculoId: b.veiculoId,
+                            projetoId: b.projetoId,
+                            descricao: b.destino,
+                            valor: 0, // Custo KM será apenas informativo ou 0 se focarmos em logs reais
+                            detalhe: `${b.kmFinal - b.kmInicial} KM percorridos`,
+                            dataFim: b.dataChegada
+                        });
+                    }
+                });
+
+                // Ordenar por data
+                financialEntries.sort((a,b) => new Date(b.data) - new Date(a.data));
+
                 const periodoLabel = dataInicio || dataFim
                     ? `Período: ${dataInicio ? new Date(dataInicio + 'T00:00:00').toLocaleDateString('pt-BR') : 'início'} até ${dataFim ? new Date(dataFim + 'T00:00:00').toLocaleDateString('pt-BR') : 'hoje'}`
                     : 'Todos os períodos';
@@ -4069,48 +4123,70 @@ const App = {
                         </div>
 
                         ${headerHtml}
-                        <h2 class="text-2xl font-black text-primary mb-1">Prestação de Contas e Custos Operacionais</h2>
-                        <p class="text-xs font-bold text-on-surface-variant opacity-50 mb-6 uppercase tracking-widest">${periodoLabel}</p>
+                        <h2 class="text-2xl font-black text-primary mb-1">Prestação de Contas Detalhada</h2>
+                        <div class="flex gap-4 mb-6">
+                            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container-low px-3 py-1 rounded-full">${periodoLabel}</p>
+                            ${veiculoId !== 'all' ? `<p class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Veículo: ${vehicles.find(v => v.id === veiculoId)?.nome}</p>` : ''}
+                        </div>
 
                         <table class="w-full text-[10px] border-collapse">
                             <thead>
                                 <tr class="bg-primary text-white text-left">
-                                    <th class="py-3 px-3 uppercase">Viagem / Projeto</th>
-                                    <th class="py-3 px-3 uppercase">Veículo</th>
-                                    <th class="py-3 px-3 uppercase">Período</th>
-                                    <th class="py-3 px-3 uppercase">Km Totais</th>
-                                    <th class="py-3 px-3 uppercase">Combustível</th>
-                                    <th class="py-3 px-3 uppercase text-right">Custo Estimado</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Data</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Tipo / Descrição</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Veículo / Projeto</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Detalhes</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black">Evidência</th>
+                                    <th class="py-3 px-3 uppercase text-[9px] font-black text-right">Valor Real</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-outline-variant/20">
-                                ${bookings.map(b => {
-                                    const v = vehicles.find(veh => veh.id === b.veiculoId);
-                                    const p = projects.find(proj => proj.id === b.projetoId);
-                                    const kmTotal = b.kmFinal - b.kmInicial;
-                                    const litros = Math.ceil(kmTotal / (v?.consumption || 10));
-                                    const custo = litros * Storage.getSettings().precoCombustivel;
+                                ${financialEntries.map(e => {
+                                    const v = vehicles.find(veh => veh.id === e.veiculoId);
+                                    const p = projects.find(proj => proj.id === e.projetoId);
+                                    const isAbastecimento = e.tipo === 'ABASTECIMENTO';
+                                    
+                                    // Processar fotos (pode ser string JSON ou URL única)
+                                    let photos = [];
+                                    if (e.foto) {
+                                        try {
+                                            photos = e.foto.startsWith('[') ? JSON.parse(e.foto) : [e.foto];
+                                        } catch (err) {
+                                            photos = [e.foto];
+                                        }
+                                    }
 
                                     return `
-                                        <tr>
-                                            <td class="py-3 px-3"><strong>${b.destino}</strong><br><span class="opacity-50 uppercase tracking-widest text-[8px]">${p?.nome}</span></td>
-                                            <td class="py-3 px-3">${v?.nome}<br>${v?.placa}</td>
-                                            <td class="py-3 px-3">${new Date(b.dataSaida).toLocaleDateString('pt-BR')} até<br>${new Date(b.dataChegada).toLocaleDateString('pt-BR')}</td>
-                                            <td class="py-3 px-3">${kmTotal.toLocaleString()} KM</td>
-                                            <td class="py-3 px-3">${litros} Litros<br><span class="opacity-40 text-[8px]">${(v?.consumption || 10)} km/l</span></td>
-                                            <td class="py-3 px-3 text-right font-black">R$ ${custo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                        <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/30'}">
+                                            <td class="py-4 px-3 font-bold">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
+                                            <td class="py-4 px-3">
+                                                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase ${isAbastecimento ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}">${e.tipo}</span>
+                                                <p class="mt-1 font-bold text-primary uppercase">${e.descricao}</p>
+                                            </td>
+                                            <td class="py-4 px-3">
+                                                <p class="font-bold text-primary">${v?.nome || 'N/A'}</p>
+                                                <p class="opacity-50 text-[8px] uppercase font-black">${p?.nome || 'N/A'}</p>
+                                            </td>
+                                            <td class="py-4 px-3 font-medium opacity-60">${e.detalhe}</td>
+                                            <td class="py-4 px-3">
+                                                <div class="flex gap-1">
+                                                    ${photos.map(url => `
+                                                        <img src="${url}" onclick="App.utils.viewImage('${url}')" class="h-10 w-10 object-cover rounded border border-outline-variant/20 shadow-sm cursor-zoom-in hover:scale-110 transition-transform">
+                                                    `).join('')}
+                                                    ${photos.length === 0 ? '<span class="opacity-20 italic">Sem foto</span>' : ''}
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-3 text-right font-black text-primary text-sm">
+                                                ${e.valor > 0 ? `R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
+                                            </td>
                                         </tr>
                                     `;
                                 }).join('')}
                             </tbody>
-                             <tfoot>
-                                <tr class="bg-surface-container-high font-black">
-                                    <td colspan="5" class="py-4 px-3 text-right uppercase tracking-widest text-[10px]">Total Acumulado</td>
-                                    <td class="py-4 px-3 text-right text-lg">R$ ${bookings.reduce((a,b) => {
-                                        const v = vehicles.find(veh => veh.id === b.veiculoId);
-                                        const kmTotal = b.kmFinal - b.kmInicial;
-                                        return a + (Math.ceil(kmTotal / (v?.consumption || 10)) * Storage.getSettings().precoCombustivel);
-                                    }, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                            <tfoot>
+                                <tr class="bg-primary text-white font-black">
+                                    <td colspan="5" class="py-5 px-3 text-right uppercase tracking-widest text-[10px]">Total de Gastos Reais no Período</td>
+                                    <td class="py-5 px-3 text-right text-base">R$ ${financialEntries.reduce((a,b) => a + b.valor, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
                         </table>
