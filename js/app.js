@@ -4134,15 +4134,17 @@ const App = {
                             ${veiculoId !== 'all' ? `<p class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Veículo: ${vehicles.find(v => v.id === veiculoId)?.nome}</p>` : ''}
                         </div>
 
-                        <table class="w-full text-[9px] border-collapse">
+                        <table class="w-full text-[8px] border-collapse">
                             <thead>
                                 <tr class="bg-primary text-white text-left">
-                                    <th class="py-3 px-3 uppercase font-black">Data</th>
-                                    <th class="py-3 px-3 uppercase font-black">Responsável</th>
-                                    <th class="py-3 px-3 uppercase font-black">Origem / Destino</th>
-                                    <th class="py-3 px-3 uppercase font-black">Veículo / Projeto</th>
-                                    <th class="py-3 px-3 uppercase font-black">Obs / Detalhes</th>
-                                    <th class="py-3 px-3 uppercase font-black text-right">Valor Real</th>
+                                    <th class="py-3 px-2 uppercase font-black">Data</th>
+                                    <th class="py-3 px-2 uppercase font-black">Responsável</th>
+                                    <th class="py-3 px-2 uppercase font-black">Origem</th>
+                                    <th class="py-3 px-2 uppercase font-black">Destino</th>
+                                    <th class="py-3 px-2 uppercase font-black">Observação</th>
+                                    <th class="py-3 px-2 uppercase font-black text-center">KM/Detalhes</th>
+                                    <th class="py-3 px-2 uppercase font-black">Veículo/Projeto</th>
+                                    <th class="py-3 px-2 uppercase font-black text-right">Valor Real</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-outline-variant/20">
@@ -4151,20 +4153,27 @@ const App = {
                                     const p = projects.find(proj => proj.id === e.projetoId);
                                     const isAbastecimento = e.tipo === 'ABASTECIMENTO';
                                     
+                                    // Separar Origem e Destino
+                                    let origem = '-', destino = '-';
+                                    if (e.rota && e.rota.includes('→')) {
+                                        [origem, destino] = e.rota.split('→').map(s => s.trim());
+                                    } else {
+                                        origem = e.rota || '-';
+                                    }
+
                                     return `
                                         <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/20'}">
-                                            <td class="py-4 px-3 font-bold">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
-                                            <td class="py-4 px-3 font-bold text-primary uppercase">${e.responsavel || 'N/A'}</td>
-                                            <td class="py-4 px-3 italic">${e.rota}</td>
-                                            <td class="py-4 px-3">
+                                            <td class="py-3 px-2 font-bold whitespace-nowrap">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
+                                            <td class="py-3 px-2 font-black text-primary uppercase">${e.responsavel || 'N/A'}</td>
+                                            <td class="py-3 px-2 opacity-70">${origem}</td>
+                                            <td class="py-3 px-2 opacity-70">${destino}</td>
+                                            <td class="py-3 px-2 italic font-medium">${e.observacao || '-'}</td>
+                                            <td class="py-3 px-2 text-center font-bold text-on-surface-variant">${e.detalhe}</td>
+                                            <td class="py-3 px-2">
                                                 <p class="font-bold text-primary">${v?.nome || 'N/A'}</p>
-                                                <p class="opacity-50 text-[8px] uppercase font-black">${p?.nome || 'N/A'}</p>
+                                                <p class="opacity-50 text-[7px] uppercase font-black">${p?.nome || 'N/A'}</p>
                                             </td>
-                                            <td class="py-4 px-3">
-                                                <p class="font-bold text-[9px]">${e.detalhe}</p>
-                                                <p class="text-[8px] opacity-60">${e.observacao || ''}</p>
-                                            </td>
-                                            <td class="py-4 px-3 text-right font-black text-primary text-sm">
+                                            <td class="py-3 px-2 text-right font-black text-primary text-xs">
                                                 ${e.valor > 0 ? `R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
                                             </td>
                                         </tr>
@@ -4173,8 +4182,8 @@ const App = {
                             </tbody>
                             <tfoot>
                                 <tr class="bg-primary text-white font-black">
-                                    <td colspan="5" class="py-5 px-3 text-right uppercase tracking-widest text-[10px]">Total de Gastos Reais no Período</td>
-                                    <td class="py-5 px-3 text-right text-base">R$ ${financialEntries.reduce((a,b) => a + b.valor, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                    <td colspan="7" class="py-4 px-3 text-right uppercase tracking-widest text-[9px]">Total de Gastos Reais no Período</td>
+                                    <td class="py-4 px-3 text-right text-sm">R$ ${financialEntries.reduce((a,b) => a + b.valor, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
                         </table>
