@@ -4137,6 +4137,7 @@ const App = {
                         <table class="w-full text-[8px] border-collapse">
                             <thead>
                                 <tr class="bg-primary text-white text-left">
+                                    <th class="py-3 px-2 uppercase font-black text-center">REF</th>
                                     <th class="py-3 px-2 uppercase font-black">Data</th>
                                     <th class="py-3 px-2 uppercase font-black">Responsável</th>
                                     <th class="py-3 px-2 uppercase font-black">Origem</th>
@@ -4148,41 +4149,53 @@ const App = {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-outline-variant/20">
-                                ${financialEntries.map(e => {
-                                    const v = vehicles.find(veh => veh.id === e.veiculoId);
-                                    const p = projects.find(proj => proj.id === e.projetoId);
-                                    const isAbastecimento = e.tipo === 'ABASTECIMENTO';
-                                    
-                                    // Separar Origem e Destino
-                                    let origem = '-', destino = '-';
-                                    if (e.rota && e.rota.includes('→')) {
-                                        [origem, destino] = e.rota.split('→').map(s => s.trim());
-                                    } else {
-                                        origem = e.rota || '-';
-                                    }
+                                ${(() => {
+                                    let photoCounter = 0;
+                                    return financialEntries.map(e => {
+                                        const v = vehicles.find(veh => veh.id === e.veiculoId);
+                                        const p = projects.find(proj => proj.id === e.projetoId);
+                                        const isAbastecimento = e.tipo === 'ABASTECIMENTO';
+                                        
+                                        // Separar Origem e Destino
+                                        let origem = '-', destino = '-';
+                                        if (e.rota && e.rota.includes('→')) {
+                                            [origem, destino] = e.rota.split('→').map(s => s.trim());
+                                        } else {
+                                            origem = e.rota || '-';
+                                        }
 
-                                    return `
-                                        <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/20'}">
-                                            <td class="py-3 px-2 font-bold whitespace-nowrap">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
-                                            <td class="py-3 px-2 font-black text-primary uppercase">${e.responsavel || 'N/A'}</td>
-                                            <td class="py-3 px-2 opacity-70">${origem}</td>
-                                            <td class="py-3 px-2 opacity-70">${destino}</td>
-                                            <td class="py-3 px-2 italic font-medium">${e.observacao || '-'}</td>
-                                            <td class="py-3 px-2 text-center font-bold text-on-surface-variant">${e.detalhe}</td>
-                                            <td class="py-3 px-2">
-                                                <p class="font-bold text-primary">${v?.nome || 'N/A'}</p>
-                                                <p class="opacity-50 text-[7px] uppercase font-black">${p?.nome || 'N/A'}</p>
-                                            </td>
-                                            <td class="py-3 px-2 text-right font-black text-primary text-xs">
-                                                ${e.valor > 0 ? `R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
-                                            </td>
-                                        </tr>
-                                    `;
-                                }).join('')}
+                                        let refContent = '-';
+                                        if (e.foto) {
+                                            photoCounter++;
+                                            refContent = `<div class="bg-primary text-white font-black rounded-lg py-1 px-2 text-[9px] shadow-sm">
+                                                            #${photoCounter.toString().padStart(2, '0')}
+                                                          </div>`;
+                                        }
+
+                                        return `
+                                            <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/20'}">
+                                                <td class="py-3 px-2 text-center align-middle">${refContent}</td>
+                                                <td class="py-3 px-2 font-bold whitespace-nowrap">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
+                                                <td class="py-3 px-2 font-black text-primary uppercase">${e.responsavel || 'N/A'}</td>
+                                                <td class="py-3 px-2 opacity-70">${origem}</td>
+                                                <td class="py-3 px-2 opacity-70">${destino}</td>
+                                                <td class="py-3 px-2 italic font-medium">${e.observacao || '-'}</td>
+                                                <td class="py-3 px-2 text-center font-bold text-on-surface-variant">${e.detalhe}</td>
+                                                <td class="py-3 px-2">
+                                                    <p class="font-bold text-primary">${v?.nome || 'N/A'}</p>
+                                                    <p class="opacity-50 text-[7px] uppercase font-black">${p?.nome || 'N/A'}</p>
+                                                </td>
+                                                <td class="py-3 px-2 text-right font-black text-primary text-xs">
+                                                    ${e.valor > 0 ? `R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('');
+                                })()}
                             </tbody>
                             <tfoot>
                                 <tr class="bg-primary text-white font-black">
-                                    <td colspan="7" class="py-4 px-3 text-right uppercase tracking-widest text-[9px]">Total de Gastos Reais no Período</td>
+                                    <td colspan="8" class="py-4 px-3 text-right uppercase tracking-widest text-[9px]">Total de Gastos Reais no Período</td>
                                     <td class="py-4 px-3 text-right text-sm">R$ ${financialEntries.reduce((a,b) => a + b.valor, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             </tfoot>
@@ -4193,26 +4206,38 @@ const App = {
                             <h3 class="text-xl font-black text-primary uppercase tracking-tighter border-b-2 border-primary pb-2">Anexo I: Comprovantes e Evidências</h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                ${financialEntries.filter(e => e.foto).map(e => {
-                                    let photos = [];
-                                    try { photos = e.foto.startsWith('[') ? JSON.parse(e.foto) : [e.foto]; } catch(err) { photos = [e.foto]; }
-                                    
-                                    const v = vehicles.find(veh => veh.id === e.veiculoId);
-                                    
-                                    return photos.map((url, idx) => `
-                                        <div class="border-2 border-outline-variant/10 rounded-3xl p-6 bg-white space-y-4 break-inside-avoid shadow-sm">
-                                            <div class="flex justify-between items-start">
-                                                <div>
-                                                    <p class="text-[10px] font-black text-primary uppercase tracking-widest">Cupom ${new Date(e.data).toLocaleDateString('pt-BR')}</p>
-                                                    <p class="text-xs font-bold text-on-surface-variant">${v?.nome} - R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                ${(() => {
+                                    let annexCounter = 0;
+                                    return financialEntries.filter(e => e.foto).map(e => {
+                                        annexCounter++;
+                                        let photos = [];
+                                        try { photos = e.foto.startsWith('[') ? JSON.parse(e.foto) : [e.foto]; } catch(err) { photos = [e.foto]; }
+                                        
+                                        const v = vehicles.find(veh => veh.id === e.veiculoId);
+                                        
+                                        return photos.map((url, idx) => `
+                                            <div class="border-2 border-outline-variant/10 rounded-3xl p-6 bg-white space-y-4 break-inside-avoid shadow-sm">
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center font-black text-lg shadow-lg shadow-primary/20">
+                                                            ${annexCounter}
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-[10px] font-black text-primary uppercase tracking-widest">Comprovante de Gasto</p>
+                                                            <p class="text-xs font-bold text-on-surface-variant">${new Date(e.data).toLocaleDateString('pt-BR')} - ${v?.nome}</p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-[9px] font-black text-primary uppercase bg-primary/5 px-2 py-1 rounded-full">ANEXO ${annexCounter}${photos.length > 1 ? `.${idx + 1}` : ''}</span>
                                                 </div>
-                                                <span class="text-[9px] font-black text-on-surface-variant/40">ANEXO ${idx + 1}</span>
+                                                <img src="${url}" class="w-full h-auto max-h-[600px] object-contain rounded-2xl shadow-inner bg-surface-container-low">
+                                                <div class="flex justify-between items-center text-[9px] font-bold opacity-60">
+                                                    <span>Responsável: ${e.responsavel}</span>
+                                                    <span>Valor: R$ ${e.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                                </div>
                                             </div>
-                                            <img src="${url}" class="w-full h-auto max-h-[600px] object-contain rounded-2xl shadow-inner bg-surface-container-low">
-                                            <p class="text-[9px] italic text-on-surface-variant opacity-60 text-center">Evidência capturada via plataforma digital adesiap</p>
-                                        </div>
-                                    `).join('');
-                                }).join('')}
+                                        `).join('');
+                                    }).join('');
+                                })()}
                             </div>
                         </div>
                     </div>
