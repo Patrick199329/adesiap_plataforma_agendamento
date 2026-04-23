@@ -2205,10 +2205,14 @@ const App = {
                         <p class="text-on-surface-variant font-medium mt-1">Auditoria completa de saídas e retornos da frota.</p>
                     </div>
                     <div class="flex items-center gap-3 w-full md:w-auto no-print">
-                        <button onclick="App.utils.toggleInspecoesFilterVisibility()" class="flex-1 md:flex-none h-12 w-12 rounded-xl flex items-center justify-center border-2 ${this.state.inspecoesFilters.showFilters ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-outline-variant/20'} hover:scale-105 transition-all outline-none" title="Filtros">
+                        <button onclick="App.actions.openCorrectionForm()" class="flex-[2] md:flex-none bg-primary text-white px-6 py-3 h-12 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 outline-none">
+                            <span class="material-symbols-outlined text-lg">build_circle</span>
+                            Nova Correção
+                        </button>
+                        <button onclick="App.utils.toggleInspecoesFilterVisibility()" class="flex-none h-12 w-12 rounded-xl flex items-center justify-center border-2 ${this.state.inspecoesFilters.showFilters ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-outline-variant/20'} hover:scale-105 transition-all outline-none" title="Filtros">
                             <span class="material-symbols-outlined">filter_list</span>
                         </button>
-                        <button onclick="App.renderView('inspecoes')" class="flex-1 md:flex-none bg-white text-primary border-2 border-outline-variant/20 px-6 py-3 h-12 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-surface-container-low transition-colors outline-none">Atualizar</button>
+                        <button onclick="App.renderView('inspecoes')" class="flex-none bg-white text-primary border-2 border-outline-variant/20 px-6 py-3 h-12 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-surface-container-low transition-colors outline-none">Atualizar</button>
                     </div>
                 </header>
 
@@ -2742,7 +2746,8 @@ const App = {
                     nome: item.nome,
                     status: status, // 'ok' or 'nok'
                     observacao: obs || '',
-                    fotoData: fotoData
+                    fotos: photos,
+                    fotoData: photos.length > 0 ? photos[0] : null
                 };
             });
 
