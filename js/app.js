@@ -2759,6 +2759,7 @@ const App = {
             await Storage.saveCorrection(data);
             App.showToast('Checklist de correção salvo com sucesso!');
             window.location.hash = '#inspecoes';
+            return true;
         },
 
         async deleteCorrection(id) {
@@ -3584,6 +3585,7 @@ const App = {
             }
 
             window.location.hash = '#agendamentos';
+            return true;
         },
 
         openFuelModal(bookingId) {
@@ -3656,13 +3658,12 @@ const App = {
             };
             
             await Storage.saveFuelEntry(entry);
-            App.renderView('agendamentos');
+            
             // Notificação Premium
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-8 py-4 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-right duration-500 font-bold text-xs uppercase tracking-widest';
-            toast.innerHTML = 'Abastecimento registrado. Saldo atualizado!';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            App.showToast('Abastecimento registrado. Saldo atualizado!');
+            
+            App.renderView('agendamentos');
+            return true;
         },
 
         finishTrip(bookingId) {
@@ -4223,14 +4224,16 @@ const App = {
                 try {
                     const base64 = await this.compressImage(file);
                     currentPhotos.push(base64);
+                    // Atualizar preview progressivamente para dar feedback
+                    hiddenInput.value = JSON.stringify(currentPhotos);
+                    this.renderPhotoPreviews(pickerId, currentPhotos);
                 } catch (err) {
                     console.error('Erro ao processar imagem:', err);
                 }
             }
 
-            hiddenInput.value = JSON.stringify(currentPhotos);
-            this.renderPhotoPreviews(pickerId, currentPhotos);
             input.value = ''; // Reset file input
+            App.showToast('Imagens processadas com sucesso!', 'success');
         },
 
         triggerCamera(id) {
