@@ -4116,7 +4116,6 @@ const App = {
             document.body.classList.toggle('landscape-page', isLandscape);
 
             contentArea.innerHTML = reportHtml;
-        },
         }
     },
 
