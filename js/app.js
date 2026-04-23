@@ -2908,7 +2908,7 @@ const App = {
                 try {
                     await Storage.saveVehicle(vehicle);
                     App.renderView('veiculos');
-                    this.showToast('Veículo cadastrado com sucesso!');
+                    App.showToast('Veículo cadastrado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao cadastrar veículo: ' + err.message);
@@ -2969,7 +2969,7 @@ const App = {
                 try {
                     await Storage.saveVehicle(updatedVehicle);
                     App.renderView('veiculos');
-                    this.showToast('Veículo atualizado com sucesso!');
+                    App.showToast('Veículo atualizado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao atualizar veículo: ' + err.message);
@@ -3031,7 +3031,7 @@ const App = {
                         tipo: formData.get('tipo')
                     });
                     App.renderView('usuarios');
-                    this.showToast('Usuário cadastrado com sucesso!');
+                    App.showToast('Usuário cadastrado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao criar usuário: ' + err.message);
@@ -3095,7 +3095,7 @@ const App = {
                 try {
                     await Storage.saveProfile(profileUpdate);
                     App.renderView('usuarios');
-                    this.showToast('Usuário atualizado com sucesso!');
+                    App.showToast('Usuário atualizado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao atualizar usuário: ' + err.message);
@@ -3192,7 +3192,7 @@ const App = {
                 try {
                     await Storage.saveProject(project);
                     App.renderView('projetos');
-                    this.showToast('Projeto criado com sucesso!');
+                    App.showToast('Projeto criado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao criar projeto: ' + err.message);
@@ -3268,7 +3268,7 @@ const App = {
             if (nome && nome.trim() !== '') {
                 await Storage.addChecklistItem(nome.trim());
                 App.renderView('configuracoes');
-                this.showToast('Item de Inspeção adicionado.');
+                App.showToast('Item de Inspeção adicionado.');
             }
         },
 
@@ -3276,7 +3276,7 @@ const App = {
             if (confirm('Tem certeza que deseja excluir este item de inspeção? Isso afetará os próximos agendamentos.')) {
                 await Storage.deleteChecklistItem(id);
                 App.renderView('configuracoes');
-                this.showToast('Item de Inspeção removido.');
+                App.showToast('Item de Inspeção removido.');
             }
         },
 
@@ -3327,7 +3327,7 @@ const App = {
                 try {
                     await Storage.saveMaintenanceRule(data);
                     App.renderView('configuracoes');
-                    this.showToast(rule ? 'Regra atualizada com sucesso.' : 'Regra criada com sucesso.');
+                    App.showToast(rule ? 'Regra atualizada com sucesso.' : 'Regra criada com sucesso.');
                     return true;
                 } catch (err) {
                     alert('Erro ao salvar regra: ' + err.message);
@@ -3340,7 +3340,7 @@ const App = {
             if (confirm('Deseja excluir esta regra de manutenção preventiva?')) {
                 await Storage.deleteMaintenanceRule(id);
                 App.renderView('configuracoes');
-                this.showToast('Regra excluída.');
+                App.showToast('Regra excluída.');
             }
         },
 
@@ -3409,7 +3409,7 @@ const App = {
                 try {
                     await Storage.saveMaintenanceLog(log);
                     App.renderView('manutencao');
-                    this.showToast('Manutenção Corretiva registrada com sucesso!');
+                    App.showToast('Manutenção Corretiva registrada com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao registrar manutenção: ' + err.message);
