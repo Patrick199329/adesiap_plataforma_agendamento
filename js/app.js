@@ -2347,8 +2347,6 @@ const App = {
                                                                                             <img src="${r.fotoData}" class="w-full h-full object-cover">
                                                                                         </div>
                                                                                     ` : '')}
-                                                                                        </div>
-                                                                                    ` : ''}
                                                                                 </div>
                                                                             `).join('')}
                                                                         </div>
