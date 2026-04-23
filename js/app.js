@@ -3247,7 +3247,7 @@ const App = {
                 try {
                     await Storage.saveProject(projectUpdate);
                     App.renderView('projetos');
-                    this.showToast('Projeto atualizado com sucesso!');
+                    App.showToast('Projeto atualizado com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao atualizar projeto: ' + err.message);
@@ -3505,7 +3505,7 @@ const App = {
                     }
 
                     App.renderView('manutencao');
-                    this.showToast('Manutenção Preventiva registrada com sucesso!');
+                    App.showToast('Manutenção Preventiva registrada com sucesso!');
                     return true;
                 } catch (err) {
                     alert('Erro ao registrar manutenção: ' + err.message);
@@ -4117,15 +4117,19 @@ const App = {
 
             contentArea.innerHTML = reportHtml;
         },
-
-        showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            const bg = type === 'success' ? 'bg-emerald-600' : 'bg-error';
-            toast.className = `fixed bottom-8 right-8 ${bg} text-white px-8 py-4 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-right duration-500 font-black text-[10px] uppercase tracking-widest`;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
         }
+    },
+
+    showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const bg = type === 'success' ? 'bg-emerald-600' : 'bg-error';
+        toast.className = `fixed bottom-8 right-8 ${bg} text-white px-8 py-4 rounded-2xl shadow-2xl z-[200] animate-in slide-in-from-right duration-500 font-black text-[10px] uppercase tracking-widest`;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('animate-out', 'fade-out', 'slide-out-to-right');
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
     },
 
     utils: {
