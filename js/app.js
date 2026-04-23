@@ -2333,21 +2333,20 @@ const App = {
                                                                                             <span class="material-symbols-outlined text-[14px] font-black">${r.status === 'ok' ? 'check_circle' : 'error'}</span>
                                                                                         </div>
                                                                                     </div>
-                                                                                    ${r.status === 'nok' ? `
-                                                                                            <p class="text-[10px] text-error font-semibold italic">Obs: ${r.observacao || 'N/A'}</p>
-                                                                                            ${(r.fotos || []).length > 0 ? `
-                                                                                                <div class="flex gap-2 mt-2 flex-wrap">
-                                                                                                    ${r.fotos.map(src => `
-                                                                                                        <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in" onclick="App.utils.viewImage('${src}')">
-                                                                                                            <img src="${src}" class="w-full h-full object-cover">
-                                                                                                        </div>
-                                                                                                    `).join('')}
+                                                                                    ${r.status === 'nok' ? `<p class="text-[10px] text-error font-semibold italic">Obs: ${r.observacao || 'N/A'}</p>` : ''}
+                                                                                    ${(r.fotos || []).length > 0 ? `
+                                                                                        <div class="flex gap-2 mt-2 flex-wrap">
+                                                                                            ${r.fotos.map(src => `
+                                                                                                <div class="relative w-14 h-14 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in" onclick="App.utils.viewImage('${src}')">
+                                                                                                    <img src="${src}" class="w-full h-full object-cover">
                                                                                                 </div>
-                                                                                            ` : (r.fotoData ? `
-                                                                                                <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in mt-1" onclick="App.utils.viewImage('${r.fotoData}')">
-                                                                                                    <img src="${r.fotoData}" class="w-full h-full object-cover">
-                                                                                                </div>
-                                                                                            ` : '')}
+                                                                                            `).join('')}
+                                                                                        </div>
+                                                                                    ` : (r.fotoData ? `
+                                                                                        <div class="relative w-14 h-14 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in mt-1" onclick="App.utils.viewImage('${r.fotoData}')">
+                                                                                            <img src="${r.fotoData}" class="w-full h-full object-cover">
+                                                                                        </div>
+                                                                                    ` : '')}
                                                                                         </div>
                                                                                     ` : ''}
                                                                                 </div>
@@ -3576,7 +3575,11 @@ const App = {
                 km: km,
                 disponivel: (newStatus === 'concluido')
             }).eq('id', booking.veiculoId);
-            await Storage._refreshTable('vehicles');
+            
+            await Promise.all([
+                Storage._refreshTable('vehicles'),
+                Storage._refreshTable('bookings')
+            ]);
 
             if (hasInconformity) {
                 App.showToast('Checklist salvo com Inconformidades registradas.', 'error');
