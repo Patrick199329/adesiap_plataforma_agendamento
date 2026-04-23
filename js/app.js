@@ -1101,14 +1101,8 @@ const App = {
                                         </label>
                                         <textarea name="obs_${item.id}" placeholder="Detalhe a inconformidade encontrada..." class="w-full bg-white border border-error/20 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-error/10 transition-all outline-none resize-none h-24"></textarea>
                                     </div>
-                                    <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-error uppercase tracking-widest flex items-center gap-2 cursor-pointer w-fit">
-                                            <input type="file" name="foto_${item.id}" accept="image/*" capture="environment" class="sr-only">
-                                            <div class="bg-white border-2 border-dashed border-error/20 text-center rounded-xl px-6 py-4 text-xs font-black hover:bg-error/10 transition-all text-error flex items-center gap-2 w-full justify-center">
-                                                <span class="material-symbols-outlined text-xl">photo_camera</span>
-                                                Tirar Foto do Problema
-                                            </div>
-                                        </label>
+                                    <div class="space-y-4">
+                                        ${App.components.multiImagePicker(item.id, 'Evidências do Problema')}
                                     </div>
                                 </div>
                             </div>
@@ -1122,28 +1116,11 @@ const App = {
             </div>
         `;
         container.innerHTML = html;
-
         const form = document.getElementById('checklist-form');
-        
-        // Listeners para dar feedback visual na captura de foto
-        form.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', (e) => {
-                const labelDiv = e.target.nextElementSibling;
-                if (e.target.files && e.target.files.length > 0) {
-                    // Feedback de Sucesso
-                    labelDiv.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span> Foto Registrada!';
-                    labelDiv.className = 'bg-emerald-50 border-2 border-dashed border-emerald-500 text-center rounded-xl px-6 py-4 text-xs font-black text-emerald-600 flex items-center gap-2 w-full justify-center transition-all';
-                } else {
-                    // Volta ao Padrão de Erro
-                    labelDiv.innerHTML = '<span class="material-symbols-outlined text-xl">photo_camera</span> Tirar Foto do Problema';
-                    labelDiv.className = 'bg-white border-2 border-dashed border-error/20 text-center rounded-xl px-6 py-4 text-xs font-black hover:bg-error/10 transition-all text-error flex items-center gap-2 w-full justify-center';
-                }
-            });
-        });
 
         form.onsubmit = (e) => {
             e.preventDefault();
-            this.actions.saveChecklist(new FormData(form));
+            App.actions.saveChecklist(new FormData(form));
         };
     },
 
@@ -1405,6 +1382,39 @@ const App = {
             `;
         },
 
+        multiImagePicker(id, label = "Anexar Evidências") {
+            return `
+                <div class="space-y-3" id="picker-container-${id}">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest opacity-60 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">collections</span>
+                            ${label}
+                        </label>
+                        <span id="photo-counter-${id}" class="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase tracking-tighter">0 de 3 fotos</span>
+                    </div>
+                    
+                    <div class="flex gap-3" id="picker-buttons-${id}">
+                        <button type="button" onclick="App.utils.triggerCamera('${id}')" id="btn-camera-${id}" class="flex-1 h-20 bg-surface-container-low border-2 border-dashed border-outline-variant/20 rounded-2xl flex flex-col items-center justify-center text-primary/60 hover:border-primary/40 hover:bg-primary/5 transition-all group">
+                            <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">photo_camera</span>
+                            <span class="text-[9px] font-black uppercase mt-1">Câmera</span>
+                            <input type="file" id="camera-input-${id}" class="hidden" accept="image/*" capture="environment" onchange="App.utils.handleMultiImage(this, '${id}')">
+                        </button>
+                        <button type="button" onclick="App.utils.triggerGallery('${id}')" id="btn-gallery-${id}" class="flex-1 h-20 bg-surface-container-low border-2 border-dashed border-outline-variant/20 rounded-2xl flex flex-col items-center justify-center text-primary/60 hover:border-primary/40 hover:bg-primary/5 transition-all group">
+                            <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">grid_view</span>
+                            <span class="text-[9px] font-black uppercase mt-1">Galeria</span>
+                            <input type="file" id="gallery-input-${id}" class="hidden" accept="image/*" onchange="App.utils.handleMultiImage(this, '${id}')" multiple>
+                        </button>
+                    </div>
+                    
+                    <div id="preview-grid-${id}" class="grid grid-cols-4 gap-2 empty:hidden pt-2">
+                        <!-- Miniaturas entrarão aqui -->
+                    </div>
+                    
+                    <input type="hidden" name="photos_${id}" id="hidden-photos-${id}" value="[]">
+                </div>
+            `;
+        },
+
         tableRowUser(user) {
             const typeColors = {
                 administrador: 'bg-primary text-white',
@@ -1610,14 +1620,19 @@ const App = {
                                     ${r.status === 'nok' || r.observacao ? `
                                         <div class="ml-2 pl-4 border-l-2 ${r.status === 'nok' ? 'border-error/20' : 'border-emerald-500/20'} py-1 space-y-2">
                                             <p class="text-[10px] ${r.status === 'nok' ? 'text-error' : 'text-emerald-700'} font-semibold italic">Obs: ${r.observacao || 'N/A'}</p>
-                                            ${r.fotoData ? `
-                                                <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/10 cursor-zoom-in group/img mt-1" onclick="App.utils.viewImage('${r.fotoData}')">
-                                                    <img src="${r.fotoData}" class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500">
-                                                    <div class="absolute inset-0 bg-primary/0 group-hover/img:bg-primary/20 flex items-center justify-center transition-all opacity-0 group-hover/img:opacity-100">
-                                                        <span class="material-symbols-outlined text-white text-sm">fullscreen</span>
-                                                    </div>
+                                            ${(r.fotos || []).length > 0 ? `
+                                                <div class="flex gap-2 mt-3 flex-wrap">
+                                                    ${r.fotos.map(src => `
+                                                        <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/10 shadow-sm cursor-zoom-in" onclick="App.utils.viewImage('${src}')">
+                                                            <img src="${src}" class="w-full h-full object-cover">
+                                                        </div>
+                                                    `).join('')}
                                                 </div>
-                                            ` : ''}
+                                            ` : (r.fotoData ? `
+                                                <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-outline-variant/10 shadow-sm cursor-zoom-in mt-3" onclick="App.utils.viewImage('${r.fotoData}')">
+                                                    <img src="${r.fotoData}" class="w-full h-full object-cover">
+                                                </div>
+                                            ` : '')}
                                         </div>
                                     ` : ''}
                                 </div>
@@ -1957,8 +1972,6 @@ const App = {
 
                         <hr class="border-outline-variant/10">
 
-                        <hr class="border-outline-variant/10">
-
                         <!-- Checklist de Logística -->
                         <section class="space-y-8">
                             <div class="flex items-center gap-4">
@@ -2007,14 +2020,8 @@ const App = {
                                                     </label>
                                                     <textarea name="obs_${item.id}" placeholder="Descreva o que foi realizado..." class="w-full bg-surface-container-low border border-outline-variant/10 rounded-2xl px-5 py-4 text-xs font-bold text-primary outline-none focus:ring-4 focus:ring-primary/5 transition-all resize-none h-24"></textarea>
                                                 </div>
-                                                <div class="space-y-3">
-                                                    <label class="block cursor-pointer group/photo">
-                                                        <input type="file" name="foto_${item.id}" accept="image/*" capture="environment" class="sr-only logistic-photo-input">
-                                                        <div class="bg-surface-container-low border-2 border-dashed border-outline-variant/20 text-center rounded-2xl p-6 text-[10px] font-black hover:border-primary/50 transition-all text-primary/40 flex flex-col items-center gap-3 justify-center group-hover/photo:text-primary min-h-[100px] photo-preview-container">
-                                                            <span class="material-symbols-outlined text-3xl">add_a_photo</span>
-                                                            ANEXAR EVIDÊNCIA DA CORREÇÃO
-                                                        </div>
-                                                    </label>
+                                                <div class="space-y-4">
+                                                    ${App.components.multiImagePicker(item.id, 'Evidências da Correção')}
                                                 </div>
                                             </div>
                                         </div>
@@ -2052,45 +2059,6 @@ const App = {
             });
         });
 
-        // Feedback de foto com Preview em Tempo Real
-        form.querySelectorAll('.logistic-photo-input').forEach(input => {
-            input.addEventListener('change', async (e) => {
-                const previewContainer = e.target.nextElementSibling;
-                const file = e.target.files[0];
-                
-                if (file) {
-                    previewContainer.innerHTML = `
-                        <div class="flex flex-col items-center gap-3 animate-in zoom-in-95 duration-300">
-                            <div class="w-12 h-12 rounded-full border-2 border-emerald-500 flex items-center justify-center text-emerald-500 animate-pulse">
-                                <span class="material-symbols-outlined">hourglass_empty</span>
-                            </div>
-                            <p class="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Processando Imagem...</p>
-                        </div>
-                    `;
-
-                    try {
-                        const compressedBase64 = await App.utils.compressImage(file, 400); // Preview médio
-                        previewContainer.innerHTML = `
-                            <div class="flex items-center gap-4 text-left w-full p-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                <img src="${compressedBase64}" class="w-20 h-20 rounded-xl object-cover shadow-lg border-2 border-white">
-                                <div>
-                                    <p class="text-emerald-600 font-extrabold text-[10px] uppercase tracking-tight">Evidência Carregada</p>
-                                    <p class="text-[8px] text-on-surface-variant font-bold opacity-60 uppercase tracking-widest mt-0.5">Clique para alterar a foto</p>
-                                </div>
-                                <span class="material-symbols-outlined ml-auto text-emerald-500 text-2xl">check_circle</span>
-                            </div>
-                        `;
-                        previewContainer.classList.add('bg-emerald-50', 'border-emerald-500/30', 'border-solid');
-                        previewContainer.classList.remove('border-dashed');
-                    } catch (err) {
-                        previewContainer.innerHTML = `
-                            <span class="material-symbols-outlined text-3xl text-error">error</span>
-                            <p class="uppercase text-error font-black">Erro ao processar imagem</p>
-                        `;
-                    }
-                }
-            });
-        });
 
         form.onsubmit = async (e) => {
             e.preventDefault();
@@ -2098,7 +2066,7 @@ const App = {
             submitBtn.disabled = true;
             submitBtn.innerText = 'PROCESSANDO...';
             
-            await this.actions.saveCorrection(new FormData(form));
+            await App.actions.saveCorrection(new FormData(form));
         };
     },
 
@@ -2302,13 +2270,20 @@ const App = {
                                                                                         </div>
                                                                                     </div>
                                                                                     ${r.status === 'nok' ? `
-                                                                                        <div class="ml-2 pl-4 border-l-2 border-error/20 py-1 space-y-2">
                                                                                             <p class="text-[10px] text-error font-semibold italic">Obs: ${r.observacao || 'N/A'}</p>
-                                                                                            ${r.fotoData ? `
+                                                                                            ${(r.fotos || []).length > 0 ? `
+                                                                                                <div class="flex gap-2 mt-2 flex-wrap">
+                                                                                                    ${r.fotos.map(src => `
+                                                                                                        <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in" onclick="App.utils.viewImage('${src}')">
+                                                                                                            <img src="${src}" class="w-full h-full object-cover">
+                                                                                                        </div>
+                                                                                                    `).join('')}
+                                                                                                </div>
+                                                                                            ` : (r.fotoData ? `
                                                                                                 <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10 cursor-zoom-in mt-1" onclick="App.utils.viewImage('${r.fotoData}')">
                                                                                                     <img src="${r.fotoData}" class="w-full h-full object-cover">
                                                                                                 </div>
-                                                                                            ` : ''}
+                                                                                            ` : '')}
                                                                                         </div>
                                                                                     ` : ''}
                                                                                 </div>
@@ -2565,7 +2540,7 @@ const App = {
                 const s = Storage.getSettings();
                 s.precoCombustivel = parseFloat(data.get('precoCombustivel'));
                 await Storage.setSettings(s);
-                this.actions.showToast('Preços atualizados com sucesso!');
+                App.showToast('Preços atualizados com sucesso!');
             };
         }
 
@@ -2577,7 +2552,7 @@ const App = {
                 const s = Storage.getSettings();
                 s.googleMapsKey = data.get('googleMapsKey');
                 await Storage.setSettings(s);
-                this.actions.showToast('API Key configurada! Recarregando sistema...');
+                App.showToast('API Key configurada! Recarregando sistema...');
                 setTimeout(() => window.location.reload(), 1500);
             };
         }
@@ -2600,26 +2575,26 @@ const App = {
 
                     const logoFile = data.get('logoFile');
                     if (logoFile && logoFile.size > 0) {
-                        s.logoUrl = await this.utils.readFileAsDataURL(logoFile);
+                        s.logoUrl = await App.utils.readFileAsDataURL(logoFile);
                     }
 
                     const faviconFile = data.get('faviconFile');
                     if (faviconFile && faviconFile.size > 0) {
-                        s.faviconUrl = await this.utils.readFileAsDataURL(faviconFile);
+                        s.faviconUrl = await App.utils.readFileAsDataURL(faviconFile);
                     }
 
                     const loginLogoFile = data.get('loginLogoFile');
                     if (loginLogoFile && loginLogoFile.size > 0) {
-                        s.loginLogoUrl = await this.utils.readFileAsDataURL(loginLogoFile);
+                        s.loginLogoUrl = await App.utils.readFileAsDataURL(loginLogoFile);
                     }
 
                     await Storage.setSettings(s);
-                    this.utils.applyBranding();
-                    this.actions.showToast('Identidade Visual personalizada com sucesso!');
+                    App.utils.applyBranding();
+                    App.showToast('Identidade Visual personalizada com sucesso!');
                     this.renderView('configuracoes'); // Refresh view to show new previews
                 } catch (error) {
                     console.error('Branding Save Error:', error);
-                    this.actions.showToast('Erro ao processar imagens. Tente arquivos menores.');
+                    App.showToast('Erro ao processar imagens. Tente arquivos menores.');
                 } finally {
                     btn.disabled = false;
                     btn.textContent = originalText;
@@ -2644,8 +2619,8 @@ const App = {
             if (type === 'favicon') s.faviconUrl = '';
             if (type === 'loginLogo') s.loginLogoUrl = '';
             await Storage.setSettings(s);
-            this.utils.applyBranding();
-            this.actions.showToast('Branding removido com sucesso!');
+            App.utils.applyBranding();
+            App.showToast('Branding removido com sucesso!');
             this.renderView('configuracoes');
         },
 
@@ -2693,20 +2668,13 @@ const App = {
                 return;
             }
 
-            const items = Storage.getChecklistItems();
-            const results = await Promise.all(items.map(async item => {
+            const results = Storage.getChecklistItems().map(item => {
                 const status = formData.get(`item_${item.id}`);
                 const obs = formData.get(`obs_${item.id}`);
-                const file = formData.get(`foto_${item.id}`);
                 
-                let fotoData = null;
-                if (file && file.size > 0) {
-                    try {
-                        fotoData = await App.utils.compressImage(file);
-                    } catch (e) {
-                        console.error('Erro ao processar imagem da correção:', e);
-                    }
-                }
+                // Pegar array de fotos do multiImagePicker
+                const photosRaw = formData.get(`photos_${item.id}`);
+                const photos = photosRaw ? JSON.parse(photosRaw) : [];
 
                 return {
                     id: item.id,
@@ -2725,7 +2693,7 @@ const App = {
             };
 
             await Storage.saveCorrection(data);
-            this.showToast('Checklist de correção salvo com sucesso!');
+            App.showToast('Checklist de correção salvo com sucesso!');
             window.location.hash = '#inspecoes';
         },
 
@@ -2733,7 +2701,7 @@ const App = {
             if (confirm('Deseja realmente excluir este lançamento de correção? Esta ação não pode ser desfeita.')) {
                 await Storage.deleteCorrection(id);
                 App.renderView('inspecoes');
-                this.showToast('Lançamento excluído com sucesso.');
+                App.showToast('Lançamento excluído com sucesso.');
             }
         },
 
@@ -3496,30 +3464,25 @@ const App = {
             const booking = Storage.getBookings().find(b => b.id === bookingId);
             if (!booking) return;
 
-            // Coletar resultados com processamento de imagem em paralelo
-            const checklistResults = await Promise.all(Storage.getChecklistItems().map(async item => {
+            // Coletar resultados 
+            const checklistResults = Storage.getChecklistItems().map(item => {
                 const status = formData.get(`item_${item.id}`);
                 const obs = formData.get(`obs_${item.id}`);
-                const file = formData.get(`foto_${item.id}`);
                 
-                let fotoData = null;
-                if (file && file.size > 0) {
-                    try {
-                        fotoData = await App.utils.compressImage(file);
-                    } catch (e) {
-                        console.error('Erro ao processar imagem:', e);
-                    }
-                }
+                // Pegar array de fotos do multiImagePicker
+                const photosRaw = formData.get(`photos_${item.id}`);
+                const photos = photosRaw ? JSON.parse(photosRaw) : [];
 
                 return {
                     id: item.id,
                     nome: item.nome,
                     status: status, // 'ok' or 'nok'
                     observacao: status === 'nok' ? obs : '',
-                    hasFoto: !!fotoData,
-                    fotoData: fotoData // Versão comprimida em Base64
+                    hasFoto: photos.length > 0,
+                    fotoData: photos.length > 0 ? photos[0] : null, // Retrocompatibilidade (primeira foto)
+                    fotos: photos // Novo campo com todas as fotos
                 };
-            }));
+            });
 
             const hasInconformity = checklistResults.some(r => r.status === 'nok');
 
@@ -3551,9 +3514,9 @@ const App = {
             await Storage._refreshTable('vehicles');
 
             if (hasInconformity) {
-                this.showToast('Checklist salvo com Inconformidades registradas.', 'error');
+                App.showToast('Checklist salvo com Inconformidades registradas.', 'error');
             } else {
-                this.showToast('Checklist 100% Conforme. Viagem atualizada!');
+                App.showToast('Checklist 100% Conforme. Viagem atualizada!');
             }
 
             window.location.hash = '#agendamentos';
@@ -3580,7 +3543,6 @@ const App = {
                         <input type="hidden" name="bookingId" value="${bookingId}">
                         <input type="hidden" name="projetoId" value="${booking.projetoId}">
                         <input type="hidden" name="veiculoId" value="${booking.veiculoId}">
-                        <input type="hidden" name="fotoBase64" id="fuel-photo-data">
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-2">
@@ -3594,21 +3556,7 @@ const App = {
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Cupom Fiscal / Recibo</label>
-                            <div id="fuel-dropzone" onclick="document.getElementById('fuel-file-input').click()" class="w-full min-h-[160px] border-2 border-dashed border-outline-variant/20 rounded-3xl flex flex-col items-center justify-center text-on-surface-variant bg-surface-container-lowest hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group relative overflow-hidden">
-                                <div id="fuel-preview-empty" class="flex flex-col items-center py-8">
-                                    <span class="material-symbols-outlined text-4xl opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all">add_a_photo</span>
-                                    <span class="text-[9px] font-black uppercase tracking-widest mt-3 opacity-40">Tirar foto ou escolher arquivo</span>
-                                </div>
-                                <div id="fuel-preview-container" class="hidden w-full h-full absolute inset-0">
-                                    <img id="fuel-img-preview" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                        <span class="material-symbols-outlined text-white text-3xl">cached</span>
-                                        <p class="text-[10px] font-black text-white uppercase ml-2">Trocar Foto</p>
-                                    </div>
-                                </div>
-                                <input type="file" id="fuel-file-input" class="hidden" accept="image/*">
-                            </div>
+                            ${App.components.multiImagePicker('fuel', 'Comprovante / Recibo')}
                         </div>
                     </form>
                 </div>
@@ -3620,45 +3568,27 @@ const App = {
                 const formData = new FormData(form);
                 
                 try {
-                    await this.saveFuelEntry(formData);
+                    await App.actions.saveFuelEntry(formData);
                     return true;
                 } catch (err) {
                     alert('Erro ao registrar abastecimento: ' + err.message);
                     return false;
                 }
             });
-
-            // Handlers para Imagem
-            const fileInput = document.getElementById('fuel-file-input');
-            const previewEmpty = document.getElementById('fuel-preview-empty');
-            const previewContainer = document.getElementById('fuel-preview-container');
-            const imgPreview = document.getElementById('fuel-img-preview');
-            const photoHidden = document.getElementById('fuel-photo-data');
-
-            fileInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        photoHidden.value = event.target.result;
-                        imgPreview.src = event.target.result;
-                        previewEmpty.classList.add('hidden');
-                        previewContainer.classList.remove('hidden');
-                        this.showToast('Imagem carregada!', 'success');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
         },
 
         async saveFuelEntry(formData) {
+            // Coletar array de fotos do input oculto gerado pelo multiImagePicker
+            const photosRaw = formData.get('photos_fuel');
+            const photos = photosRaw ? JSON.parse(photosRaw) : [];
+
             const entry = {
                 bookingId: formData.get('bookingId'),
                 projetoId: formData.get('projetoId'),
                 veiculoId: formData.get('veiculoId'),
                 km: parseInt(formData.get('km')),
                 valor: parseFloat(formData.get('valor')),
-                foto: formData.get('fotoBase64') || ''
+                foto: JSON.stringify(photos) // Salvamos como string JSON
             };
             
             await Storage.saveFuelEntry(entry);
@@ -3714,7 +3644,7 @@ const App = {
                     await Storage._refreshTable('vehicles');
 
                     App.renderView('agendamentos');
-                    this.showToast('Viagem finalizada com sucesso. Veículo disponível!');
+                    App.showToast('Viagem finalizada com sucesso. Veículo disponível!');
                     return true;
                 } catch (err) {
                     alert('Erro ao finalizar viagem: ' + err.message);
@@ -4170,6 +4100,117 @@ const App = {
                     link.href = settings.faviconUrl;
                 }
             }
+        },
+
+        async compressImage(file, maxWidth = 800) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Qualidade balanceada para multiplas fotos
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
+        },
+
+        async handleMultiImage(input, pickerId) {
+            const files = Array.from(input.files);
+            if (files.length === 0) return;
+
+            const hiddenInput = document.getElementById(`hidden-photos-${pickerId}`);
+            let currentPhotos = JSON.parse(hiddenInput.value || "[]");
+
+            if (currentPhotos.length >= 3) {
+                App.showToast('Limite de 3 fotos atingido.', 'error');
+                input.value = '';
+                return;
+            }
+
+            const remaining = 3 - currentPhotos.length;
+            const toProcess = files.slice(0, remaining);
+
+            if (files.length > remaining) {
+                App.showToast(`Apenas ${remaining} foto(s) adicionada(s). Limite: 3.`, 'error');
+            } else {
+                App.showToast(`Processando ${toProcess.length} imagem(ns)...`, 'success');
+            }
+
+            for (const file of toProcess) {
+                try {
+                    const base64 = await this.compressImage(file);
+                    currentPhotos.push(base64);
+                } catch (err) {
+                    console.error('Erro ao processar imagem:', err);
+                }
+            }
+
+            hiddenInput.value = JSON.stringify(currentPhotos);
+            this.renderPhotoPreviews(pickerId, currentPhotos);
+            input.value = ''; // Reset file input
+        },
+
+        triggerCamera(id) {
+            document.getElementById(`camera-input-${id}`).click();
+        },
+
+        triggerGallery(id) {
+            document.getElementById(`gallery-input-${id}`).click();
+        },
+
+        renderPhotoPreviews(pickerId, photos) {
+            const previewGrid = document.getElementById(`preview-grid-${pickerId}`);
+            const counter = document.getElementById(`photo-counter-${pickerId}`);
+            const btnCamera = document.getElementById(`btn-camera-${pickerId}`);
+            const btnGallery = document.getElementById(`btn-gallery-${pickerId}`);
+
+            if (counter) counter.textContent = `${photos.length} de 3 fotos`;
+            
+            // Desabilitar botões se chegar a 3
+            if (photos.length >= 3) {
+                if (btnCamera) btnCamera.classList.add('opacity-20', 'pointer-events-none');
+                if (btnGallery) btnGallery.classList.add('opacity-20', 'pointer-events-none');
+            } else {
+                if (btnCamera) btnCamera.classList.remove('opacity-20', 'pointer-events-none');
+                if (btnGallery) btnGallery.classList.remove('opacity-20', 'pointer-events-none');
+            }
+
+            previewGrid.innerHTML = photos.map((src, index) => `
+                <div class="relative aspect-square rounded-xl overflow-hidden border border-outline-variant/10 shadow-sm group animate-in zoom-in duration-300">
+                    <img src="${src}" class="w-full h-full object-cover">
+                    <button type="button" onclick="App.utils.removePhoto('${pickerId}', ${index})" class="absolute top-1 right-1 w-6 h-6 bg-error text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-[14px] font-black">close</span>
+                    </button>
+                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                </div>
+            `).join('');
+        },
+
+        removePhoto(pickerId, index) {
+            const hiddenInput = document.getElementById(`hidden-photos-${pickerId}`);
+            let photos = JSON.parse(hiddenInput.value || "[]");
+            photos.splice(index, 1);
+            hiddenInput.value = JSON.stringify(photos);
+            this.renderPhotoPreviews(pickerId, photos);
         },
 
         readFileAsDataURL(file) {
