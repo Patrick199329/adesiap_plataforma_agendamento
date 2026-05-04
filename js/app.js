@@ -1025,11 +1025,11 @@ const App = {
                     inputChegada.value = inputSaida.value;
                 }
                 
-                this.utils.updateVehicleAvailability(bookingId);
+                App.utils.updateVehicleAvailability(bookingId);
             });
 
             inputChegada.addEventListener('change', () => {
-                this.utils.updateVehicleAvailability(bookingId);
+                App.utils.updateVehicleAvailability(bookingId);
             });
             
             // Configurar 'min' inicial se já houver valor na saída
@@ -1040,14 +1040,14 @@ const App = {
 
         // Chamada inicial para preencher disponibilidade se estiver editando
         if (booking) {
-            this.utils.updateVehicleAvailability(bookingId, booking.veiculoId);
-            setTimeout(() => this.utils.updatePricingEstimates(), 500);
+            App.utils.updateVehicleAvailability(bookingId, booking.veiculoId);
+            setTimeout(() => App.utils.updatePricingEstimates(), 500);
         }
 
         // --- MAPS & ESTIMATES INTEGRATION ---
         document.addEventListener('change', (e) => {
             if (e.target.name === 'selectedVehicle') {
-                this.utils.updatePricingEstimates();
+                App.utils.updatePricingEstimates();
             }
         });
 
@@ -1073,7 +1073,7 @@ const App = {
                                 // Pega a distância em metros e converte para KM ida e volta (*2)
                                 const distanceKm = (response.routes[0].legs[0].distance.value / 1000) * 2;
                                 document.getElementById('input-distancia').value = Math.ceil(distanceKm);
-                                this.utils.updatePricingEstimates();
+                                App.utils.updatePricingEstimates();
                             }
                         });
                     }
@@ -1395,8 +1395,8 @@ const App = {
                                 <h5 class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">Saída</h5>
                             </div>
                             <div class="pl-1">
-                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${this.utils.formatDate(startDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
-                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${this.utils.formatTime(startDate)}h</p>
+                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${App.utils.formatDate(startDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
+                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${App.utils.formatTime(startDate)}h</p>
                             </div>
                             <div class="pt-2 flex items-start gap-1.5">
                                  <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
@@ -1410,8 +1410,8 @@ const App = {
                                 <h5 class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">Retorno</h5>
                             </div>
                             <div class="pl-1">
-                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${this.utils.formatDate(endDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
-                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${this.utils.formatTime(endDate)}h</p>
+                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${App.utils.formatDate(endDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
+                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${App.utils.formatTime(endDate)}h</p>
                             </div>
                             <div class="pt-2 flex items-start gap-1.5">
                                  <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
@@ -2692,7 +2692,7 @@ const App = {
             await Storage.setSettings(s);
             App.utils.applyBranding();
             App.showToast('Branding removido com sucesso!');
-            this.renderView('configuracoes');
+            App.renderView('configuracoes');
         },
 
         async login(formData) {
@@ -2735,7 +2735,7 @@ const App = {
             const veiculoId = formData.get('veiculoId');
             if (!veiculoId) {
                 alert('Por favor, selecione um veículo.');
-                this.renderView('lancamento-correcao');
+                App.renderView('lancamento-correcao');
                 return;
             }
 
@@ -2824,8 +2824,8 @@ const App = {
             const data = {
                 motoristaId: formData.get('motoristaId'),
                 projetoId: formData.get('projetoId'),
-                dataSaida: this.utils.toSaoPauloISO(formData.get('dataSaida')),
-                dataChegada: this.utils.toSaoPauloISO(formData.get('dataChegada')),
+                dataSaida: App.utils.toSaoPauloISO(formData.get('dataSaida')),
+                dataChegada: App.utils.toSaoPauloISO(formData.get('dataChegada')),
                 origem: formData.get('origem'),
                 destino: formData.get('destino'),
                 observacao: formData.get('observacao')
