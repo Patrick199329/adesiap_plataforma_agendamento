@@ -1299,7 +1299,7 @@ const App = {
                                 <h4 class="text-xl font-extrabold text-primary tracking-tight">${vehicle.nome || 'Sem Nome'}</h4>
                                 <p class="text-xs font-bold text-on-surface-variant opacity-60">Placa: ${vehicle.placa || '---'}</p>
                             </div>
-                            <span class="px-2 py-1 bg-surface-container-low rounded-lg text-primary text-[10px] font-extrabold font-mono">${km.toLocaleString('pt-BR')} KM</span>
+                            <span class="px-2 py-1 bg-surface-container-low rounded-lg text-primary text-[10px] font-extrabold font-mono">${App.utils.formatNumber(km)} KM</span>
                         </div>
                         <div class="flex items-center gap-2 mt-6">
                             <button onclick="App.actions.openEditVehicle('${vehicle.id}')" class="flex-1 bg-surface-container-low text-primary py-3 rounded-xl font-bold text-xs hover:bg-primary hover:text-white transition-all uppercase tracking-widest">Editar</button>
@@ -1395,8 +1395,8 @@ const App = {
                                 <h5 class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">Saída</h5>
                             </div>
                             <div class="pl-1">
-                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${startDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()}</p>
-                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}h</p>
+                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${this.utils.formatDate(startDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
+                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${this.utils.formatTime(startDate)}h</p>
                             </div>
                             <div class="pt-2 flex items-start gap-1.5">
                                  <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
@@ -1410,8 +1410,8 @@ const App = {
                                 <h5 class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">Retorno</h5>
                             </div>
                             <div class="pl-1">
-                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${endDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()}</p>
-                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}h</p>
+                                <p class="text-xl font-black text-primary tracking-tighter leading-none">${this.utils.formatDate(endDate, { day: '2-digit', month: 'short' }).toUpperCase()}</p>
+                                <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${this.utils.formatTime(endDate)}h</p>
                             </div>
                             <div class="pt-2 flex items-start gap-1.5">
                                  <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
@@ -1656,7 +1656,7 @@ const App = {
                             Correção de Logística
                         </h4>
                         <div class="flex items-center gap-3">
-                            <span class="text-[9px] font-bold text-on-surface-variant opacity-40">${new Date(correction.dataRegistro).toLocaleString('pt-BR')}</span>
+                            <span class="text-[9px] font-bold text-on-surface-variant opacity-40">${App.utils.formatDateTime(correction.dataRegistro)}</span>
                             <button onclick="App.actions.deleteCorrection('${correction.id}')" class="text-on-surface-variant/40 hover:text-error transition-colors flex items-center" title="Excluir Lançamento">
                                 <span class="material-symbols-outlined text-sm">delete</span>
                             </button>
@@ -1798,7 +1798,7 @@ const App = {
                                             <h4 class="text-lg font-black text-primary uppercase leading-tight">${v.nome}</h4>
                                             <div class="flex items-center gap-2 mt-1">
                                                 <span class="text-[10px] font-bold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full uppercase">${v.placa}</span>
-                                                <span class="text-[10px] font-black text-primary">${v.km.toLocaleString()} KM</span>
+                                                <span class="text-[10px] font-black text-primary">${App.utils.formatNumber(v.km)} KM</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2025,7 +2025,7 @@ const App = {
                                             </div>
                                             <div class="text-right">
                                                 <p class="text-[8px] font-black text-on-surface-variant uppercase tracking-widest opacity-40">Identificado em</p>
-                                                <p class="text-[10px] font-bold text-primary">${new Date(item.data).toLocaleDateString('pt-BR')}</p>
+                                                <p class="text-[10px] font-bold text-primary">${App.utils.formatDate(item.data)}</p>
                                             </div>
                                         </div>
                                     `).join('')}
@@ -2322,7 +2322,7 @@ const App = {
                                                                             <span class="material-symbols-outlined text-sm ${type === 'Saída' ? 'text-emerald-500' : 'text-amber-500'}">${type === 'Saída' ? 'upload' : 'download'}</span>
                                                                             Checklist ${type}
                                                                         </h4>
-                                                                        <span class="text-[10px] font-bold text-on-surface-variant opacity-40">${new Date(log.data).toLocaleString('pt-BR')}</span>
+                                                                        <span class="text-[10px] font-bold text-on-surface-variant opacity-40">${App.utils.formatDateTime(log.data)}</span>
                                                                     </div>
                                                                     
                                                                     <div class="bg-white rounded-[2rem] border ${log.hasInconformity ? 'border-error/20 bg-error/[0.01]' : 'border-outline-variant/10'} overflow-hidden shadow-sm">
@@ -2824,8 +2824,8 @@ const App = {
             const data = {
                 motoristaId: formData.get('motoristaId'),
                 projetoId: formData.get('projetoId'),
-                dataSaida: formData.get('dataSaida'),
-                dataChegada: formData.get('dataChegada'),
+                dataSaida: this.utils.toSaoPauloISO(formData.get('dataSaida')),
+                dataChegada: this.utils.toSaoPauloISO(formData.get('dataChegada')),
                 origem: formData.get('origem'),
                 destino: formData.get('destino'),
                 observacao: formData.get('observacao')
@@ -3798,7 +3798,7 @@ const App = {
                                                     </span>
                                                 </div>
                                                 <p class="text-[9px] font-bold text-on-surface-variant opacity-60 uppercase tracking-widest mt-0.5">
-                                                    ${new Date(l.data).toLocaleDateString('pt-BR')} ${new Date(l.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})} • ${l.kmRealizada.toLocaleString()} KM
+                                                    ${App.utils.formatDate(l.data)} ${App.utils.formatTime(l.data)} • ${App.utils.formatNumber(l.kmRealizada)} KM
                                                 </p>
                                             </div>
                                         </div>
@@ -3823,7 +3823,7 @@ const App = {
                                         </div>
                                         <div class="flex items-center gap-1 text-[9px] font-bold text-on-surface-variant opacity-40">
                                             <span class="material-symbols-outlined text-[12px]">calendar_today</span>
-                                            <span>Entrada: ${new Date(l.data).toLocaleDateString('pt-BR')}</span>
+                                            <span>Entrada: ${App.utils.formatDate(l.data)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -3851,7 +3851,7 @@ const App = {
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest leading-none">Relatórios de Gestão e Logística</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xs font-bold text-primary">Emitido em: ${new Date().toLocaleString('pt-BR')}</p>
+                            <p class="text-xs font-bold text-primary">Emitido em: ${App.utils.formatDateTime(new Date())}</p>
                             <p class="text-[9px] font-medium text-on-surface-variant opacity-60">ID Auditoria: ${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
                         </div>
                     </div>
@@ -3914,8 +3914,8 @@ const App = {
                                                     </p>
                                                 </td>
                                                 <td class="py-4 px-4">
-                                                    <p class="font-bold">${new Date(l.data).toLocaleDateString('pt-BR')}</p>
-                                                    <p class="text-[9px] opacity-40 uppercase tracking-widest">${(l.kmRealizada || 0).toLocaleString()} KM</p>
+                                                    <p class="font-bold">${App.utils.formatDate(l.data)}</p>
+                                                    <p class="text-[9px] opacity-40 uppercase tracking-widest">${App.utils.formatNumber(l.kmRealizada || 0)} KM</p>
                                                 </td>
                                                 <td class="py-4 px-4 font-medium text-on-surface-variant opacity-60 uppercase text-[9px]">
                                                     ${l.usuarioNome || 'Sistema'}
@@ -4028,7 +4028,7 @@ const App = {
                                             <td class="py-4 px-4 font-bold border-b border-outline-variant/10 align-top">${v?.nome || 'N/A'}<br><span class="opacity-50">${v?.placa || ''}</span></td>
                                             <td class="py-4 px-4 border-b border-outline-variant/10 align-top">
                                                 <strong class="${isCorrection ? 'text-emerald-700' : ''}">${event.tipo}</strong><br>
-                                                ${new Date(event.data).toLocaleString('pt-BR')}
+                                                ${App.utils.formatDateTime(event.data)}
                                             </td>
                                             <td class="py-4 px-4 font-black border-b border-outline-variant/10 uppercase align-top">
                                                 ${isCorrection ? '<span class="text-emerald-600">Resolvido/Ajustado</span>' : (event.hasInconformity ? 'Inconforme' : 'Conforme')}<br>
@@ -4085,37 +4085,15 @@ const App = {
                     }
                 });
 
-                // 2. Adicionar Viagens Concluídas
-                bookings.forEach(b => {
-                    if (b.status !== 'concluido') return;
-                    const passProjeto = projetoId === 'all' || b.projetoId === projetoId;
-                    const passVeiculo = veiculoId === 'all' || b.veiculoId === veiculoId;
-                    const logDate = (b.dataSaida || '').split('T')[0];
-                    const passInicio = !dataInicio || logDate >= dataInicio;
-                    const passFim = !dataFim || logDate <= dataFim;
+                // 2. Viagens Concluídas removidas do financeiro para evitar duplicação com abastecimentos manuais
+                // O relatório financeiro agora foca exclusivamente em gastos reais (fuelLogs)
 
-                    if (passProjeto && passVeiculo && passInicio && passFim) {
-                        financialEntries.push({
-                            tipo: 'VIAGEM',
-                            data: b.dataSaida,
-                            veiculoId: b.veiculoId,
-                            projetoId: b.projetoId,
-                            responsavel: Storage.getUsers().find(u => u.id === b.motoristaId)?.nome || 'N/A',
-                            descricao: `Viagem: ${b.destino}`,
-                            rota: `${b.origem} → ${b.destino}`,
-                            observacao: b.observacao || '',
-                            valor: 0, 
-                            detalhe: `${b.kmFinal - b.kmInicial} KM percorridos`,
-                            dataFim: b.dataChegada
-                        });
-                    }
-                });
 
                 // Ordenar por data
                 financialEntries.sort((a,b) => new Date(b.data) - new Date(a.data));
 
                 const periodoLabel = dataInicio || dataFim
-                    ? `Período: ${dataInicio ? new Date(dataInicio + 'T00:00:00').toLocaleDateString('pt-BR') : 'início'} até ${dataFim ? new Date(dataFim + 'T00:00:00').toLocaleDateString('pt-BR') : 'hoje'}`
+                    ? `Período: ${dataInicio ? App.utils.formatDate(dataInicio + 'T12:00:00Z') : 'início'} até ${dataFim ? App.utils.formatDate(dataFim + 'T23:59:59Z') : 'hoje'}`
                     : 'Todos os períodos';
 
                 reportHtml = `
@@ -4177,7 +4155,7 @@ const App = {
                                     return `
                                         <tr class="${isAbastecimento ? 'bg-white' : 'bg-surface-container-low/20'}">
                                             <td class="py-3 px-2 text-center align-middle">${refContent}</td>
-                                            <td class="py-3 px-2 font-bold whitespace-nowrap">${new Date(e.data).toLocaleDateString('pt-BR')}</td>
+                                            <td class="py-3 px-2 font-bold whitespace-nowrap">${App.utils.formatDate(e.data)}</td>
                                             <td class="py-3 px-2 font-black text-primary uppercase">${e.responsavel || 'N/A'}</td>
                                             <td class="py-3 px-2 opacity-70">${origem}</td>
                                             <td class="py-3 px-2 opacity-70">${destino}</td>
@@ -4224,7 +4202,7 @@ const App = {
                                                     </div>
                                                     <div>
                                                         <p class="text-[10px] font-black text-primary uppercase tracking-widest">Evidência de Gasto</p>
-                                                        <p class="text-xs font-bold text-on-surface-variant">${new Date(e.data).toLocaleDateString('pt-BR')} - ${v?.nome}</p>
+                                                        <p class="text-xs font-bold text-on-surface-variant">${App.utils.formatDate(e.data)} - ${v?.nome}</p>
                                                     </div>
                                                 </div>
                                                 <span class="text-[9px] font-black text-primary uppercase bg-primary/5 px-2 py-1 rounded-full">REF #${refNumber}${photos.length > 1 ? `.${pIdx + 1}` : ''}</span>
@@ -4263,6 +4241,59 @@ const App = {
     },
 
     utils: {
+        // --- TIMEZONE UTILS (SÃO PAULO) ---
+        TZ: 'America/Sao_Paulo',
+        OFFSET: '-03:00',
+
+        formatDateTime(date, options = {}) {
+            if (!date) return '--';
+            const d = typeof date === 'string' ? new Date(date) : date;
+            return d.toLocaleString('pt-BR', { 
+                timeZone: this.TZ,
+                ...options 
+            });
+        },
+
+        formatDate(date, options = {}) {
+            if (!date) return '--';
+            const d = typeof date === 'string' ? new Date(date) : date;
+            return d.toLocaleDateString('pt-BR', { 
+                timeZone: this.TZ,
+                ...options 
+            });
+        },
+
+        formatTime(date, options = {}) {
+            if (!date) return '--';
+            const d = typeof date === 'string' ? new Date(date) : date;
+            return d.toLocaleTimeString('pt-BR', { 
+                timeZone: this.TZ,
+                hour: '2-digit',
+                minute: '2-digit',
+                ...options 
+            });
+        },
+
+        // Converte valor do input datetime-local para ISO com offset de SP
+        toSaoPauloISO(datetimeLocalValue) {
+            if (!datetimeLocalValue) return null;
+            // Se já tiver offset ou for ISO completo, retorna como está
+            if (datetimeLocalValue.includes('Z') || datetimeLocalValue.includes('-')) {
+                // Mas se for do input datetime-local, ele não tem offset. 
+                // Formato esperado do input: "YYYY-MM-DDTHH:mm"
+                if (datetimeLocalValue.length <= 16) {
+                    return `${datetimeLocalValue}:00${this.OFFSET}`;
+                }
+                return datetimeLocalValue;
+            }
+            return `${datetimeLocalValue}:00${this.OFFSET}`;
+        },
+
+        formatNumber(value, options = {}) {
+            if (value === undefined || value === null) return '0';
+            return Number(value).toLocaleString('pt-BR', options);
+        },
+
         applyBranding() {
             const settings = Storage.getSettings();
             
@@ -4434,8 +4465,8 @@ const App = {
 
             if (!dataSaida || !dataChegada) return;
 
-            const start = new Date(dataSaida).getTime();
-            const end = new Date(dataChegada).getTime();
+            const start = new Date(this.toSaoPauloISO(dataSaida)).getTime();
+            const end = new Date(this.toSaoPauloISO(dataChegada)).getTime();
 
             if (start >= end) {
                 list.innerHTML = `<div class="col-span-full p-4 bg-error-container text-error rounded-xl text-xs font-bold text-center">Data de chegada deve ser após a saída.</div>`;
