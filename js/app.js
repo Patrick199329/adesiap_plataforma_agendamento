@@ -244,6 +244,7 @@ const App = {
     },
 
     renderView(path, params) {
+        window.scrollTo(0, 0);
         const contentArea = document.getElementById('view-content');
         if (!contentArea) return;
 
@@ -869,7 +870,7 @@ const App = {
 
     renderBookingForm(container, params) {
         const bookingId = params?.get('id');
-        const booking = bookingId ? Storage.getBookings().find(b => b.id === bookingId) : null;
+        const booking = bookingId ? Storage.getBookings().find(b => b.id == bookingId) : null;
         
         const vehicles = Storage.getVehicles().filter(v => v.status === 'ativo');
         const users = Storage.getUsers().filter(u => u.ativo);
@@ -904,13 +905,13 @@ const App = {
                             <div class="grid grid-cols-1 gap-4">
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Data/Hora Saída</label>
-                                    <input name="dataSaida" type="datetime-local" value="${booking ? booking.dataSaida : ''}" 
+                                    <input name="dataSaida" type="datetime-local" value="${booking ? App.utils.formatForInput(booking.dataSaida) : ''}" 
                                         ${isRestricted ? 'disabled' : ''}
                                         class="w-full bg-white border border-outline-variant/30 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Data/Hora Chegada (Prevista)</label>
-                                    <input name="dataChegada" type="datetime-local" value="${booking ? booking.dataChegada : ''}"
+                                    <input name="dataChegada" type="datetime-local" value="${booking ? App.utils.formatForInput(booking.dataChegada) : ''}"
                                         ${isRestricted ? 'disabled' : ''}
                                         class="w-full bg-white border border-outline-variant/30 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
                                 </div>
@@ -923,7 +924,7 @@ const App = {
                                 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Motorista</label>
                                 <select name="motoristaId" class="w-full bg-white border border-outline-variant/30 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none appearance-none" ${isRestricted ? 'disabled' : ''}>
                                     ${users.map(u => {
-                                        const isSelected = booking ? (booking.motoristaId === u.id) : (currentUser?.id === u.id);
+                                        const isSelected = booking ? (booking.motoristaId == u.id) : (currentUser?.id == u.id);
                                         return `<option value="${u.id}" ${isSelected ? 'selected' : ''}>${u.nome} (${u.departamento})</option>`;
                                     }).join('')}
                                 </select>
@@ -931,7 +932,7 @@ const App = {
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Projeto / Centro de Custo</label>
                                 <select name="projetoId" class="w-full bg-white border border-outline-variant/30 rounded-xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none appearance-none">
-                                    ${projects.map(p => `<option value="${p.id}" ${booking?.projetoId === p.id ? 'selected' : ''}>${p.nome}</option>`).join('')}
+                                    ${projects.map(p => `<option value="${p.id}" ${booking?.projetoId == p.id ? 'selected' : ''}>${p.nome}</option>`).join('')}
                                 </select>
                             </div>
                         </div>
@@ -4287,6 +4288,33 @@ const App = {
                 return datetimeLocalValue;
             }
             return `${datetimeLocalValue}:00${this.OFFSET}`;
+        },
+
+        // Converte ISO para formato compatível com input datetime-local (YYYY-MM-DDTHH:mm)
+        formatForInput(isoString) {
+            if (!isoString) return '';
+            try {
+                const d = new Date(isoString);
+                if (isNaN(d.getTime())) return '';
+                
+                // Usar Intl para pegar os componentes na timezone de SP
+                const parts = new Intl.DateTimeFormat('pt-BR', {
+                    timeZone: this.TZ,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).formatToParts(d);
+                
+                const p = {};
+                parts.forEach(part => p[part.type] = part.value);
+                
+                return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+            } catch (e) {
+                return '';
+            }
         },
 
         formatNumber(value, options = {}) {
