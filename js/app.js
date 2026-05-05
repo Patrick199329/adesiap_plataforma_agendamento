@@ -891,7 +891,7 @@ const App = {
                     <div class="flex justify-between items-end">
                         <div>
                             <h2 class="text-4xl font-extrabold text-primary tracking-tighter">
-                                ${booking ? 'Editar Agendamento [V2]' : 'Solicitar Veículo'}
+                                ${booking ? 'Editar Agendamento' : 'Solicitar Veículo'}
                             </h2>
                             <p class="text-on-surface-variant font-medium mt-1">
                                 ${booking ? `Editando viagem #${booking.id}` : 'Preencha os detalhes para validar a disponibilidade da frota.'}
@@ -1041,83 +1041,87 @@ const App = {
 
         // Logic for availability
         const form = document.getElementById('booking-form');
-        const inputSaida = form.querySelector('input[name="dataSaida"]');
-        const inputChegada = form.querySelector('input[name="dataChegada"]');
+        
+        if (form) {
+            const inputSaida = form.querySelector('input[name="dataSaida"]');
+            const inputChegada = form.querySelector('input[name="dataChegada"]');
 
-        if (inputSaida && inputChegada) {
-            inputSaida.addEventListener('change', () => {
-                // Sincronizar 'min' da chegada com a saída
-                inputChegada.min = inputSaida.value;
-                
-                // Se a chegada for menor que a nova saída, ajustar automaticamente
-                if (inputChegada.value && inputChegada.value < inputSaida.value) {
-                    inputChegada.value = inputSaida.value;
-                }
-                
-                App.utils.updateVehicleAvailability(bookingId);
-            });
-
-            inputChegada.addEventListener('change', () => {
-                App.utils.updateVehicleAvailability(bookingId);
-            });
-            
-            // Configurar 'min' inicial se já houver valor na saída
-            if (inputSaida.value) {
-                inputChegada.min = inputSaida.value;
-            }
-        }
-
-        // Chamada inicial para preencher disponibilidade se estiver editando
-        if (booking) {
-            App.utils.updateVehicleAvailability(bookingId, booking.veiculoId);
-            setTimeout(() => App.utils.updatePricingEstimates(), 500);
-        }
-
-        // --- MAPS & ESTIMATES INTEGRATION ---
-        document.addEventListener('change', (e) => {
-            if (e.target.name === 'selectedVehicle') {
-                App.utils.updatePricingEstimates();
-            }
-        });
-
-        if (window.google && window.google.maps && window.google.maps.places) {
-            const inputOrig = document.getElementById('input-origem');
-            const inputDest = document.getElementById('input-destino');
-            
-            if (inputOrig && inputDest) {
-                const autoOrigem = new google.maps.places.Autocomplete(inputOrig, { types: ['geocode', 'establishment'] });
-                const autoDestino = new google.maps.places.Autocomplete(inputDest, { types: ['geocode', 'establishment'] });
-                
-                const calculateRoute = () => {
-                    const origin = inputOrig.value;
-                    const destination = inputDest.value;
-                    if (origin && destination) {
-                        const directionsService = new google.maps.DirectionsService();
-                        directionsService.route({
-                            origin: origin,
-                            destination: destination,
-                            travelMode: google.maps.TravelMode.DRIVING
-                        }, (response, status) => {
-                            if (status === 'OK') {
-                                // Pega a distância em metros e converte para KM ida e volta (*2)
-                                const distanceKm = (response.routes[0].legs[0].distance.value / 1000) * 2;
-                                document.getElementById('input-distancia').value = Math.ceil(distanceKm);
-                                App.utils.updatePricingEstimates();
-                            }
-                        });
+            if (inputSaida && inputChegada) {
+                inputSaida.addEventListener('change', () => {
+                    // Sincronizar 'min' da chegada com a saída
+                    inputChegada.min = inputSaida.value;
+                    
+                    // Se a chegada for menor que a nova saída, ajustar automaticamente
+                    if (inputChegada.value && inputChegada.value < inputSaida.value) {
+                        inputChegada.value = inputSaida.value;
                     }
-                };
+                    
+                    App.utils.updateVehicleAvailability(bookingId);
+                });
 
-                autoOrigem.addListener('place_changed', calculateRoute);
-                autoDestino.addListener('place_changed', calculateRoute);
+                inputChegada.addEventListener('change', () => {
+                    App.utils.updateVehicleAvailability(bookingId);
+                });
+                
+                // Configurar 'min' inicial se já houver valor na saída
+                if (inputSaida.value) {
+                    inputChegada.min = inputSaida.value;
+                }
             }
-        }
 
-        if (activeTab === 'dados') {
-            form.onsubmit = (e) => {
-                e.preventDefault();
-                this.actions.saveBooking(new FormData(form));
-            };
+            // Chamada inicial para preencher disponibilidade se estiver editando
+            if (booking) {
+                App.utils.updateVehicleAvailability(bookingId, booking.veiculoId);
+                setTimeout(() => App.utils.updatePricingEstimates(), 500);
+            }
+
+            // --- MAPS & ESTIMATES INTEGRATION ---
+            document.addEventListener('change', (e) => {
+                if (e.target.name === 'selectedVehicle') {
+                    App.utils.updatePricingEstimates();
+                }
+            });
+
+            if (window.google && window.google.maps && window.google.maps.places) {
+                const inputOrig = document.getElementById('input-origem');
+                const inputDest = document.getElementById('input-destino');
+                
+                if (inputOrig && inputDest) {
+                    const autoOrigem = new google.maps.places.Autocomplete(inputOrig, { types: ['geocode', 'establishment'] });
+                    const autoDestino = new google.maps.places.Autocomplete(inputDest, { types: ['geocode', 'establishment'] });
+                    
+                    const calculateRoute = () => {
+                        const origin = inputOrig.value;
+                        const destination = inputDest.value;
+                        if (origin && destination) {
+                            const directionsService = new google.maps.DirectionsService();
+                            directionsService.route({
+                                origin: origin,
+                                destination: destination,
+                                travelMode: google.maps.TravelMode.DRIVING
+                            }, (response, status) => {
+                                if (status === 'OK') {
+                                    // Pega a distância em metros e converte para KM ida e volta (*2)
+                                    const distanceKm = (response.routes[0].legs[0].distance.value / 1000) * 2;
+                                    const distInput = document.getElementById('input-distancia');
+                                    if (distInput) distInput.value = Math.ceil(distanceKm);
+                                    App.utils.updatePricingEstimates();
+                                }
+                            });
+                        }
+                    };
+
+                    autoOrigem.addListener('place_changed', calculateRoute);
+                    autoDestino.addListener('place_changed', calculateRoute);
+                }
+            }
+
+            if (activeTab === 'dados') {
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    this.actions.saveBooking(new FormData(form));
+                };
+            }
         }
     },
 
