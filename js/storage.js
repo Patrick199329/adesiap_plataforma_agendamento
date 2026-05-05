@@ -414,26 +414,54 @@ const Storage = {
             bookingId: entry.bookingId,
             projetoId: entry.projetoId,
             km: entry.km,
-            valor: entry.valor,
+            valor: parseFloat(entry.valor),
             foto: entry.foto || ''
         };
-        await supabaseClient.from('fuel_logs').insert(_toSnake(fuelData));
 
-        // Update project balance
+        if (entry.id) {
+            // Se for edição, precisamos ajustar o saldo do projeto (estornar o antigo e aplicar o novo)
+            const oldEntry = this._cache.fuelLogs.find(f => f.id === entry.id);
+            if (oldEntry && oldEntry.projetoId && oldEntry.valor) {
+                const project = this.getProjects().find(p => p.id === oldEntry.projetoId);
+                if (project) {
+                    // Estorna o valor antigo
+                    await supabaseClient.from('projects')
+                        .update({ saldo: project.saldo + oldEntry.valor })
+                        .eq('id', oldEntry.projetoId);
+                }
+            }
+            
+            await supabaseClient.from('fuel_logs')
+                .update(_toSnake(fuelData))
+                .eq('id', entry.id);
+        } else {
+            await supabaseClient.from('fuel_logs').insert(_toSnake(fuelData));
+        }
+
+        // Update project balance with the new value
         if (entry.projetoId && entry.valor) {
             const project = this.getProjects().find(p => p.id === entry.projetoId);
             if (project) {
+                // Se acabamos de estornar acima, precisamos pegar o saldo atualizado do cache ou do banco?
+                // O ideal é recarregar os projetos ou usar o valor que sabemos que mudou.
+                // Para simplificar, vamos usar o valor direto no banco.
+                const { data: updatedProj } = await supabaseClient.from('projects').select('saldo').eq('id', entry.projetoId).single();
+                const currentSaldo = updatedProj ? updatedProj.saldo : project.saldo;
+                
                 await supabaseClient.from('projects')
-                    .update({ saldo: project.saldo - entry.valor })
+                    .update({ saldo: currentSaldo - entry.valor })
                     .eq('id', entry.projetoId);
             }
         }
 
-        // Update vehicle km
+        // Update vehicle km (only if it's the latest KM)
         if (entry.veiculoId && entry.km) {
-            await supabaseClient.from('vehicles')
-                .update({ km: entry.km })
-                .eq('id', entry.veiculoId);
+            const vehicle = this.getVehicles().find(v => v.id === entry.veiculoId);
+            if (vehicle && entry.km > vehicle.km) {
+                await supabaseClient.from('vehicles')
+                    .update({ km: entry.km })
+                    .eq('id', entry.veiculoId);
+            }
         }
 
         await Promise.all([
@@ -441,6 +469,28 @@ const Storage = {
             this._refreshTable('projects'),
             this._refreshTable('vehicles')
         ]);
+    },
+
+    async deleteFuelEntry(id) {
+        const entry = this._cache.fuelLogs.find(f => f.id === id);
+        if (entry) {
+            // Estorna saldo do projeto
+            if (entry.projetoId && entry.valor) {
+                const project = this.getProjects().find(p => p.id === entry.projetoId);
+                if (project) {
+                    await supabaseClient.from('projects')
+                        .update({ saldo: project.saldo + entry.valor })
+                        .eq('id', entry.projetoId);
+                }
+            }
+            await supabaseClient.from('fuel_logs').delete().eq('id', id);
+            await Promise.all([
+                this._refreshTable('fuelLogs'),
+                this._refreshTable('projects')
+            ]);
+            return true;
+        }
+        return false;
     },
 
     // ----------------------------------------------------------

@@ -870,6 +870,7 @@ const App = {
 
     renderBookingForm(container, params) {
         const bookingId = params?.get('id');
+        const activeTab = params?.get('tab') || 'dados';
         const booking = bookingId ? Storage.getBookings().find(b => b.id == bookingId) : null;
         
         const vehicles = Storage.getVehicles().filter(v => v.status === 'ativo');
@@ -880,23 +881,43 @@ const App = {
         // Se estiver editando e a viagem não estiver pendente, restringir campos
         const isRestricted = booking && booking.status !== 'checklist_pendente';
 
-        const html = `
+        let html = `
             <div class="max-w-4xl mx-auto space-y-10 animate-in fade-in zoom-in-95 duration-500 pb-20">
                 <header>
                     <button onclick="window.history.back()" class="text-on-surface-variant hover:text-primary mb-6 flex items-center gap-2 font-bold text-xs uppercase tracking-widest transition-colors">
                         <span class="material-symbols-outlined text-sm">arrow_back</span>
                         Voltar
                     </button>
-                    <h2 class="text-4xl font-extrabold text-primary tracking-tighter">
-                        ${booking ? 'Editar Agendamento' : 'Solicitar Veículo'}
-                    </h2>
-                    <p class="text-on-surface-variant font-medium mt-1">
-                        ${booking ? `Editando viagem #${booking.id}` : 'Preencha os detalhes para validar a disponibilidade da frota.'}
-                    </p>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-4xl font-extrabold text-primary tracking-tighter">
+                                ${booking ? 'Editar Agendamento' : 'Solicitar Veículo'}
+                            </h2>
+                            <p class="text-on-surface-variant font-medium mt-1">
+                                ${booking ? `Editando viagem #${booking.id}` : 'Preencha os detalhes para validar a disponibilidade da frota.'}
+                            </p>
+                        </div>
+                    </div>
                 </header>
 
+                ${booking ? `
+                <!-- Tabs -->
+                <div class="flex border-b border-outline-variant/10 gap-8">
+                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=dados'" class="pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'dados' ? 'text-primary' : 'text-on-surface-variant/40 hover:text-primary/60'}">
+                        Dados do Agendamento
+                        ${activeTab === 'dados' ? '<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full"></div>' : ''}
+                    </button>
+                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=abastecimentos'" class="pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'abastecimentos' ? 'text-primary' : 'text-on-surface-variant/40 hover:text-primary/60'}">
+                        Abastecimentos
+                        ${activeTab === 'abastecimentos' ? '<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full"></div>' : ''}
+                    </button>
+                </div>
+                ` : ''}
+
+                ${activeTab === 'abastecimentos' && booking ? this.renderFuelTab(booking) : `
                 <form id="booking-form" class="space-y-12">
                     ${booking ? `<input type="hidden" name="id" value="${booking.id}">` : ''}
+
                     
                     <!-- Sessão 1: Quando e Quem -->
                     <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1007,6 +1028,7 @@ const App = {
                          </button>
                     </footer>
                 </form>
+                `}
             </div>
         `;
         container.innerHTML = html;
@@ -1085,10 +1107,64 @@ const App = {
             }
         }
 
-        form.onsubmit = (e) => {
-            e.preventDefault();
-            this.actions.saveBooking(new FormData(form));
-        };
+        if (activeTab === 'dados') {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                this.actions.saveBooking(new FormData(form));
+            };
+        }
+    },
+
+    renderFuelTab(booking) {
+        const fuelLogs = Storage.getFuelLogs().filter(f => f.bookingId === booking.id);
+        
+        return `
+            <div class="space-y-8 animate-in fade-in duration-500">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-black text-primary uppercase tracking-[0.2em] opacity-40">Registros de Abastecimento</h3>
+                    <button onclick="App.actions.openFuelModal('${booking.id}')" class="bg-primary text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">add</span> Novo Registro
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    ${fuelLogs.length === 0 ? `
+                        <div class="py-12 text-center bg-surface-container-low rounded-3xl border-2 border-dashed border-outline-variant/20 opacity-40">
+                            <span class="material-symbols-outlined text-4xl mb-2">local_gas_station</span>
+                            <p class="text-xs font-black uppercase tracking-widest">Nenhum abastecimento registrado</p>
+                        </div>
+                    ` : fuelLogs.map(log => {
+                        const photos = log.foto ? JSON.parse(log.foto) : [];
+                        return `
+                            <div class="bg-white rounded-3xl p-6 border border-outline-variant/10 flex items-center justify-between group hover:shadow-xl transition-all duration-300">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center">
+                                        <span class="material-symbols-outlined">local_gas_station</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-primary uppercase">R$ ${parseFloat(log.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                        <p class="text-[10px] font-bold text-on-surface-variant opacity-60 uppercase tracking-widest">${log.km.toLocaleString()} KM • ${App.utils.formatDate(log.data)}</p>
+                                    </div>
+                                    ${photos.length > 0 ? `
+                                        <div class="flex gap-1 ml-4">
+                                            ${photos.map(p => `<img src="${p}" class="w-10 h-10 object-cover rounded-lg border border-outline-variant/10">`).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="App.actions.openFuelModal('${booking.id}', '${log.id}')" class="w-10 h-10 rounded-xl hover:bg-primary/10 text-on-surface-variant/20 hover:text-primary transition-all flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-lg">edit</span>
+                                    </button>
+                                    <button onclick="App.actions.deleteFuelEntry('${log.id}')" class="w-10 h-10 rounded-xl hover:bg-error/10 text-on-surface-variant/20 hover:text-error transition-all flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
     },
 
     renderChecklist(container, params) {
@@ -3601,8 +3677,9 @@ const App = {
             return true;
         },
 
-        openFuelModal(bookingId) {
+        openFuelModal(bookingId, fuelLogId = null) {
             const booking = Storage.getBookings().find(b => b.id === bookingId);
+            const fuelLog = fuelLogId ? Storage.getFuelLogs().find(f => f.id === fuelLogId) : null;
             const vehicle = Storage.getVehicles().find(v => v.id === booking.veiculoId);
             const project = Storage.getProjects().find(p => p.id === booking.projetoId);
 
@@ -3619,6 +3696,7 @@ const App = {
                     </div>
 
                     <form id="fuel-form" class="space-y-6">
+                        <input type="hidden" name="id" value="${fuelLogId || ''}">
                         <input type="hidden" name="bookingId" value="${bookingId}">
                         <input type="hidden" name="projetoId" value="${booking.projetoId}">
                         <input type="hidden" name="veiculoId" value="${booking.veiculoId}">
@@ -3626,11 +3704,11 @@ const App = {
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">KM Atual</label>
-                                <input name="km" type="number" value="${vehicle?.km}" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
+                                <input name="km" type="number" value="${fuelLog ? fuelLog.km : vehicle?.km}" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Valor Total (R$)</label>
-                                <input name="valor" type="number" step="0.01" placeholder="0,00" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
+                                <input name="valor" type="number" step="0.01" value="${fuelLog ? fuelLog.valor : ''}" placeholder="0,00" class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm focus:ring-4 focus:ring-primary/5 transition-all outline-none" required>
                             </div>
                         </div>
 
@@ -3641,7 +3719,7 @@ const App = {
                 </div>
             `;
 
-            App.showModal('Registrar Abastecimento', content, async () => {
+            App.showModal(fuelLog ? 'Editar Abastecimento' : 'Registrar Abastecimento', content, async () => {
                 const form = document.getElementById('fuel-form');
                 if (!form.checkValidity()) { form.reportValidity(); return false; }
                 const formData = new FormData(form);
@@ -3650,18 +3728,27 @@ const App = {
                     await App.actions.saveFuelEntry(formData);
                     return true;
                 } catch (err) {
-                    alert('Erro ao registrar abastecimento: ' + err.message);
+                    alert('Erro ao salvar abastecimento: ' + err.message);
                     return false;
                 }
             });
+
+            // Se for edição, carregar fotos
+            if (fuelLog && fuelLog.foto) {
+                setTimeout(() => {
+                    App.utils.setMultiImagePickerValue('fuel', JSON.parse(fuelLog.foto));
+                }, 100);
+            }
         },
 
         async saveFuelEntry(formData) {
             // Coletar array de fotos do input oculto gerado pelo multiImagePicker
             const photosRaw = formData.get('photos_fuel');
             const photos = photosRaw ? JSON.parse(photosRaw) : [];
+            const id = formData.get('id');
 
             const entry = {
+                id: id || undefined,
                 bookingId: formData.get('bookingId'),
                 projetoId: formData.get('projetoId'),
                 veiculoId: formData.get('veiculoId'),
@@ -3673,10 +3760,26 @@ const App = {
             await Storage.saveFuelEntry(entry);
             
             // Notificação Premium
-            App.showToast('Abastecimento registrado. Saldo atualizado!');
+            App.showToast(id ? 'Registro atualizado!' : 'Abastecimento registrado. Saldo atualizado!');
             
-            App.renderView('agendamentos');
+            // Se estiver na view de edição, recarregar a tab
+            if (window.location.hash.includes('editar-agendamento')) {
+                const params = new URLSearchParams(window.location.hash.split('?')[1]);
+                App.renderView('editar-agendamento', params);
+            } else {
+                App.renderView('agendamentos');
+            }
             return true;
+        },
+
+        async deleteFuelEntry(id) {
+            if (confirm('Deseja excluir este registro de abastecimento? O saldo do projeto será estornado.')) {
+                await Storage.deleteFuelEntry(id);
+                App.showToast('Registro excluído e saldo estornado.');
+                
+                const params = new URLSearchParams(window.location.hash.split('?')[1]);
+                App.renderView('editar-agendamento', params);
+            }
         },
 
         finishTrip(bookingId) {
@@ -4471,6 +4574,14 @@ const App = {
             photos.splice(index, 1);
             hiddenInput.value = JSON.stringify(photos);
             this.renderPhotoPreviews(pickerId, photos);
+        },
+
+        setMultiImagePickerValue(pickerId, photos) {
+            const hiddenInput = document.getElementById(`hidden-photos-${pickerId}`);
+            if (hiddenInput) {
+                hiddenInput.value = JSON.stringify(photos || []);
+                this.renderPhotoPreviews(pickerId, photos || []);
+            }
         },
 
         readFileAsDataURL(file) {
