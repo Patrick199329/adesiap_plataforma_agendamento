@@ -891,7 +891,7 @@ const App = {
                     <div class="flex justify-between items-end">
                         <div>
                             <h2 class="text-4xl font-extrabold text-primary tracking-tighter">
-                                ${booking ? 'Editar Agendamento' : 'Solicitar Veículo'}
+                                ${booking ? 'Editar Agendamento [V2]' : 'Solicitar Veículo'}
                             </h2>
                             <p class="text-on-surface-variant font-medium mt-1">
                                 ${booking ? `Editando viagem #${booking.id}` : 'Preencha os detalhes para validar a disponibilidade da frota.'}
@@ -902,14 +902,20 @@ const App = {
 
                 ${booking ? `
                 <!-- Tabs -->
-                <div class="flex border-b border-outline-variant/10 gap-8">
-                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=dados'" class="pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'dados' ? 'text-primary' : 'text-on-surface-variant/40 hover:text-primary/60'}">
-                        Dados do Agendamento
-                        ${activeTab === 'dados' ? '<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full"></div>' : ''}
+                <div class="flex border-b-2 border-primary/10 gap-4 p-1 bg-surface-container-low rounded-t-2xl">
+                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=dados'" 
+                        class="px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all rounded-xl ${activeTab === 'dados' ? 'bg-primary text-white shadow-lg' : 'text-primary/60 hover:bg-primary/5'}">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">edit_note</span>
+                            Dados do Agendamento
+                        </div>
                     </button>
-                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=abastecimentos'" class="pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'abastecimentos' ? 'text-primary' : 'text-on-surface-variant/40 hover:text-primary/60'}">
-                        Abastecimentos
-                        ${activeTab === 'abastecimentos' ? '<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full"></div>' : ''}
+                    <button onclick="window.location.hash='#editar-agendamento?id=${bookingId}&tab=abastecimentos'" 
+                        class="px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all rounded-xl ${activeTab === 'abastecimentos' ? 'bg-primary text-white shadow-lg' : 'text-primary/60 hover:bg-primary/5'}">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">local_gas_station</span>
+                            Abastecimentos
+                        </div>
                     </button>
                 </div>
                 ` : ''}
