@@ -1536,8 +1536,11 @@ const App = {
                                 <p class="text-[10px] font-bold text-on-surface-variant tracking-tight mt-1 opacity-60">${App.utils.formatTime(endDate)}h</p>
                             </div>
                             <div class="pt-2 flex items-start gap-1.5">
-                                 <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
-                                 <p class="text-[10px] font-black text-primary uppercase leading-tight tracking-tight">${booking.destino}</p>
+                                <span class="material-symbols-outlined text-primary/30 text-xs mt-0.5">location_on</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.destino)}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-primary uppercase leading-tight tracking-tight hover:text-primary/70 hover:underline transition-all" title="Abrir no Google Maps">
+                                    ${booking.destino}
+                                    <span class="material-symbols-outlined text-[9px] align-middle opacity-40 ml-0.5">open_in_new</span>
+                                </a>
                             </div>
                         </div>
                     </div>
