@@ -729,7 +729,8 @@ const App = {
                 dataInicio: '',
                 dataFim: '',
                 status: ['checklist_pendente', 'em_curso', 'concluido_recent'],
-                showFilters: false
+                showFilters: false,
+                apenasMinhasViagens: true
             };
         }
 
@@ -737,6 +738,11 @@ const App = {
             let filtered = Storage.getBookings();
             const now = new Date().getTime();
             const fortyEightHours = 48 * 60 * 60 * 1000;
+
+            // Filtro: apenas viagens do usuário logado
+            if (this.state.filters.apenasMinhasViagens && user) {
+                filtered = filtered.filter(b => b.motoristaId === user.id || b.criadoPor === user.id);
+            }
 
             return filtered.filter(b => {
                 // Filtro de Motorista (Busca Textual)
@@ -775,7 +781,11 @@ const App = {
                         <p class="text-on-surface-variant font-medium mt-1">Gestão operacional de saídas e retornos</p>
                     </div>
                     <div class="flex items-center gap-3 w-full md:w-auto">
-                        <button onclick="App.utils.toggleFilterVisibility()" class="flex-1 md:flex-none h-12 w-12 rounded-xl flex items-center justify-center border-2 ${this.state.filters.showFilters ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-outline-variant/20'} hover:scale-105 transition-all outline-none" title="Filtros">
+                        <button onclick="App.utils.toggleMyBookings()" class="flex-1 md:flex-none h-12 px-4 rounded-xl flex items-center justify-center gap-2 border-2 ${this.state.filters.apenasMinhasViagens ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-white text-on-surface-variant border-outline-variant/20'} hover:scale-105 transition-all outline-none font-bold text-xs uppercase tracking-widest whitespace-nowrap" title="${this.state.filters.apenasMinhasViagens ? 'Exibindo somente suas viagens — clique para ver todas' : 'Exibindo todas as viagens — clique para filtrar as suas'}">
+                            <span class="material-symbols-outlined text-base">${this.state.filters.apenasMinhasViagens ? 'person' : 'groups'}</span>
+                            <span class="hidden sm:inline">${this.state.filters.apenasMinhasViagens ? 'Minhas Viagens' : 'Todas as Viagens'}</span>
+                        </button>
+                        <button onclick="App.utils.toggleFilterVisibility()" class="flex-none h-12 w-12 rounded-xl flex items-center justify-center border-2 ${this.state.filters.showFilters ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-outline-variant/20'} hover:scale-105 transition-all outline-none" title="Filtros avançados">
                             <span class="material-symbols-outlined">filter_list</span>
                         </button>
                         <button onclick="window.location.hash='#novo-agendamento'" class="flex-[3] md:flex-none bg-primary text-white px-8 py-3 h-12 rounded-xl font-bold text-sm flex items-center gap-3 hover:bg-primary-container transition-all uppercase tracking-widest shadow-lg shadow-primary/20 justify-center">
@@ -4682,8 +4692,14 @@ const App = {
                 dataInicio: '',
                 dataFim: '',
                 status: ['checklist_pendente', 'em_curso', 'concluido_recent'],
-                showFilters: true
+                showFilters: true,
+                apenasMinhasViagens: true
             };
+            App.renderView('agendamentos');
+        },
+
+        toggleMyBookings() {
+            App.state.filters.apenasMinhasViagens = !App.state.filters.apenasMinhasViagens;
             App.renderView('agendamentos');
         },
 
