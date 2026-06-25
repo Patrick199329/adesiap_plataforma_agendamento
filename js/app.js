@@ -859,6 +859,24 @@ const App = {
         `;
         container.innerHTML = html;
 
+        // Scroll até o card recém criado ou editado
+        if (this.state.scrollToBookingId) {
+            const targetCard = document.getElementById(`booking-card-${this.state.scrollToBookingId}`);
+            if (targetCard) {
+                setTimeout(() => {
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetCard.style.transition = 'box-shadow 0.4s ease, outline 0.4s ease';
+                    targetCard.style.outline = '2px solid var(--md-sys-color-primary)';
+                    targetCard.style.boxShadow = '0 0 0 6px color-mix(in srgb, var(--md-sys-color-primary) 15%, transparent)';
+                    setTimeout(() => {
+                        targetCard.style.outline = '';
+                        targetCard.style.boxShadow = '';
+                    }, 2000);
+                }, 100);
+            }
+            this.state.scrollToBookingId = null;
+        }
+
         // Listeners para filtros
         if (this.state.filters.showFilters) {
             const searchInput = document.getElementById('filter-user-search');
@@ -1460,7 +1478,7 @@ const App = {
             const endDate = new Date(booking.dataChegada);
 
             return `
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/10 flex flex-col space-y-6 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+                <div id="booking-card-${booking.id}" class="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/10 flex flex-col space-y-6 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                     <header class="flex justify-between items-start">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center text-primary/40 group-hover:text-primary transition-colors">
@@ -2950,6 +2968,7 @@ const App = {
                 }
 
                 await Storage.updateBooking(bookingId, data);
+                App.state.scrollToBookingId = bookingId;
             } else {
                 // Se for criação
                 const vehicle = Storage.getVehicles().find(v => v.id === vehicleId);
@@ -2964,7 +2983,8 @@ const App = {
                     status: 'checklist_pendente'
                 };
 
-                await Storage.createBooking(newBooking);
+                const created = await Storage.createBooking(newBooking);
+                if (created) App.state.scrollToBookingId = created.id;
             }
 
             window.location.hash = '#agendamentos';
