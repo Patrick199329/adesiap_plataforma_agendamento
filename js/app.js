@@ -773,9 +773,7 @@ const App = {
                 const pa = priority[a.status] ?? 2;
                 const pb = priority[b.status] ?? 2;
                 if (pa !== pb) return pa - pb;
-                // Viagens agendadas: mais próxima primeiro (crescente)
-                if (a.status === 'checklist_pendente') return new Date(a.dataSaida) - new Date(b.dataSaida);
-                // Demais: mais recente primeiro (decrescente)
+                // Mais recente primeiro (decrescente) para todos os status
                 return new Date(b.dataSaida) - new Date(a.dataSaida);
             });
         };
