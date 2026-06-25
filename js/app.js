@@ -768,7 +768,16 @@ const App = {
                 });
 
                 return matchStatus;
-            }).sort((a, b) => new Date(b.dataSaida) - new Date(a.dataSaida));
+            }).sort((a, b) => {
+                const priority = { 'em_curso': 0, 'checklist_pendente': 1, 'concluido': 2, 'cancelado': 3 };
+                const pa = priority[a.status] ?? 2;
+                const pb = priority[b.status] ?? 2;
+                if (pa !== pb) return pa - pb;
+                // Viagens agendadas: mais próxima primeiro (crescente)
+                if (a.status === 'checklist_pendente') return new Date(a.dataSaida) - new Date(b.dataSaida);
+                // Demais: mais recente primeiro (decrescente)
+                return new Date(b.dataSaida) - new Date(a.dataSaida);
+            });
         };
 
         const filteredBookings = applyFilters();
